@@ -6,7 +6,7 @@ import com.mapbox.turf.TurfMeasurement
 import com.mapbox.turf.TurfTransformation
 import kotlin.math.*
 
-class PickUpPointGenerator(){
+class PickUpPointSuggester(){
     private val TAG : String = "PickUpPoint Generator";
 
     fun generatePickupPoint(origin : Point, dropOff : Point, passengerOrigin : Point) : Point{
@@ -14,8 +14,8 @@ class PickUpPointGenerator(){
 
         val closestPoint = generateClosetPoint(origin, dropOff, passengerOrigin);
         val pickUpPoint = generatePointBetween(passengerOrigin,closestPoint, distance)
-
-        return pickUpPoint
+        
+        return pickUpPoint 
     }
 
     private fun generateClosetPoint(a : Point, b: Point, c : Point): Point {
@@ -24,9 +24,9 @@ class PickUpPointGenerator(){
 
         val distanceCA = getDistanceBetween(c,a)
         val distanceCB = getDistanceBetween(c,b)
-
+        
         if (abs(distanceCA - distanceCB) <= threshold)
-
+            
             return pointD
         if (distanceCA < distanceCB)
             return generateClosetPoint(a, pointD, c)

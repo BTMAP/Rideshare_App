@@ -139,6 +139,7 @@ class MainActivity :
         setupIconLayerBelow(style,"DESTINATION_SOURCE","DESTINATION_LAYER","ORIGIN_LAYER")
         setupIconLayerBelow(style,"PASSENGER_SOURCE","PASSENGER_LAYER","DESTINATION_LAYER")
         setupIconLayerBelow(style,"DROP_OFF_SOURCE","DROP_OFF_LAYER","PASSENGER_LAYER")
+        setupIconLayerBelow(style,"PICKUP_POINT","PICKUP_POINT_LAYER","PASSENGER_LAYER")
     }
 
     private fun setupIconLayerAbove(style: Style, sourceId : String, layerId : String, aboveLayer : String){
@@ -356,6 +357,14 @@ class MainActivity :
         this.routeButton = findViewById<Button>(R.id.route_button)
         this.routeButton.setOnClickListener{
             if (this.origin!=null && this.destination!=null && this.passenger!=null && this.dropOff!=null) {
+                val suggestedPoint = PickUpPointGenerator().generatePickupPoint(this.origin!!,this.dropOff!!,this.passenger!!)
+
+                this.pickUp = suggestedPoint
+
+                mapboxMap?.getStyle {
+                    updateSource(it,"PICKUP_POINT", suggestedPoint)
+                }
+
                 getRoute(this.origin!!,this.destination!!,this.passenger!!,this.dropOff!!)
             }
         }
@@ -371,4 +380,5 @@ class MainActivity :
 
         this.locationSpinner.adapter = adapter
     }
+
 }
