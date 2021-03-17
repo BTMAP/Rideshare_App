@@ -12,9 +12,13 @@ class PickUpPointGenerator(){
     fun generatePickupPoint(origin : Point, dropOff : Point, passengerOrigin : Point) : Point{
         val distance = 1.0
 
-        val closestPoint = generateClosetPoint(origin, dropOff, passengerOrigin);
-        val pickUpPoint = generatePointBetween(passengerOrigin,closestPoint, distance)
+        val closestPoint = generateClosetPoint(origin, dropOff, passengerOrigin)
 
+        if (getDistanceBetween(passengerOrigin,closestPoint)<=distance){
+            return closestPoint
+        }
+
+        val pickUpPoint = generatePointBetween(passengerOrigin,closestPoint, distance)
         return pickUpPoint
     }
 
@@ -26,7 +30,6 @@ class PickUpPointGenerator(){
         val distanceCB = getDistanceBetween(c,b)
 
         if (abs(distanceCA - distanceCB) <= threshold)
-
             return pointD
         if (distanceCA < distanceCB)
             return generateClosetPoint(a, pointD, c)
