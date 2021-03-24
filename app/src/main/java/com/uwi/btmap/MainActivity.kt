@@ -132,6 +132,22 @@ class MainActivity :
                         ),
                 "mapbox-location-shadow-layer"
         )
+
+        style.addSource(GeoJsonSource(
+                "PASSENGER_ROUTE_SOURCE_ID",
+                GeoJsonOptions().withLineMetrics(true)
+        ))
+        style.addLayerBelow(
+                LineLayer("PASSENGER_ROUTE_LAYER_ID", "PASSENGER_ROUTE_SOURCE_ID")
+                        .withProperties(
+                                lineCap(Property.LINE_CAP_ROUND),
+                                lineJoin(Property.LINE_JOIN_ROUND),
+                                lineWidth(6f),
+                                lineOpacity(1f),
+                                lineColor("#5E8F5E")
+                        ),
+                "ROUTE_LAYER_ID"
+        )
     }
 
     private fun setupLocationMarkerLayers(style: Style){
@@ -249,7 +265,7 @@ class MainActivity :
     }
 
 
-    private fun getRoute(origin : Point, destination : Point, pickup : Point, dropOff : Point ){
+    private fun getRoute(origin: Point, destination: Point, pickup: Point, dropOff: Point ){
 
         val waypoints = listOf<Point>(pickup, dropOff)
 
@@ -266,6 +282,20 @@ class MainActivity :
                 routeOptions,
                 routesReqCallback
         )
+
+        //Request passenger directions
+        val passengerRouteOptions : RouteOptions = RouteOptions.builder()
+                .applyDefaultParams()
+                .accessToken(getString(R.string.mapbox_access_token))
+                .coordinates(this.passenger!!, listOf<Point>(),this.pickUp!!)
+                .alternatives(true)
+                .profile(DirectionsCriteria.PROFILE_DRIVING)
+                .build()
+
+        mapboxNavigation?.requestRoutes(
+                passengerRouteOptions,
+                passengerRoutesReqCallback
+        )
     }
 
     private val routesReqCallback = object : RoutesRequestCallback{
@@ -273,6 +303,50 @@ class MainActivity :
             if (routes.isNotEmpty()){
                 mapboxMap?.getStyle {
                     val clickPointSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
+                    val routeLineString = LineString.fromPolyline(
+                            routes[0].geometry()!!,
+                            6
+                    )
+//                    add the returned route to the route line source
+                    clickPointSource?.setGeoJson(routeLineString)
+                }
+            }else{
+                Log.d(TAG, "onRoutesReady: No routes found")
+            }
+        }
+
+        override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
+            Log.d(TAG, "onRoutesRequestCanceled: routes request cancelled")
+        }
+
+        override fun onRoutesRequestFailure(throwable: Throwable, routeOptions: RouteOptions) {
+            Log.e(TAG, "onRoutesRequestFailure: routes request failed: ", throwable)
+        }
+
+    }
+
+    private fun getPassengerRoute(){
+
+        //Request passenger directions
+        val routeOptions : RouteOptions = RouteOptions.builder()
+                .applyDefaultParams()
+                .accessToken(getString(R.string.mapbox_access_token))
+                .coordinates(this.passenger!!, listOf<Point>(),this.pickUp!!)
+                .alternatives(true)
+                .profile(DirectionsCriteria.PROFILE_DRIVING)
+                .build()
+
+        mapboxNavigation?.requestRoutes(
+                routeOptions,
+                passengerRoutesReqCallback
+        )
+    }
+
+    private val passengerRoutesReqCallback = object : RoutesRequestCallback{
+        override fun onRoutesReady(routes: List<DirectionsRoute>) {
+            if (routes.isNotEmpty()){
+                mapboxMap?.getStyle {
+                    val clickPointSource = it.getSourceAs<GeoJsonSource>("PASSENGER_ROUTE_SOURCE_ID")
                     val routeLineString = LineString.fromPolyline(
                             routes[0].geometry()!!,
                             6
@@ -365,7 +439,8 @@ class MainActivity :
                     updateSource(it,"PICKUP_POINT", suggestedPoint)
                 }
 
-                getRoute(this.origin!!,this.destination!!,this.passenger!!,this.dropOff!!)
+                getRoute(this.origin!!,this.destination!!,this.pickUp!!,this.dropOff!!)
+                getPassengerRoute()
             }
         }
     }
