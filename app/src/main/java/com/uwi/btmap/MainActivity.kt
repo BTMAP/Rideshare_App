@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.api.directions.v5.DirectionsCriteria
@@ -76,6 +77,8 @@ class MainActivity :
     private lateinit var locationSpinner : Spinner
     private var locations = arrayOf<String>("driver origin", "driver destination", "passenger origin", "passenger destination")
 
+    private lateinit var locationBottomSheet: FrameLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
@@ -88,6 +91,11 @@ class MainActivity :
         setupMapView(savedInstanceState)
 
         setupNavigationObject()
+
+        locationBottomSheet = findViewById(R.id.location_bottom_sheet)
+        BottomSheetBehavior.from(locationBottomSheet).apply{
+            peekHeight = 200
+        }
 }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
