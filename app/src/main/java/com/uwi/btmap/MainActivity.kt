@@ -1,6 +1,7 @@
 package com.uwi.btmap
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color.parseColor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -78,6 +79,7 @@ class MainActivity :
     private var locations = arrayOf<String>("driver origin", "driver destination", "passenger origin", "passenger destination")
 
     private lateinit var locationBottomSheet: FrameLayout
+    private lateinit var submitButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +97,13 @@ class MainActivity :
         locationBottomSheet = findViewById(R.id.location_bottom_sheet)
         BottomSheetBehavior.from(locationBottomSheet).apply{
             peekHeight = 200
+        }
+
+        submitButton = findViewById(R.id.submit_button)
+        submitButton.setOnClickListener{
+            var navActivityIntent = Intent(this, NavigationActivity::class.java)
+                    .putExtra("route","route")
+            startActivity(navActivityIntent)
         }
 }
 
