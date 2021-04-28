@@ -9,6 +9,7 @@ import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.LineString
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -38,7 +39,6 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
 
     private var permissionsManager: PermissionsManager = PermissionsManager(this)
 
-    private lateinit var route: DirectionsRoute
     private lateinit var commute: Commute
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +82,17 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
             )
 //                    add the returned route to the route line source
             clickPointSource?.setGeoJson(routeLineString)
+
+            updateSource(it, "ORIGIN_SOURCE",commute.getOrigin())
+            updateSource(it, "DESTINATION_SOURCE",commute.getDestination())
+            updateSource(it, "PICKUP_POINT",commute.getPickup())
+            updateSource(it, "DROP_OFF_SOURCE",commute.getDropOff())
         }
+    }
+
+    private fun updateSource(style: Style, source_id : String, point: Point){
+        var source = style.getSourceAs<GeoJsonSource>(source_id)
+        source?.setGeoJson(point)
     }
 
     @SuppressLint("MissingPermission")
@@ -102,15 +112,15 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
                 mapboxMap.locationComponent.apply {
                     activateLocationComponent(locationComponentActivationOptions)
                     isLocationComponentEnabled = true
-                    cameraMode = CameraMode.TRACKING
-                    renderMode = RenderMode.COMPASS
+                    cameraMode = CameraMode.TRACKING_GPS
+                    renderMode = RenderMode.GPS
 
                     val lat = mapboxMap.locationComponent.lastKnownLocation?.latitude
                     val lng = mapboxMap.locationComponent.lastKnownLocation?.longitude
 
                     val position = CameraPosition.Builder()
                         .zoom(12.0)
-                        .tilt(0.0)
+                        .tilt(60.0)
                         .target(LatLng(lat!!,lng!!))
                         .build()
 
