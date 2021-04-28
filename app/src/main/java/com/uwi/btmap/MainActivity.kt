@@ -57,32 +57,27 @@ class MainActivity :
     MapboxMap.OnMapLongClickListener, AdapterView.OnItemSelectedListener {
 
     private val TAG = "Main Activity"
-    
+
+    private var mapView: MapView? = null
+    private lateinit var mapboxMap: MapboxMap
     private var mapboxNavigation: MapboxNavigation? = null
 
     private var permissionsManager: PermissionsManager = PermissionsManager(this)
-    private lateinit var mapboxMap: MapboxMap
-
-    private var mapView: MapView? = null
 
     //Locations
-    private var origin: Point? = null
-    private var destination: Point? = null
     private var passenger: Point? = null
-    private var dropOff: Point? = null
-    private var pickUp : Point? = null
-
     private var commute: Commute = Commute()
 
-    //test widget location spinner values
     private var currentSelectedLocation = 0
+
+    //Widgets
     private lateinit var routeButton: Button
     private lateinit var locationSpinner : Spinner
-    private var locations = arrayOf<String>("driver origin", "driver destination", "passenger origin", "passenger destination")
 
     private lateinit var locationBottomSheet: FrameLayout
     private lateinit var submitButton: Button
 
+    //used for passenger route
     private lateinit var route: DirectionsRoute
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +90,6 @@ class MainActivity :
         setupRouteButton()
 
         setupMapView(savedInstanceState)
-
         setupNavigationObject()
 
         locationBottomSheet = findViewById(R.id.location_bottom_sheet)
@@ -107,12 +101,6 @@ class MainActivity :
         submitButton = findViewById(R.id.submit_button)
 
         submitButton.setOnClickListener{
-            commute.setRoute(route)
-            commute.setOrigin(origin!!)
-            commute.setDestination(destination!!)
-            commute.setPickup(pickUp!!)
-            commute.setDropOff(dropOff!!)
-
             var navActivityIntent = Intent(this, NavigationActivity::class.java)
                     .putExtra("commute", commute)
             startActivity(navActivityIntent)
@@ -261,22 +249,22 @@ class MainActivity :
 
         if(this.currentSelectedLocation == 0){
             Toast.makeText(this,"Set origin location",Toast.LENGTH_SHORT).show()
-            this.origin = selectedPoint
+            commute.setOrigin(selectedPoint)
             sourceId = "ORIGIN_SOURCE"
         }
         if(this.currentSelectedLocation == 1){
             Toast.makeText(this,"Set destination location",Toast.LENGTH_SHORT).show()
-            this.destination = selectedPoint
+            commute.setDestination(selectedPoint)
             sourceId = "DESTINATION_SOURCE"
         }
         if(this.currentSelectedLocation == 2){
             Toast.makeText(this,"Set passenger location",Toast.LENGTH_SHORT).show()
-            this.passenger = selectedPoint
+            passenger = selectedPoint
             sourceId = "PASSENGER_SOURCE"
         }
         if(this.currentSelectedLocation == 3){
             Toast.makeText(this,"Set dropoff location",Toast.LENGTH_SHORT).show()
-            this.dropOff = selectedPoint
+            commute.setDropOff(selectedPoint)
             sourceId = "DROP_OFF_SOURCE"
         }
 
@@ -294,29 +282,22 @@ class MainActivity :
     }
 
 
-    private fun getRoute(origin: Point, destination: Point, pickup: Point, dropOff: Point ){
+    private fun getRoute(commute: Commute){
 
-        val waypoints = listOf<Point>(pickup, dropOff)
+        if (commute.isValid()){
+            val routeOptions : RouteOptions = commute.pairedRouteOptions(getString(R.string.mapbox_access_token))!!
+            mapboxNavigation?.requestRoutes(
+                    routeOptions,
+                    routesReqCallback
+            )
+        }
 
-        val routeOptions : RouteOptions = RouteOptions.builder()
-                .applyDefaultParams()
-                .accessToken(getString(R.string.mapbox_access_token))
-                .coordinates(origin,waypoints,destination)
-                .alternatives(true)
-                .profile(DirectionsCriteria.PROFILE_DRIVING)
-                .build()
-
-
-        mapboxNavigation?.requestRoutes(
-                routeOptions,
-                routesReqCallback
-        )
 
         //Request passenger directions
         val passengerRouteOptions : RouteOptions = RouteOptions.builder()
                 .applyDefaultParams()
                 .accessToken(getString(R.string.mapbox_access_token))
-                .coordinates(this.passenger!!, listOf<Point>(),this.pickUp!!)
+                .coordinates(this.passenger!!, listOf<Point>(), commute.getPickup())
                 .alternatives(true)
                 .profile(DirectionsCriteria.PROFILE_DRIVING)
                 .build()
@@ -360,7 +341,7 @@ class MainActivity :
         val routeOptions : RouteOptions = RouteOptions.builder()
                 .applyDefaultParams()
                 .accessToken(getString(R.string.mapbox_access_token))
-                .coordinates(this.passenger!!, listOf<Point>(),this.pickUp!!)
+                .coordinates(this.passenger!!, listOf<Point>(), commute.getPickup())
                 .alternatives(true)
                 .profile(DirectionsCriteria.PROFILE_DRIVING)
                 .build()
@@ -460,22 +441,21 @@ class MainActivity :
     private fun setupRouteButton(){
         this.routeButton = findViewById<Button>(R.id.route_button)
         this.routeButton.setOnClickListener{
-            if (this.origin!=null && this.destination!=null && this.passenger!=null && this.dropOff!=null) {
-                val suggestedPoint = PickUpPointGenerator().generatePickupPoint(this.origin!!,this.dropOff!!,this.passenger!!)
-
-                this.pickUp = suggestedPoint
+            commute.generatePickupPoint(passenger)
+            if (commute.isValid()) {
 
                 mapboxMap?.getStyle {
-                    updateSource(it,"PICKUP_POINT", suggestedPoint)
+                    updateSource(it,"PICKUP_POINT", commute.getPickup())
                 }
 
-                getRoute(this.origin!!,this.destination!!,this.pickUp!!,this.dropOff!!)
+                getRoute(commute)
                 getPassengerRoute()
             }
         }
     }
 
     private fun setupLocationSpinner(){
+        var locations = arrayOf<String>("driver origin", "driver destination", "passenger origin", "passenger destination")
         this.locationSpinner = findViewById<Spinner>(R.id.location_spinner)
 
         this.locationSpinner.onItemSelectedListener = this
