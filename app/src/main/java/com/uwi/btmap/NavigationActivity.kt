@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.api.directions.v5.models.DirectionsRoute
+import com.mapbox.geojson.LineString
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -18,7 +20,15 @@ import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.layers.LineLayer
+import com.mapbox.mapboxsdk.style.layers.Property
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer
+import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.core.MapboxNavigation
+import org.json.JSONObject
 
 class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener {
     private lateinit var map: MapView
@@ -28,11 +38,16 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
 
     private var permissionsManager: PermissionsManager = PermissionsManager(this)
 
+    private lateinit var route: DirectionsRoute
+    private lateinit var commute: Commute
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
         setupMapView(savedInstanceState)
+        setupNavigationObject()
+         commute = intent.getParcelableExtra<Commute>("commute")!!
     }
 
     private fun setupMapView(savedInstanceState: Bundle?){
@@ -54,13 +69,19 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
             this.mapboxMap = mapboxMap
 //            show user location
             enableLocationComponent(it)
-//
-//            setupMapIcons(it)
-//
-//            setupRouteLayer(it)
-//            setupLocationMarkerLayers(it)
-//
-//            mapboxMap.addOnMapLongClickListener(this)
+
+            setupMapIcons(it)
+
+            setupRouteLayer(it)
+            setupLocationMarkerLayers(it)
+
+            val clickPointSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
+            val routeLineString = LineString.fromPolyline(
+                    commute.getRoute().geometry()!!,
+                    6
+            )
+//                    add the returned route to the route line source
+            clickPointSource?.setGeoJson(routeLineString)
         }
     }
 
@@ -101,6 +122,71 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
             }
         }
 
+    }
+
+    private fun setupMapIcons(style: Style){
+        style.addImage("ICON_ID",
+                BitmapUtils.getBitmapFromDrawable(
+                        ContextCompat.getDrawable(
+                                this,
+                                R.drawable.mapbox_marker_icon_default
+                        )
+                )!!
+        )
+    }
+
+    private fun setupRouteLayer(style: Style){
+        style.addSource(GeoJsonSource(
+                "ROUTE_LINE_SOURCE_ID",
+                GeoJsonOptions().withLineMetrics(true)
+        ))
+        style.addLayerBelow(
+                LineLayer("ROUTE_LAYER_ID", "ROUTE_LINE_SOURCE_ID")
+                        .withProperties(
+                                PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                                PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+                                PropertyFactory.lineWidth(6f),
+                                PropertyFactory.lineOpacity(1f),
+                                PropertyFactory.lineColor("#2E4FC9")
+                        ),
+                "mapbox-location-shadow-layer"
+        )
+
+        style.addSource(GeoJsonSource(
+                "PASSENGER_ROUTE_SOURCE_ID",
+                GeoJsonOptions().withLineMetrics(true)
+        ))
+        style.addLayerBelow(
+                LineLayer("PASSENGER_ROUTE_LAYER_ID", "PASSENGER_ROUTE_SOURCE_ID")
+                        .withProperties(
+                                PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                                PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+                                PropertyFactory.lineWidth(6f),
+                                PropertyFactory.lineOpacity(1f),
+                                PropertyFactory.lineColor("#5E8F5E")
+                        ),
+                "ROUTE_LAYER_ID"
+        )
+    }
+
+    private fun setupLocationMarkerLayers(style: Style){
+        setupIconLayerAbove(style,"ORIGIN_SOURCE","ORIGIN_LAYER","ROUTE_LAYER_ID")
+        setupIconLayerBelow(style,"DESTINATION_SOURCE","DESTINATION_LAYER","ORIGIN_LAYER")
+        setupIconLayerBelow(style,"PASSENGER_SOURCE","PASSENGER_LAYER","DESTINATION_LAYER")
+        setupIconLayerBelow(style,"DROP_OFF_SOURCE","DROP_OFF_LAYER","PASSENGER_LAYER")
+        setupIconLayerBelow(style,"PICKUP_POINT","PICKUP_POINT_LAYER","PASSENGER_LAYER")
+    }
+
+    private fun setupIconLayerAbove(style: Style, sourceId : String, layerId : String, aboveLayer : String){
+        style.addSource(GeoJsonSource(sourceId))
+        style.addLayerAbove(SymbolLayer(layerId,sourceId)
+                .withProperties(PropertyFactory.iconImage("ICON_ID")),aboveLayer)
+    }
+
+    private fun setupIconLayerBelow(style: Style, sourceId : String, layerId : String, aboveLayer : String){
+        style.addSource(GeoJsonSource(sourceId))
+        style.addLayerBelow(SymbolLayer(layerId,sourceId)
+                .withProperties(PropertyFactory.iconImage("ICON_ID")),aboveLayer)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

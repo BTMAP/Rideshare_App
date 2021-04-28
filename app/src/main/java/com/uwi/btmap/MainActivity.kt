@@ -72,6 +72,8 @@ class MainActivity :
     private var dropOff: Point? = null
     private var pickUp : Point? = null
 
+    private var commute: Commute = Commute()
+
     //test widget location spinner values
     private var currentSelectedLocation = 0
     private lateinit var routeButton: Button
@@ -80,6 +82,8 @@ class MainActivity :
 
     private lateinit var locationBottomSheet: FrameLayout
     private lateinit var submitButton: Button
+
+    private lateinit var route: DirectionsRoute
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,13 +103,21 @@ class MainActivity :
             peekHeight = 200
         }
 
+
         submitButton = findViewById(R.id.submit_button)
+
         submitButton.setOnClickListener{
+            commute.setRoute(route)
+            commute.setOrigin(origin!!)
+            commute.setDestination(destination!!)
+            commute.setPickup(pickUp!!)
+            commute.setDropOff(dropOff!!)
+
             var navActivityIntent = Intent(this, NavigationActivity::class.java)
-                    .putExtra("route","route")
+                    .putExtra("commute", commute)
             startActivity(navActivityIntent)
         }
-}
+    }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
         mapboxMap.setStyle(Style.MAPBOX_STREETS) {
@@ -362,6 +374,7 @@ class MainActivity :
     private val passengerRoutesReqCallback = object : RoutesRequestCallback{
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
             if (routes.isNotEmpty()){
+                route = routes[0]
                 mapboxMap?.getStyle {
                     val clickPointSource = it.getSourceAs<GeoJsonSource>("PASSENGER_ROUTE_SOURCE_ID")
                     val routeLineString = LineString.fromPolyline(
