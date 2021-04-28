@@ -117,9 +117,8 @@ class MainActivity :
 
             setupRouteLayer(it)
             setupLocationMarkerLayers(it)
-
-            mapboxMap.addOnMapLongClickListener(this)
         }
+        mapboxMap.addOnMapLongClickListener(this)
     }
 
     private fun setupMapIcons(style: Style){
@@ -259,7 +258,7 @@ class MainActivity :
         }
         if(this.currentSelectedLocation == 2){
             Toast.makeText(this,"Set passenger location",Toast.LENGTH_SHORT).show()
-            passenger = selectedPoint
+            commute.setPassenger(selectedPoint)
             sourceId = "PASSENGER_SOURCE"
         }
         if(this.currentSelectedLocation == 3){
@@ -282,35 +281,22 @@ class MainActivity :
     }
 
 
-    private fun getRoute(commute: Commute){
-
+    private fun getRoute(){
         if (commute.isValid()){
-            val routeOptions : RouteOptions = commute.pairedRouteOptions(getString(R.string.mapbox_access_token))!!
+            Log.d(TAG, "getRoute: id valid")
+            val routeOptions : RouteOptions = commute.pairedRouteOptions(getString(R.string.mapbox_access_token))
             mapboxNavigation?.requestRoutes(
                     routeOptions,
                     routesReqCallback
             )
         }
-
-
-        //Request passenger directions
-        val passengerRouteOptions : RouteOptions = RouteOptions.builder()
-                .applyDefaultParams()
-                .accessToken(getString(R.string.mapbox_access_token))
-                .coordinates(this.passenger!!, listOf<Point>(), commute.getPickup())
-                .alternatives(true)
-                .profile(DirectionsCriteria.PROFILE_DRIVING)
-                .build()
-
-        mapboxNavigation?.requestRoutes(
-                passengerRouteOptions,
-                passengerRoutesReqCallback
-        )
+        Log.d(TAG, "getRoute: after isValid check")
     }
 
     private val routesReqCallback = object : RoutesRequestCallback{
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
             if (routes.isNotEmpty()){
+                commute.setDriverRoute(routes[0])
                 mapboxMap?.getStyle {
                     val clickPointSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
                     val routeLineString = LineString.fromPolyline(
@@ -336,15 +322,8 @@ class MainActivity :
     }
 
     private fun getPassengerRoute(){
-
         //Request passenger directions
-        val routeOptions : RouteOptions = RouteOptions.builder()
-                .applyDefaultParams()
-                .accessToken(getString(R.string.mapbox_access_token))
-                .coordinates(this.passenger!!, listOf<Point>(), commute.getPickup())
-                .alternatives(true)
-                .profile(DirectionsCriteria.PROFILE_DRIVING)
-                .build()
+        val routeOptions : RouteOptions = commute.passengerRouteOptions(getString(R.string.mapbox_access_token))
 
         mapboxNavigation?.requestRoutes(
                 routeOptions,
@@ -355,7 +334,7 @@ class MainActivity :
     private val passengerRoutesReqCallback = object : RoutesRequestCallback{
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
             if (routes.isNotEmpty()){
-                route = routes[0]
+                commute.setPassengerRoute(routes[0])
                 mapboxMap?.getStyle {
                     val clickPointSource = it.getSourceAs<GeoJsonSource>("PASSENGER_ROUTE_SOURCE_ID")
                     val routeLineString = LineString.fromPolyline(
@@ -380,6 +359,7 @@ class MainActivity :
 
     }
 
+    //------------mapbox lifecycle functions------------------
     override fun onStart() {
         super.onStart()
         mapView?.onStart()
@@ -399,6 +379,7 @@ class MainActivity :
         super.onStop()
         mapView?.onStop()
     }
+    //----------mapbox lifecycle functions end----------------
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -439,16 +420,18 @@ class MainActivity :
     }
 
     private fun setupRouteButton(){
+        Log.d(TAG, "setupRouteButton: Called")
         this.routeButton = findViewById<Button>(R.id.route_button)
         this.routeButton.setOnClickListener{
-            commute.generatePickupPoint(passenger)
+            commute.generatePickupPoint()
             if (commute.isValid()) {
+                Log.d(TAG, "setupRouteButton: commute valid")
 
                 mapboxMap?.getStyle {
                     updateSource(it,"PICKUP_POINT", commute.getPickup())
                 }
 
-                getRoute(commute)
+                getRoute()
                 getPassengerRoute()
             }
         }
@@ -465,5 +448,4 @@ class MainActivity :
 
         this.locationSpinner.adapter = adapter
     }
-
 }

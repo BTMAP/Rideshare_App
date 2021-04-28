@@ -16,25 +16,31 @@ import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
 import com.mapbox.navigation.base.internal.extensions.coordinates
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
+import java.io.Serializable
 
-class Commute() : Parcelable{
+class Commute() : Serializable{
     private var tag = "Commute"
 
-    private var route: DirectionsRoute? = null
+    private var driverRoute: DirectionsRoute? = null
+    private var passengerRoute: DirectionsRoute? = null
     private var origin: Point?  = null
     private var destination: Point?  = null
     private var pickup: Point?  = null
     private var dropOff: Point? = null
+    private var passenger: Point? = null
 
-    constructor(parcel: Parcel) : this() {
-
+    fun setDriverRoute(route:DirectionsRoute){
+        this.driverRoute = route
+    }
+    fun getDriverRoute(): DirectionsRoute {
+        return this.driverRoute!!
     }
 
-    fun setRoute(route:DirectionsRoute){
-        this.route = route
+    fun setPassengerRoute(route:DirectionsRoute){
+        this.passengerRoute = route
     }
-    fun getRoute(): DirectionsRoute {
-        return this.route!!
+    fun getPassengerRoute(): DirectionsRoute {
+        return this.passengerRoute!!
     }
 
     fun setOrigin(origin: Point){
@@ -65,19 +71,26 @@ class Commute() : Parcelable{
         return this.dropOff!!
     }
 
+    fun setPassenger(passenger: Point){
+        this.passenger = passenger
+    }
+    fun getPassenger(): Point{
+        return this.passenger!!
+    }
+
     fun isValid(): Boolean{
         return origin!=null && destination!=null && pickup!=null && dropOff!=null
     }
 
-    fun generatePickupPoint(passengerOrigin: Point?): Boolean{
-        if (origin!=null && dropOff!=null && passengerOrigin!=null) {
-            pickup = PickUpPointGenerator().generatePickupPoint(this.origin!!,this.dropOff!!,passengerOrigin!!)
+    fun generatePickupPoint(): Boolean{
+        if (origin!=null && dropOff!=null && passenger!=null) {
+            pickup = PickUpPointGenerator().generatePickupPoint(this.origin!!,this.dropOff!!,passenger!!)
             return true
         }
         return false
     }
 
-    fun pairedRouteOptions(token: String): RouteOptions?{
+    fun pairedRouteOptions(token: String): RouteOptions{
             val wayPoints = listOf<Point>(pickup!!, dropOff!!)
 
             return RouteOptions.builder()
@@ -89,23 +102,13 @@ class Commute() : Parcelable{
                     .build()
     }
 
-
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Commute> {
-        override fun createFromParcel(parcel: Parcel): Commute {
-            return Commute(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Commute?> {
-            return arrayOfNulls(size)
-        }
+    fun passengerRouteOptions(token: String): RouteOptions{
+        return RouteOptions.builder()
+                .applyDefaultParams()
+                .accessToken(token)
+                .coordinates(passenger!!, listOf<Point>(), pickup!!)
+                .alternatives(true)
+                .profile(DirectionsCriteria.PROFILE_DRIVING)
+                .build()
     }
 }
