@@ -65,7 +65,6 @@ class MainActivity :
     private var permissionsManager: PermissionsManager = PermissionsManager(this)
 
     //Locations
-    private var passenger: Point? = null
     private var commute: Commute = Commute()
 
     private var currentSelectedLocation = 0
@@ -76,9 +75,6 @@ class MainActivity :
 
     private lateinit var locationBottomSheet: FrameLayout
     private lateinit var submitButton: Button
-
-    //used for passenger route
-    private lateinit var route: DirectionsRoute
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +92,6 @@ class MainActivity :
         BottomSheetBehavior.from(locationBottomSheet).apply{
             peekHeight = 200
         }
-
 
         submitButton = findViewById(R.id.submit_button)
 

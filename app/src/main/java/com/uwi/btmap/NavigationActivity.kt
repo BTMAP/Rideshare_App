@@ -47,7 +47,7 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
 
         setupMapView(savedInstanceState)
         setupNavigationObject()
-         commute = intent.getParcelableExtra<Commute>("commute")!!
+         commute = intent.getSerializableExtra("commute")!! as Commute
     }
 
     private fun setupMapView(savedInstanceState: Bundle?){
@@ -77,7 +77,7 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
 
             val clickPointSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
             val routeLineString = LineString.fromPolyline(
-                    commute.getRoute().geometry()!!,
+                    commute.getDriverRoute().geometry()!!,
                     6
             )
 //                    add the returned route to the route line source
