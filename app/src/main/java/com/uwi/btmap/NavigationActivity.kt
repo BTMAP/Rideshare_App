@@ -127,6 +127,7 @@ class NavigationActivity :
                     val lng = mapboxMap.locationComponent.lastKnownLocation?.longitude
 
                     //call map matching api
+                    //val client = MapboxMapMatching.builder()
                     //get new lat and lng
                     //set icon for driver to position of lat & lng
                     //set set camera to position of lat & lng
