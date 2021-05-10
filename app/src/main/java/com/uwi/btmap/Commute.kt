@@ -19,6 +19,7 @@ import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import java.io.Serializable
 
 class Commute() : Serializable{
+    /* Stores and generated commute route information  */
     private var tag = "Commute"
 
     private var driverRoute: DirectionsRoute? = null

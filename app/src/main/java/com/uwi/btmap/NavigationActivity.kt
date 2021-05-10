@@ -31,8 +31,11 @@ import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.core.MapboxNavigation
 import org.json.JSONObject
 
-class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener {
-    private lateinit var map: MapView
+class NavigationActivity :
+        AppCompatActivity(),
+        OnMapReadyCallback,
+        PermissionsListener {
+
     private lateinit var mapView: MapView
     private lateinit var mapboxMap: MapboxMap
     private lateinit var mapboxNavigation: MapboxNavigation
@@ -45,18 +48,23 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
+        //required mapbox mapview setup stuff
         setupMapView(savedInstanceState)
+        //requires mapbox navigation setup stuff
         setupNavigationObject()
-         commute = intent.getSerializableExtra("commute")!! as Commute
+        //get commute to navigate from intent
+        commute = intent.getSerializableExtra("commute")!! as Commute
     }
 
     private fun setupMapView(savedInstanceState: Bundle?){
+        //required mapbox mapview setup stuff
         this.mapView = findViewById(R.id.mapView)
         this.mapView?.onCreate(savedInstanceState)
         this.mapView?.getMapAsync(this)
     }
 
     private fun setupNavigationObject(){
+        //requires mapbox navigation setup stuff
         val mapboxNavigationOptions = MapboxNavigation
             .defaultNavigationOptionsBuilder(this, getString(R.string.mapbox_access_token))
             .build()
@@ -117,6 +125,11 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
 
                     val lat = mapboxMap.locationComponent.lastKnownLocation?.latitude
                     val lng = mapboxMap.locationComponent.lastKnownLocation?.longitude
+
+                    //call map matching api
+                    //get new lat and lng
+                    //set icon for driver to position of lat & lng
+                    //set set camera to position of lat & lng
 
                     val position = CameraPosition.Builder()
                         .zoom(12.0)

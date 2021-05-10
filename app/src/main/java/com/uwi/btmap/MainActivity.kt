@@ -54,7 +54,8 @@ class MainActivity :
     AppCompatActivity(),
     OnMapReadyCallback,
     PermissionsListener,
-    MapboxMap.OnMapLongClickListener, AdapterView.OnItemSelectedListener {
+    MapboxMap.OnMapLongClickListener,
+    AdapterView.OnItemSelectedListener {
 
     private val TAG = "Main Activity"
 
