@@ -1,13 +1,20 @@
 package com.uwi.btmap
 
 import android.annotation.SuppressLint
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.api.directions.v5.DirectionsCriteria.ANNOTATION_SPEED
+import com.mapbox.api.directions.v5.DirectionsCriteria.OVERVIEW_FULL
 import com.mapbox.api.directions.v5.models.DirectionsRoute
+import com.mapbox.api.isochrone.IsochroneCriteria.PROFILE_DRIVING
+import com.mapbox.api.matching.v5.MapboxMapMatching
+import com.mapbox.api.matching.v5.models.MapMatchingResponse
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.camera.CameraPosition
@@ -29,12 +36,19 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.core.MapboxNavigation
+import com.mapbox.navigation.core.trip.session.LocationObserver
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 
 class NavigationActivity :
         AppCompatActivity(),
         OnMapReadyCallback,
-        PermissionsListener {
+        PermissionsListener{
+
+    private lateinit var accessToken: String
 
     private lateinit var mapView: MapView
     private lateinit var mapboxMap: MapboxMap
@@ -44,10 +58,29 @@ class NavigationActivity :
 
     private lateinit var commute: Commute
 
+    private val locationObserver = object : LocationObserver{
+        override fun onEnhancedLocationChanged(enhancedLocation: Location, keyPoints: List<Location>) {
+            Log.d("LOCATION", "onEnhancedLocationChanged: Location: $enhancedLocation")
+            Log.d("LOCATION", "onEnhancedLocationChanged: KeyPoints: $keyPoints")
+            //set user location icon with enhanced location (snapped to path)
+            if (keyPoints.isNotEmpty()) {
+                Log.d("LOCATION", "onEnhancedLocationChanged: set location with location observer")
+                mapboxMap.locationComponent?.forceLocationUpdate(keyPoints, false)
+            } else {
+                Log.d("LOACATION", "onEnhancedLocationChanged: set location with location observer")
+                mapboxMap.locationComponent?.forceLocationUpdate(listOf(enhancedLocation), false)
+            }
+        }
+
+        override fun onRawLocationChanged(rawLocation: Location) {
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
+        accessToken = getString(R.string.mapbox_access_token)
         //required mapbox mapview setup stuff
         setupMapView(savedInstanceState)
         //requires mapbox navigation setup stuff
@@ -70,6 +103,7 @@ class NavigationActivity :
             .build()
 
         this.mapboxNavigation = MapboxNavigation(mapboxNavigationOptions)
+        this.mapboxNavigation.registerLocationObserver(locationObserver)
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -103,6 +137,8 @@ class NavigationActivity :
         source?.setGeoJson(point)
     }
 
+
+
     @SuppressLint("MissingPermission")
     private fun enableLocationComponent(loadedMapStyle: Style){
         mapboxMap.getStyle {
@@ -115,10 +151,16 @@ class NavigationActivity :
                 val locationComponentActivationOptions =
                     LocationComponentActivationOptions.builder(this, loadedMapStyle)
                         .locationComponentOptions(customLocationComponentOptions)
+                        .useDefaultLocationEngine(false)
+                        .build()
+                val activationOptions =
+                LocationComponentActivationOptions.builder(this,loadedMapStyle)
+                        .useDefaultLocationEngine(false)
                         .build()
 
                 mapboxMap.locationComponent.apply {
-                    activateLocationComponent(locationComponentActivationOptions)
+                    //activateLocationComponent(locationComponentActivationOptions)
+                    activateLocationComponent(activationOptions)
                     isLocationComponentEnabled = true
                     cameraMode = CameraMode.TRACKING_GPS
                     renderMode = RenderMode.GPS
@@ -126,19 +168,17 @@ class NavigationActivity :
                     val lat = mapboxMap.locationComponent.lastKnownLocation?.latitude
                     val lng = mapboxMap.locationComponent.lastKnownLocation?.longitude
 
-                    //call map matching api
-                    //val client = MapboxMapMatching.builder()
-                    //get new lat and lng
-                    //set icon for driver to position of lat & lng
-                    //set set camera to position of lat & lng
+                    Log.d("LATLNG", "enableLocationComponent: Lat: " + lat + " Lng: " + lng )
 
-                    val position = CameraPosition.Builder()
-                        .zoom(12.0)
-                        .tilt(60.0)
-                        .target(LatLng(lat!!,lng!!))
-                        .build()
+                    //try onEnhancedLocationChanged???
 
-                    mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position))
+//                    val position = CameraPosition.Builder()
+//                        .zoom(12.0)
+//                        .tilt(60.0)
+//                        .target(LatLng(lat!!,lng!!))
+//                        .build()
+
+//                    mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position))
                 }
             }else{
                 permissionsManager = PermissionsManager(this)
@@ -229,4 +269,38 @@ class NavigationActivity :
             finish()
         }
     }
+
+//    override fun onEnhancedLocationChanged(enhancedLocation: Location, keyPoints: List<Location>) {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun onRawLocationChanged(rawLocation: Location) {
+//        TODO("Not yet implemented")
+//    }
+
+
+
+    //------------mapbox lifecycle functions------------------
+    override fun onStart() {
+        super.onStart()
+        mapView?.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView?.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView?.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView?.onStop()
+        this.mapboxNavigation.unregisterLocationObserver(locationObserver)
+    }
+    //----------mapbox lifecycle functions end----------------
+
 }

@@ -97,8 +97,8 @@ class MainActivity :
         submitButton = findViewById(R.id.submit_button)
 
         submitButton.setOnClickListener{
-            var navActivityIntent = Intent(this, NavigationActivity::class.java)
-                    .putExtra("commute", commute)
+            var navActivityIntent = Intent(this, NavActivity::class.java)
+                    //.putExtra("commute", commute)
             startActivity(navActivityIntent)
         }
     }
