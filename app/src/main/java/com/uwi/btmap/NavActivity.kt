@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.location.LocationEngineResult
+import com.mapbox.geojson.LineString
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
@@ -17,6 +18,11 @@ import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.layers.LineLayer
+import com.mapbox.mapboxsdk.style.layers.Property
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory
+import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.trip.session.LocationObserver
 import com.mapbox.navigation.ui.camera.NavigationCamera
@@ -95,6 +101,28 @@ class NavActivity :
     //TODO maneuver instructions
 
     /*--------------------------------------------------------------------------------------------*/
+    /*---------------------------------- Source Functions ----------------------------------------*/
+    private fun initializeDriverRouteLayer(style: Style){
+        style.addSource(
+            GeoJsonSource(
+                "ROUTE_LINE_SOURCE_ID",
+                GeoJsonOptions().withLineMetrics(true)
+            )
+        )
+        style.addLayerBelow(
+            LineLayer("ROUTE_LAYER_ID", "ROUTE_LINE_SOURCE_ID")
+                .withProperties(
+                    PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                    PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+                    PropertyFactory.lineWidth(6f),
+                    PropertyFactory.lineOpacity(1f),
+                    PropertyFactory.lineColor("#2E4FC9")
+                ),
+            "mapbox-location-shadow-layer"
+        )
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
     /*-------------------------------------- OnCreate --------------------------------------------*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +150,7 @@ class NavActivity :
         mapboxMap.setStyle(Style.MAPBOX_STREETS) {
 
             initializeLocationComponent(mapboxMap, it)
+            initializeDriverRouteLayer(it)
 
             //initialize the mapboxNavigation
             val mapboxNavigationOptions = MapboxNavigation
@@ -144,7 +173,13 @@ class NavActivity :
             mapboxNavigation.navigationOptions.locationEngine.getLastLocation(myLocationEngineCallback)
 
             //add route to map
+            val lineSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
+            val routeLineString = LineString.fromPolyline(
+                commute.getDriverRoute().geometry()!!,
+                6
+            )
 
+            lineSource!!.setGeoJson(routeLineString)
 
             //add route to navigation object
             this.mapboxNavigation.setRoutes(listOf(commute.getDriverRoute()))
