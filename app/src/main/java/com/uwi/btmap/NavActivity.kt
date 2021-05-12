@@ -222,6 +222,9 @@ class NavActivity :
             Log.d(TAG, "onStart: register locationObserver")
             mapboxNavigation.registerLocationObserver(locationObserver)
         }
+        if(this::mapCamera.isInitialized){
+            mapCamera.onStart()
+        }
     }
 
     override fun onResume() {
@@ -236,6 +239,7 @@ class NavActivity :
 
     override fun onStop() {
         super.onStop()
+        mapCamera.onStop()
         mapboxNavigation.unregisterLocationObserver(locationObserver)
         mapView?.onStop()
     }
@@ -252,6 +256,7 @@ class NavActivity :
 
     override fun onDestroy() {
         super.onDestroy()
+        mapboxNavigation.stopTripSession()
         mapboxNavigation.onDestroy()
         mapView?.onDestroy()
     }
