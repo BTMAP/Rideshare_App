@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.location.LocationEngineResult
+import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
 import com.mapbox.mapboxsdk.location.LocationUpdate
 import com.mapbox.mapboxsdk.location.modes.CameraMode
@@ -17,6 +19,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.trip.session.LocationObserver
+import com.mapbox.navigation.ui.camera.NavigationCamera
 import java.lang.ref.WeakReference
 
 
@@ -25,7 +28,6 @@ class NavActivity :
     OnMapReadyCallback{
 
     private val TAG = "NAV_ACTIVITY"
-
     private lateinit var accessToken: String
 
     private lateinit var mapView: MapView
@@ -34,9 +36,9 @@ class NavActivity :
 
     private lateinit var mapboxNavigation: MapboxNavigation
 
-    //location puck integration (requires navigation ui 2.0.0 beta)
-    //private val navigationLocationProvider = NavigationLocationProvider()
+    private lateinit var mapCamera: NavigationCamera
 
+    private lateinit var commute: Commute
 
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------- Location and route progress callbacks ---------------------------*/
@@ -98,6 +100,10 @@ class NavActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nav)
 
+        //get commute
+        //TODO notify user and return to previous screen if no commute is passed
+        this.commute = intent.getSerializableExtra("commute")!! as Commute
+
         //set access token
         this.accessToken = getString(R.string.mapbox_access_token)
 
@@ -124,16 +130,31 @@ class NavActivity :
             this.mapboxNavigation = MapboxNavigation(mapboxNavigationOptions)
             Log.d(TAG, "onMapReady: register locationObserver")
             this.mapboxNavigation.registerLocationObserver(locationObserver)
-            //must start trip session for location observer to start
-            this.mapboxNavigation.startTripSession()
-            //get last location with custom location engine callback
 
+            //TODO register route progress observer
+
+            //Camera init
+            mapCamera = NavigationCamera(mapboxMap)
+            mapCamera.addProgressChangeListener(mapboxNavigation)
+            //init camera zoom level
+            mapboxMap.moveCamera(CameraUpdateFactory.zoomTo(25.0))
+
+            //get last location with custom location engine callback
             val myLocationEngineCallback = com.uwi.btmap.LocationEngineCallback(this)
             mapboxNavigation.navigationOptions.locationEngine.getLastLocation(myLocationEngineCallback)
 
-            //
-
             //add route to map
+
+
+            //add route to navigation object
+            this.mapboxNavigation.setRoutes(listOf(commute.getDriverRoute()))
+
+            //start trip
+            //camera start route
+            mapCamera.updateCameraTrackingMode(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS)
+            mapCamera.start(commute.getDriverRoute())
+            this.mapboxNavigation.startTripSession()
+
         }
 
     }

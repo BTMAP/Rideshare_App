@@ -67,7 +67,6 @@ class MainActivity :
 
     //Locations
     private var commute: Commute = Commute()
-
     private var currentSelectedLocation = 0
 
     //Widgets
@@ -98,7 +97,7 @@ class MainActivity :
 
         submitButton.setOnClickListener{
             var navActivityIntent = Intent(this, NavActivity::class.java)
-                    //.putExtra("commute", commute)
+                    .putExtra("commute", commute)
             startActivity(navActivityIntent)
         }
     }
