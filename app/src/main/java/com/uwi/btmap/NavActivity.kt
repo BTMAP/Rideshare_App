@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.location.LocationEngineResult
+import com.mapbox.api.directions.v5.models.BannerInstructions
 import com.mapbox.geojson.LineString
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
@@ -25,9 +27,10 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.navigation.base.trip.model.RouteProgress
 import com.mapbox.navigation.core.MapboxNavigation
-import com.mapbox.navigation.core.trip.session.LocationObserver
-import com.mapbox.navigation.core.trip.session.RouteProgressObserver
+import com.mapbox.navigation.core.trip.session.*
 import com.mapbox.navigation.ui.camera.NavigationCamera
+import com.mapbox.navigation.ui.instruction.InstructionView
+import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.route.NavigationMapRoute
 import java.lang.ref.WeakReference
 
@@ -40,18 +43,20 @@ class NavActivity :
     private lateinit var accessToken: String
 
     private lateinit var mapView: MapView
+    private lateinit var instructionView: InstructionView
 
     private lateinit var mapboxMap: MapboxMap
 
     private lateinit var mapboxNavigation: MapboxNavigation
 //    private lateinit var navigationMapRoute: NavigationMapRoute
+//    private lateinit var navigationMap: NavigationMapboxMap
 
     private lateinit var mapCamera: NavigationCamera
 
     private lateinit var commute: Commute
 
     /*--------------------------------------------------------------------------------------------*/
-    /*-------------------------- Location and route progress callbacks ---------------------------*/
+    /*-------------------------- Location and route progress observer ---------------------------*/
 
     private val locationObserver = object : LocationObserver {
         override fun onEnhancedLocationChanged(
@@ -102,14 +107,36 @@ class NavActivity :
         override fun onRouteProgressChanged(routeProgress: RouteProgress) {
             Log.d(TAG, "onRouteProgressChanged: Changed!!!!!!!!!!!!!!!!!!")
             //TODO update progress card info
+            instructionView.updateDistanceWith(routeProgress)
         }
 
     }
 
     /*--------------------------------------------------------------------------------------------*/
-    /*--------------------------- Maneuver instruction callback ----------------------------------*/
+    /*--------------------------- Maneuver Instructions ----------------------------------*/
+    private val tripSessionStateObserver = object : TripSessionStateObserver {
+        override fun onSessionStateChanged(tripSessionState: TripSessionState) {
+            when (tripSessionState) {
+                TripSessionState.STARTED -> {
+                    instructionView.visibility = View.VISIBLE
+                    instructionView.retrieveSoundButton().show()
+                    instructionView.retrieveFeedbackButton().show()
+                }
+                TripSessionState.STOPPED -> {
+                    instructionView.visibility = View.GONE
+                    //camera??
+                }
+            }
+        }
+    }
 
-    //TODO maneuver instructions
+    private val bannerInstructionsObserver = object : BannerInstructionsObserver {
+        override fun onNewBannerInstructions(bannerInstructions: BannerInstructions) {
+            instructionView.updateBannerInstructionsWith(bannerInstructions)
+            instructionView.toggleGuidanceView(bannerInstructions)
+        }
+
+    }
 
     /*--------------------------------------------------------------------------------------------*/
     /*---------------------------------- Source Functions ----------------------------------------*/
@@ -151,6 +178,7 @@ class NavActivity :
         this.mapView?.onCreate(savedInstanceState)
         this.mapView?.getMapAsync(this)
 
+        this.instructionView = findViewById(R.id.nav_instructionView)
     }
 
     //TODO address missing permissions checks
@@ -169,10 +197,11 @@ class NavActivity :
                 .build()
             this.mapboxNavigation = MapboxNavigation(mapboxNavigationOptions)
             Log.d(TAG, "onMapReady: register locationObserver")
-            this.mapboxNavigation.registerLocationObserver(locationObserver)
 
-            //TODO register route progress observer
+            //Register Observers
+            this.mapboxNavigation.registerLocationObserver(locationObserver)
             this.mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
+            this.mapboxNavigation.registerBannerInstructionsObserver(bannerInstructionsObserver)
 
             //Camera init
             mapCamera = NavigationCamera(mapboxMap)
@@ -200,6 +229,7 @@ class NavActivity :
             //camera start route
             mapCamera.updateCameraTrackingMode(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS)
             mapCamera.start(commute.getDriverRoute())
+            //start session
             this.mapboxNavigation.startTripSession()
 
         }
@@ -231,8 +261,9 @@ class NavActivity :
         super.onStart()
         mapView?.onStart()
         if(this::mapboxNavigation.isInitialized){
-            Log.d(TAG, "onStart: register locationObserver")
-            mapboxNavigation.registerLocationObserver(locationObserver)
+//            Log.d(TAG, "onStart: register locationObserver")
+//            mapboxNavigation.registerLocationObserver(locationObserver)
+            mapboxNavigation.registerTripSessionStateObserver(tripSessionStateObserver)
         }
         if(this::mapCamera.isInitialized){
             mapCamera.onStart()
@@ -253,6 +284,8 @@ class NavActivity :
         super.onStop()
         mapCamera.onStop()
         mapboxNavigation.unregisterLocationObserver(locationObserver)
+        mapboxNavigation.unregisterBannerInstructionsObserver(bannerInstructionsObserver)
+        mapboxNavigation.unregisterTripSessionStateObserver(tripSessionStateObserver)
         mapView?.onStop()
     }
 
