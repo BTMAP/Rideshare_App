@@ -23,9 +23,12 @@ import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.mapbox.navigation.base.trip.model.RouteProgress
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.trip.session.LocationObserver
+import com.mapbox.navigation.core.trip.session.RouteProgressObserver
 import com.mapbox.navigation.ui.camera.NavigationCamera
+import com.mapbox.navigation.ui.route.NavigationMapRoute
 import java.lang.ref.WeakReference
 
 
@@ -41,6 +44,7 @@ class NavActivity :
     private lateinit var mapboxMap: MapboxMap
 
     private lateinit var mapboxNavigation: MapboxNavigation
+//    private lateinit var navigationMapRoute: NavigationMapRoute
 
     private lateinit var mapCamera: NavigationCamera
 
@@ -93,7 +97,14 @@ class NavActivity :
         mapboxMap.locationComponent.forceLocationUpdate(locations,false)
     }
 
-    //TODO routeProgressObserver
+
+    private val routeProgressObserver = object : RouteProgressObserver{
+        override fun onRouteProgressChanged(routeProgress: RouteProgress) {
+            Log.d(TAG, "onRouteProgressChanged: Changed!!!!!!!!!!!!!!!!!!")
+            //TODO update progress card info
+        }
+
+    }
 
     /*--------------------------------------------------------------------------------------------*/
     /*--------------------------- Maneuver instruction callback ----------------------------------*/
@@ -161,6 +172,7 @@ class NavActivity :
             this.mapboxNavigation.registerLocationObserver(locationObserver)
 
             //TODO register route progress observer
+            this.mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
 
             //Camera init
             mapCamera = NavigationCamera(mapboxMap)
@@ -256,6 +268,7 @@ class NavActivity :
 
     override fun onDestroy() {
         super.onDestroy()
+        mapboxNavigation.unregisterRouteProgressObserver(routeProgressObserver)
         mapboxNavigation.stopTripSession()
         mapboxNavigation.onDestroy()
         mapView?.onDestroy()
