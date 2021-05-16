@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.location.LocationEngineResult
 import com.mapbox.api.directions.v5.models.BannerInstructions
+import com.mapbox.api.directions.v5.models.VoiceInstructions
+import com.mapbox.api.speech.v1.MapboxSpeech
 import com.mapbox.geojson.LineString
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
@@ -32,7 +34,13 @@ import com.mapbox.navigation.ui.camera.NavigationCamera
 import com.mapbox.navigation.ui.instruction.InstructionView
 import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.route.NavigationMapRoute
+import com.mapbox.navigation.ui.voice.NavigationSpeechPlayer
+import com.mapbox.navigation.ui.voice.SpeechPlayer
+import com.mapbox.navigation.ui.voice.SpeechPlayerProvider
+import com.mapbox.navigation.ui.voice.VoiceInstructionLoader
+import okhttp3.Cache
 import java.lang.ref.WeakReference
+import java.util.*
 
 
 class NavActivity :
@@ -42,9 +50,11 @@ class NavActivity :
     private val TAG = "NAV_ACTIVITY"
     private lateinit var accessToken: String
 
+    //mapbox views
     private lateinit var mapView: MapView
     private lateinit var instructionView: InstructionView
 
+    //mapbox controllers
     private lateinit var mapboxMap: MapboxMap
 
     private lateinit var mapboxNavigation: MapboxNavigation
@@ -53,6 +63,12 @@ class NavActivity :
 
     private lateinit var mapCamera: NavigationCamera
 
+    //voice instructions
+//    private var isVoiceInstructionsMuted : Boolean = false
+//    private var voiceInstructionLoader = VoiceInstructionLoader(this,accessToken,)
+//    private var speechPlayer = SpeechPlayerProvider(this, Locale.US.getLanguage(),true,voiceInstructionLoader)
+
+    //custom commute object
     private lateinit var commute: Commute
 
     /*--------------------------------------------------------------------------------------------*/
@@ -135,8 +151,16 @@ class NavActivity :
             instructionView.updateBannerInstructionsWith(bannerInstructions)
             instructionView.toggleGuidanceView(bannerInstructions)
         }
-
     }
+
+    /*--------------------------------- Voice Instructions ---------------------------------------*/
+//    private val voiceInstructionsObserver = object : VoiceInstructionsObserver {
+//        override fun onNewVoiceInstructions(voiceInstructions: VoiceInstructions) {
+//            speechPlayer.play(voiceInstructions)
+//        }
+//
+//    }
+
 
     /*--------------------------------------------------------------------------------------------*/
     /*---------------------------------- Source Functions ----------------------------------------*/
@@ -202,6 +226,7 @@ class NavActivity :
             this.mapboxNavigation.registerLocationObserver(locationObserver)
             this.mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
             this.mapboxNavigation.registerBannerInstructionsObserver(bannerInstructionsObserver)
+            //this.mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver)
 
             //Camera init
             mapCamera = NavigationCamera(mapboxMap)
@@ -286,6 +311,7 @@ class NavActivity :
         mapboxNavigation.unregisterLocationObserver(locationObserver)
         mapboxNavigation.unregisterBannerInstructionsObserver(bannerInstructionsObserver)
         mapboxNavigation.unregisterTripSessionStateObserver(tripSessionStateObserver)
+        //mapboxNavigation.unregisterVoiceInstructionsObserver(voiceInstructionsObserver)
         mapView?.onStop()
     }
 

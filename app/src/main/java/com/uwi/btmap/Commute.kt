@@ -100,6 +100,8 @@ class Commute() : Serializable{
                     .coordinates(origin!!,wayPoints,destination!!)
                     .alternatives(true)
                     .profile(DirectionsCriteria.PROFILE_DRIVING)
+                    .voiceInstructions(true)
+                    .steps(true)
                     .build()
     }
 
@@ -109,7 +111,9 @@ class Commute() : Serializable{
                 .accessToken(token)
                 .coordinates(passenger!!, listOf<Point>(), pickup!!)
                 .alternatives(true)
-                .profile(DirectionsCriteria.PROFILE_DRIVING)
+                .profile(DirectionsCriteria.PROFILE_WALKING)
+                .voiceInstructions(true)
+                .steps(true)
                 .build()
     }
 }
