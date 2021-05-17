@@ -5,6 +5,7 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.location.LocationEngineResult
@@ -31,6 +32,7 @@ import com.mapbox.navigation.base.trip.model.RouteProgress
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.trip.session.*
 import com.mapbox.navigation.ui.camera.NavigationCamera
+import com.mapbox.navigation.ui.camera.NavigationCamera.NAVIGATION_TRACKING_MODE_GPS
 import com.mapbox.navigation.ui.instruction.InstructionView
 import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.route.NavigationMapRoute
@@ -71,6 +73,9 @@ class NavActivity :
     //custom commute object
     private lateinit var commute: Commute
 
+    //more view references
+    private lateinit var recenterButton : Button
+
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------- Location and route progress observer ---------------------------*/
 
@@ -86,7 +91,7 @@ class NavActivity :
                 updateLocation(keyPoints)
             }
 
-            //update camera position
+            //update camera position? (might not be needed)
         }
 
         override fun onRawLocationChanged(rawLocation: Location) {
@@ -203,6 +208,7 @@ class NavActivity :
         this.mapView?.getMapAsync(this)
 
         this.instructionView = findViewById(R.id.nav_instructionView)
+        this.recenterButton = findViewById(R.id.recenter_button)
     }
 
     //TODO address missing permissions checks
@@ -233,6 +239,11 @@ class NavActivity :
             mapCamera.addProgressChangeListener(mapboxNavigation)
             //init camera zoom level
             mapboxMap.moveCamera(CameraUpdateFactory.zoomTo(25.0))
+
+            this.recenterButton.setOnClickListener {
+                //recenter camera position and re-enable tracking
+                mapCamera.resetCameraPositionWith(NAVIGATION_TRACKING_MODE_GPS)
+            }
 
             //get last location with custom location engine callback
             val myLocationEngineCallback = com.uwi.btmap.LocationEngineCallback(this)
