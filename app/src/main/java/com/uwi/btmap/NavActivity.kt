@@ -3,6 +3,7 @@ package com.uwi.btmap
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -31,6 +32,7 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.navigation.base.trip.model.RouteProgress
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.trip.session.*
+import com.mapbox.navigation.ui.NavigationViewOptions
 import com.mapbox.navigation.ui.camera.NavigationCamera
 import com.mapbox.navigation.ui.camera.NavigationCamera.NAVIGATION_TRACKING_MODE_GPS
 import com.mapbox.navigation.ui.instruction.InstructionView
@@ -41,6 +43,7 @@ import com.mapbox.navigation.ui.voice.SpeechPlayer
 import com.mapbox.navigation.ui.voice.SpeechPlayerProvider
 import com.mapbox.navigation.ui.voice.VoiceInstructionLoader
 import okhttp3.Cache
+import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -64,11 +67,6 @@ class NavActivity :
 //    private lateinit var navigationMap: NavigationMapboxMap
 
     private lateinit var mapCamera: NavigationCamera
-
-    //voice instructions
-//    private var isVoiceInstructionsMuted : Boolean = false
-//    private var voiceInstructionLoader = VoiceInstructionLoader(this,accessToken,)
-//    private var speechPlayer = SpeechPlayerProvider(this, Locale.US.getLanguage(),true,voiceInstructionLoader)
 
     //custom commute object
     private lateinit var commute: Commute
@@ -159,12 +157,20 @@ class NavActivity :
     }
 
     /*--------------------------------- Voice Instructions ---------------------------------------*/
-//    private val voiceInstructionsObserver = object : VoiceInstructionsObserver {
-//        override fun onNewVoiceInstructions(voiceInstructions: VoiceInstructions) {
-//            speechPlayer.play(voiceInstructions)
-//        }
-//
-//    }
+
+    private var isVoiceMuted = false
+    private lateinit var ttsPlayer : TTS
+
+    private val voiceInstructionsObserver = object : VoiceInstructionsObserver {
+        override fun onNewVoiceInstructions(voiceInstructions: VoiceInstructions) {
+            Log.d(TAG, "onNewVoiceInstructions: ${voiceInstructions.announcement()}")
+            //speechPlayer.play(voiceInstructions)
+            if(voiceInstructions.announcement() != null){
+                ttsPlayer.play(voiceInstructions.announcement()!!)
+            }
+        }
+
+    }
 
 
     /*--------------------------------------------------------------------------------------------*/
@@ -202,6 +208,9 @@ class NavActivity :
         //set access token
         this.accessToken = getString(R.string.mapbox_access_token)
 
+        //SPEECH
+        ttsPlayer = TTS(this)
+
         //initialize mapView
         this.mapView = findViewById(R.id.nav_mapView)
         this.mapView?.onCreate(savedInstanceState)
@@ -232,7 +241,7 @@ class NavActivity :
             this.mapboxNavigation.registerLocationObserver(locationObserver)
             this.mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
             this.mapboxNavigation.registerBannerInstructionsObserver(bannerInstructionsObserver)
-            //this.mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver)
+            this.mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver)
 
             //Camera init
             mapCamera = NavigationCamera(mapboxMap)
@@ -322,7 +331,7 @@ class NavActivity :
         mapboxNavigation.unregisterLocationObserver(locationObserver)
         mapboxNavigation.unregisterBannerInstructionsObserver(bannerInstructionsObserver)
         mapboxNavigation.unregisterTripSessionStateObserver(tripSessionStateObserver)
-        //mapboxNavigation.unregisterVoiceInstructionsObserver(voiceInstructionsObserver)
+        mapboxNavigation.unregisterVoiceInstructionsObserver(voiceInstructionsObserver)
         mapView?.onStop()
     }
 
