@@ -38,6 +38,7 @@ import com.mapbox.navigation.ui.camera.NavigationCamera.NAVIGATION_TRACKING_MODE
 import com.mapbox.navigation.ui.instruction.InstructionView
 import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.route.NavigationMapRoute
+import com.mapbox.navigation.ui.summary.SummaryBottomSheet
 import com.mapbox.navigation.ui.voice.NavigationSpeechPlayer
 import com.mapbox.navigation.ui.voice.SpeechPlayer
 import com.mapbox.navigation.ui.voice.SpeechPlayerProvider
@@ -58,13 +59,14 @@ class NavActivity :
     //mapbox views
     private lateinit var mapView: MapView
     private lateinit var instructionView: InstructionView
+    private lateinit var summaryBottomSheet: SummaryBottomSheet
 
     //mapbox controllers
     private lateinit var mapboxMap: MapboxMap
 
     private lateinit var mapboxNavigation: MapboxNavigation
 //    private lateinit var navigationMapRoute: NavigationMapRoute
-//    private lateinit var navigationMap: NavigationMapboxMap
+    private lateinit var navigationMap: NavigationMapboxMap
 
     private lateinit var mapCamera: NavigationCamera
 
@@ -127,6 +129,7 @@ class NavActivity :
             Log.d(TAG, "onRouteProgressChanged: Changed!!!!!!!!!!!!!!!!!!")
             //TODO update progress card info
             instructionView.updateDistanceWith(routeProgress)
+            summaryBottomSheet.update(routeProgress)
         }
 
     }
@@ -140,9 +143,11 @@ class NavActivity :
                     instructionView.visibility = View.VISIBLE
                     instructionView.retrieveSoundButton().show()
                     instructionView.retrieveFeedbackButton().show()
+                    summaryBottomSheet.visibility = View.VISIBLE
                 }
                 TripSessionState.STOPPED -> {
                     instructionView.visibility = View.GONE
+                    summaryBottomSheet.visibility = View.GONE
                     //camera??
                 }
             }
@@ -217,6 +222,7 @@ class NavActivity :
         this.mapView?.getMapAsync(this)
 
         this.instructionView = findViewById(R.id.nav_instructionView)
+        this.summaryBottomSheet = findViewById(R.id.nav_summary_sheet)
         this.recenterButton = findViewById(R.id.recenter_button)
     }
 
@@ -235,7 +241,11 @@ class NavActivity :
                 .defaultNavigationOptionsBuilder(this, accessToken)
                 .build()
             this.mapboxNavigation = MapboxNavigation(mapboxNavigationOptions)
-            Log.d(TAG, "onMapReady: register locationObserver")
+            this.navigationMap = NavigationMapboxMap.Builder(mapView,mapboxMap,this)
+                .vanishRouteLineEnabled(true)
+                .build().also{
+                    //it.addProgressChangeListener(mapboxNavigation)
+                }
 
             //Register Observers
             this.mapboxNavigation.registerLocationObserver(locationObserver)
@@ -259,20 +269,23 @@ class NavActivity :
             mapboxNavigation.navigationOptions.locationEngine.getLastLocation(myLocationEngineCallback)
 
             //add route to map
-            val lineSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
-            val routeLineString = LineString.fromPolyline(
-                commute.getDriverRoute().geometry()!!,
-                6
-            )
+//            val lineSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
+//            val routeLineString = LineString.fromPolyline(
+//                commute.getDriverRoute().geometry()!!,
+//                6
+//            )
 
-            lineSource!!.setGeoJson(routeLineString)
+//            lineSource!!.setGeoJson(routeLineString)
+
+            this.navigationMap?.drawRoute(commute.getDriverRoute())
+            this.navigationMap?.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
 
             //add route to navigation object
             this.mapboxNavigation.setRoutes(listOf(commute.getDriverRoute()))
 
             //start trip
             //camera start route
-            mapCamera.updateCameraTrackingMode(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS)
+            mapCamera.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
             mapCamera.start(commute.getDriverRoute())
             //start session
             this.mapboxNavigation.startTripSession()
