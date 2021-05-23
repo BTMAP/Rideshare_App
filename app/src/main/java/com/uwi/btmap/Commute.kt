@@ -84,8 +84,12 @@ class Commute() : Serializable{
     }
 
     fun generatePickupPoint(): Boolean{
-        if (origin!=null && dropOff!=null && passenger!=null) {
-            pickup = PickUpPointGenerator().generatePickupPoint(this.origin!!,this.dropOff!!,passenger!!)
+//        if (origin!=null && dropOff!=null && passenger!=null) {
+//            pickup = PickUpPointGenerator().generatePickupPoint(this.origin!!,this.dropOff!!,passenger!!)
+//            return true
+//        }
+        if (passenger!=null){
+            pickup=passenger
             return true
         }
         return false

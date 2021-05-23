@@ -2,6 +2,7 @@ package com.uwi.btmap
 
 import android.annotation.SuppressLint
 import android.location.Location
+import android.opengl.Visibility
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -33,6 +34,7 @@ import com.mapbox.navigation.base.trip.model.RouteProgress
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.trip.session.*
 import com.mapbox.navigation.ui.NavigationViewOptions
+import com.mapbox.navigation.ui.RecenterButton
 import com.mapbox.navigation.ui.camera.NavigationCamera
 import com.mapbox.navigation.ui.camera.NavigationCamera.NAVIGATION_TRACKING_MODE_GPS
 import com.mapbox.navigation.ui.instruction.InstructionView
@@ -60,6 +62,7 @@ class NavActivity :
     private lateinit var mapView: MapView
     private lateinit var instructionView: InstructionView
     private lateinit var summaryBottomSheet: SummaryBottomSheet
+    private lateinit var recenterButton: RecenterButton
 
     //mapbox controllers
     private lateinit var mapboxMap: MapboxMap
@@ -74,7 +77,7 @@ class NavActivity :
     private lateinit var commute: Commute
 
     //more view references
-    private lateinit var recenterButton : Button
+    private lateinit var recenterBtn : Button
 
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------- Location and route progress observer ---------------------------*/
@@ -130,12 +133,37 @@ class NavActivity :
             //TODO update progress card info
             instructionView.updateDistanceWith(routeProgress)
             summaryBottomSheet.update(routeProgress)
+
+            //check if leg complete
+            //record progress commute
+            Log.d(TAG, "onRouteProgressChanged: Leg Progress - " +
+                    "" + routeProgress.currentLegProgress)
+
         }
 
     }
 
     /*--------------------------------------------------------------------------------------------*/
-    /*--------------------------- Maneuver Instructions ----------------------------------*/
+    /*------------------------------------ Off Route Detection -----------------------------------*/
+
+    val offRouteObserver = object : OffRouteObserver {
+        override fun onOffRouteStateChanged(offRoute: Boolean) {
+            //Request new route
+            //Then add new route to navigation onCallback
+            Log.d(TAG, "onOffRouteStateChanged: Called")
+            var currentRoutes = mapboxNavigation.getRoutes()
+
+            if (currentRoutes != null && currentRoutes.count()>0){
+                navigationMap.drawRoute(currentRoutes[0])
+            }
+
+        }
+
+    }
+
+
+    /*--------------------------------------------------------------------------------------------*/
+    /*----------------------------------- Maneuver Instructions ----------------------------------*/
     private val tripSessionStateObserver = object : TripSessionStateObserver {
         override fun onSessionStateChanged(tripSessionState: TripSessionState) {
             when (tripSessionState) {
@@ -252,6 +280,7 @@ class NavActivity :
             this.mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
             this.mapboxNavigation.registerBannerInstructionsObserver(bannerInstructionsObserver)
             this.mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver)
+            mapboxNavigation.registerOffRouteObserver(offRouteObserver)
 
             //Camera init
             mapCamera = NavigationCamera(mapboxMap)
@@ -263,6 +292,7 @@ class NavActivity :
                 //recenter camera position and re-enable tracking
                 mapCamera.resetCameraPositionWith(NAVIGATION_TRACKING_MODE_GPS)
             }
+            this.recenterButton.visibility = View.VISIBLE
 
             //get last location with custom location engine callback
             val myLocationEngineCallback = com.uwi.btmap.LocationEngineCallback(this)
@@ -318,10 +348,12 @@ class NavActivity :
     override fun onStart() {
         super.onStart()
         mapView?.onStart()
+
         if(this::mapboxNavigation.isInitialized){
 //            Log.d(TAG, "onStart: register locationObserver")
 //            mapboxNavigation.registerLocationObserver(locationObserver)
             mapboxNavigation.registerTripSessionStateObserver(tripSessionStateObserver)
+            mapboxNavigation.registerOffRouteObserver(offRouteObserver)
         }
         if(this::mapCamera.isInitialized){
             mapCamera.onStart()
@@ -341,6 +373,7 @@ class NavActivity :
     override fun onStop() {
         super.onStop()
         mapCamera.onStop()
+        mapboxNavigation.unregisterOffRouteObserver(offRouteObserver)
         mapboxNavigation.unregisterLocationObserver(locationObserver)
         mapboxNavigation.unregisterBannerInstructionsObserver(bannerInstructionsObserver)
         mapboxNavigation.unregisterTripSessionStateObserver(tripSessionStateObserver)

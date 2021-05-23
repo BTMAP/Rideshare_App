@@ -422,9 +422,9 @@ class MainActivity :
             if (commute.isValid()) {
                 Log.d(TAG, "setupRouteButton: commute valid")
 
-                mapboxMap?.getStyle {
-                    updateSource(it,"PICKUP_POINT", commute.getPickup())
-                }
+//                mapboxMap?.getStyle {
+//                    updateSource(it,"PICKUP_POINT", commute.getPickup())
+//                }
 
                 getRoute()
                 getPassengerRoute()

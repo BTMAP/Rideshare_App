@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".NavActivity">
 
-    <Button
+    <com.mapbox.navigation.ui.RecenterButton
         android:id="@+id/recenter_button"
         android:layout_width="35dp"
         android:layout_height="35dp"
