@@ -65,7 +65,9 @@ class NavActivity :
     private lateinit var mapView: MapView
     private lateinit var instructionView: InstructionView
     private lateinit var summaryBottomSheet: SummaryBottomSheet
+
     private lateinit var recenterButton: Button
+    private lateinit var muteButton: Button
 
     //mapbox controllers
     private lateinit var mapboxMap: MapboxMap
@@ -233,6 +235,7 @@ class NavActivity :
         this.instructionView = findViewById(R.id.nav_instructionView)
         this.summaryBottomSheet = findViewById(R.id.nav_summary_sheet)
         this.recenterButton = findViewById(R.id.recenter_button)
+        this.muteButton = findViewById(R.id.mute_button)
     }
 
     //TODO address missing permissions checks
@@ -241,9 +244,6 @@ class NavActivity :
         //initialize mapboxMap
         this.mapboxMap = mapboxMap
         mapboxMap.setStyle(Style.MAPBOX_STREETS) {
-
-            //initializeLocationComponent(mapboxMap, it)
-            //initializeDriverRouteLayer(it)
 
             //initialize the mapboxNavigation
             val mapboxNavigationOptions = MapboxNavigation
@@ -273,7 +273,10 @@ class NavActivity :
                 //recenter camera position and re-enable tracking
                 mapCamera.resetCameraPositionWith(NAVIGATION_TRACKING_MODE_GPS)
             }
-            this.recenterButton.visibility = View.VISIBLE
+
+            this.muteButton.setOnClickListener {
+                isVoiceMuted = !isVoiceMuted
+            }
 
             //get last location with custom location engine callback
             val myLocationEngineCallback = com.uwi.btmap.LocationEngineCallback(this)
@@ -290,13 +293,12 @@ class NavActivity :
 
             //start trip
             //camera start route
-
             mapCamera.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
             mapCamera.start(commute.getDriverRoute())
 
             //set location puck render mode
             mapboxMap.locationComponent.renderMode = RenderMode.GPS
-            
+
             //start session
             this.mapboxNavigation.startTripSession()
 
