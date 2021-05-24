@@ -32,6 +32,7 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.navigation.base.trip.model.RouteProgress
+import com.mapbox.navigation.base.trip.model.RouteProgressState
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.trip.session.*
 import com.mapbox.navigation.ui.NavigationViewOptions
@@ -40,6 +41,7 @@ import com.mapbox.navigation.ui.camera.NavigationCamera
 import com.mapbox.navigation.ui.camera.NavigationCamera.NAVIGATION_TRACKING_MODE_GPS
 import com.mapbox.navigation.ui.instruction.InstructionView
 import com.mapbox.navigation.ui.map.NavigationMapboxMap
+import com.mapbox.navigation.ui.puck.PuckDrawableSupplier
 import com.mapbox.navigation.ui.route.NavigationMapRoute
 import com.mapbox.navigation.ui.summary.SummaryBottomSheet
 import com.mapbox.navigation.ui.voice.NavigationSpeechPlayer
@@ -63,7 +65,7 @@ class NavActivity :
     private lateinit var mapView: MapView
     private lateinit var instructionView: InstructionView
     private lateinit var summaryBottomSheet: SummaryBottomSheet
-    private lateinit var recenterButton: RecenterButton
+    private lateinit var recenterButton: Button
 
     //mapbox controllers
     private lateinit var mapboxMap: MapboxMap
@@ -131,7 +133,6 @@ class NavActivity :
     private val routeProgressObserver = object : RouteProgressObserver{
         override fun onRouteProgressChanged(routeProgress: RouteProgress) {
             Log.d(TAG, "onRouteProgressChanged: Changed!!!!!!!!!!!!!!!!!!")
-            //TODO update progress card info
             instructionView.updateDistanceWith(routeProgress)
             summaryBottomSheet.update(routeProgress)
 
@@ -139,27 +140,23 @@ class NavActivity :
             //record progress commute
             Log.d(TAG, "onRouteProgressChanged: Leg Progress - " +
                     "" + routeProgress.currentLegProgress)
-
         }
-
     }
 
     /*--------------------------------------------------------------------------------------------*/
     /*------------------------------------ Off Route Detection -----------------------------------*/
 
-    val offRouteObserver = object : OffRouteObserver {
+    private val offRouteObserver = object : OffRouteObserver {
         override fun onOffRouteStateChanged(offRoute: Boolean) {
-            //Request new route
-            //Then add new route to navigation onCallback
             Log.d(TAG, "onOffRouteStateChanged: Called")
+            //nav component automatically creates new route when user goes off route
+            //use the route in the nav component to update the map
             var currentRoutes = mapboxNavigation.getRoutes()
 
             if (currentRoutes != null && currentRoutes.count()>0){
                 navigationMap.drawRoute(currentRoutes[0])
             }
-
         }
-
     }
 
 
@@ -198,8 +195,7 @@ class NavActivity :
     private val voiceInstructionsObserver = object : VoiceInstructionsObserver {
         override fun onNewVoiceInstructions(voiceInstructions: VoiceInstructions) {
             Log.d(TAG, "onNewVoiceInstructions: ${voiceInstructions.announcement()}")
-            //speechPlayer.play(voiceInstructions)
-            if(voiceInstructions.announcement() != null){
+            if(voiceInstructions.announcement() != null && !isVoiceMuted){
                 ttsPlayer.play(voiceInstructions.announcement()!!)
             }
         }
@@ -262,8 +258,8 @@ class NavActivity :
         this.mapboxMap = mapboxMap
         mapboxMap.setStyle(Style.MAPBOX_STREETS) {
 
-            initializeLocationComponent(mapboxMap, it)
-            initializeDriverRouteLayer(it)
+            //initializeLocationComponent(mapboxMap, it)
+            //initializeDriverRouteLayer(it)
 
             //initialize the mapboxNavigation
             val mapboxNavigationOptions = MapboxNavigation
@@ -281,14 +277,14 @@ class NavActivity :
             this.mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
             this.mapboxNavigation.registerBannerInstructionsObserver(bannerInstructionsObserver)
             this.mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver)
-            mapboxNavigation.registerOffRouteObserver(offRouteObserver)
+            this.mapboxNavigation.registerOffRouteObserver(offRouteObserver)
 
             //Camera init
             mapCamera = NavigationCamera(mapboxMap)
             mapCamera.addProgressChangeListener(mapboxNavigation)
             //init camera zoom level
             mapboxMap.moveCamera(CameraUpdateFactory.zoomTo(25.0))
-
+//
             this.recenterButton.setOnClickListener {
                 //recenter camera position and re-enable tracking
                 mapCamera.resetCameraPositionWith(NAVIGATION_TRACKING_MODE_GPS)
@@ -300,24 +296,21 @@ class NavActivity :
             mapboxNavigation.navigationOptions.locationEngine.getLastLocation(myLocationEngineCallback)
 
             //add route to map
-//            val lineSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
-//            val routeLineString = LineString.fromPolyline(
-//                commute.getDriverRoute().geometry()!!,
-//                6
-//            )
-
-//            lineSource!!.setGeoJson(routeLineString)
-
             this.navigationMap?.drawRoute(commute.getDriverRoute())
             this.navigationMap?.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
+
+            this.navigationMap?.setPuckDrawableSupplier(MyPuckDrawableSupplier())
 
             //add route to navigation object
             this.mapboxNavigation.setRoutes(listOf(commute.getDriverRoute()))
 
             //start trip
             //camera start route
+
             mapCamera.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
             mapCamera.start(commute.getDriverRoute())
+
+            mapboxMap.locationComponent.renderMode = RenderMode.GPS
             //start session
             this.mapboxNavigation.startTripSession()
 
@@ -419,8 +412,6 @@ class LocationEngineCallback(activity: NavActivity) : LocationEngineCallback<Loc
             //initialize location puck position
             activityRef?.get()?.updateLocation(result.locations)
             Log.d(TAG, "onSuccess: $result.locations")
-            //initialize camera position
-
         }else{
             Log.e(TAG, "onSuccess: Failed to update location (result == null)")
         }
@@ -428,6 +419,13 @@ class LocationEngineCallback(activity: NavActivity) : LocationEngineCallback<Loc
 
     override fun onFailure(exception: Exception) {
         Log.e(TAG, "onFailure: Failed to update location", exception)
+    }
+
+}
+
+class MyPuckDrawableSupplier : PuckDrawableSupplier {
+    override fun getPuckDrawable(routeProgressState: RouteProgressState): Int {
+        return R.drawable.mapbox_ic_user_puck
     }
 
 }
