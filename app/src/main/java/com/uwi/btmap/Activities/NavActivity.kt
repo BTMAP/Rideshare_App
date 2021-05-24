@@ -2,24 +2,17 @@ package com.uwi.btmap
 
 import android.annotation.SuppressLint
 import android.location.Location
-import android.opengl.Visibility
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.location.LocationEngineResult
 import com.mapbox.api.directions.v5.models.BannerInstructions
 import com.mapbox.api.directions.v5.models.VoiceInstructions
-import com.mapbox.api.speech.v1.MapboxSpeech
-import com.mapbox.geojson.LineString
-import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
-import com.mapbox.mapboxsdk.location.LocationUpdate
 import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapView
@@ -35,23 +28,15 @@ import com.mapbox.navigation.base.trip.model.RouteProgress
 import com.mapbox.navigation.base.trip.model.RouteProgressState
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.trip.session.*
-import com.mapbox.navigation.ui.NavigationViewOptions
-import com.mapbox.navigation.ui.RecenterButton
 import com.mapbox.navigation.ui.camera.NavigationCamera
 import com.mapbox.navigation.ui.camera.NavigationCamera.NAVIGATION_TRACKING_MODE_GPS
 import com.mapbox.navigation.ui.instruction.InstructionView
 import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.puck.PuckDrawableSupplier
-import com.mapbox.navigation.ui.route.NavigationMapRoute
 import com.mapbox.navigation.ui.summary.SummaryBottomSheet
-import com.mapbox.navigation.ui.voice.NavigationSpeechPlayer
-import com.mapbox.navigation.ui.voice.SpeechPlayer
-import com.mapbox.navigation.ui.voice.SpeechPlayerProvider
-import com.mapbox.navigation.ui.voice.VoiceInstructionLoader
-import okhttp3.Cache
-import java.io.File
+import com.uwi.btmap.BLL.Commute
+import com.uwi.btmap.BLL.TTS
 import java.lang.ref.WeakReference
-import java.util.*
 
 
 class NavActivity :

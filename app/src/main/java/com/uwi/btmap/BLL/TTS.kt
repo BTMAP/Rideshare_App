@@ -1,4 +1,4 @@
-package com.uwi.btmap
+package com.uwi.btmap.BLL
 
 import android.app.Activity
 import android.content.Context

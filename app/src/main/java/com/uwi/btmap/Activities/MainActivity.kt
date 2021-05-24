@@ -1,30 +1,22 @@
-package com.uwi.btmap
+package com.uwi.btmap.Activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color.parseColor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.api.directions.v5.DirectionsCriteria
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.RouteOptions
-import com.mapbox.geojson.Feature
-import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
-import com.mapbox.mapboxsdk.camera.CameraUpdate
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
@@ -35,7 +27,6 @@ import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
-import com.mapbox.mapboxsdk.style.expressions.Expression.*
 import com.mapbox.mapboxsdk.style.layers.LineLayer
 import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
@@ -43,12 +34,11 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.utils.BitmapUtils
-import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
-import com.mapbox.navigation.base.internal.extensions.coordinates
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
-import com.mapbox.navigation.core.reroute.RerouteController
-import kotlin.math.log
+import com.uwi.btmap.BLL.Commute
+import com.uwi.btmap.NavActivity
+import com.uwi.btmap.R
 
 class MainActivity :
     AppCompatActivity(),
@@ -121,7 +111,7 @@ class MainActivity :
                 BitmapUtils.getBitmapFromDrawable(
                         ContextCompat.getDrawable(
                                 this,
-                                R.drawable.mapbox_marker_icon_default
+                            R.drawable.mapbox_marker_icon_default
                         )
                 )!!
         )
@@ -187,7 +177,7 @@ class MainActivity :
             if(PermissionsManager.areLocationPermissionsGranted(this)){
                 val customLocationComponentOptions = LocationComponentOptions.builder(this)
                         .trackingGesturesManagement(true)
-                        .accuracyColor(ContextCompat.getColor(this,R.color.mapbox_blue))
+                        .accuracyColor(ContextCompat.getColor(this, R.color.mapbox_blue))
                         .build()
 
                 val locationComponentActivationOptions =

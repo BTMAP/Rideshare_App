@@ -1,4 +1,4 @@
-package com.uwi.btmap
+package com.uwi.btmap.Activities
 
 import android.annotation.SuppressLint
 import android.location.Location
@@ -9,17 +9,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.api.directions.v5.DirectionsCriteria.ANNOTATION_SPEED
-import com.mapbox.api.directions.v5.DirectionsCriteria.OVERVIEW_FULL
-import com.mapbox.api.directions.v5.models.DirectionsRoute
-import com.mapbox.api.isochrone.IsochroneCriteria.PROFILE_DRIVING
-import com.mapbox.api.matching.v5.MapboxMapMatching
-import com.mapbox.api.matching.v5.models.MapMatchingResponse
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
-import com.mapbox.mapboxsdk.camera.CameraPosition
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
-import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
 import com.mapbox.mapboxsdk.location.LocationComponentOptions
 import com.mapbox.mapboxsdk.location.modes.CameraMode
@@ -37,11 +28,8 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.trip.session.LocationObserver
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.*
+import com.uwi.btmap.BLL.Commute
+import com.uwi.btmap.R
 
 class NavigationActivity :
         AppCompatActivity(),
@@ -145,7 +133,7 @@ class NavigationActivity :
             if(PermissionsManager.areLocationPermissionsGranted(this)){
                 val customLocationComponentOptions = LocationComponentOptions.builder(this)
                     .trackingGesturesManagement(true)
-                    .accuracyColor(ContextCompat.getColor(this,R.color.mapbox_blue))
+                    .accuracyColor(ContextCompat.getColor(this, R.color.mapbox_blue))
                     .build()
 
                 val locationComponentActivationOptions =
@@ -193,7 +181,7 @@ class NavigationActivity :
                 BitmapUtils.getBitmapFromDrawable(
                         ContextCompat.getDrawable(
                                 this,
-                                R.drawable.mapbox_marker_icon_default
+                            R.drawable.mapbox_marker_icon_default
                         )
                 )!!
         )
