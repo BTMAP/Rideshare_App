@@ -71,16 +71,12 @@ class NavActivity :
     private lateinit var mapboxMap: MapboxMap
 
     private lateinit var mapboxNavigation: MapboxNavigation
-//    private lateinit var navigationMapRoute: NavigationMapRoute
     private lateinit var navigationMap: NavigationMapboxMap
 
     private lateinit var mapCamera: NavigationCamera
 
     //custom commute object
     private lateinit var commute: Commute
-
-    //more view references
-    private lateinit var recenterBtn : Button
 
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------- Location and route progress observer ---------------------------*/
@@ -96,8 +92,6 @@ class NavActivity :
             } else {
                 updateLocation(keyPoints)
             }
-
-            //update camera position? (might not be needed)
         }
 
         override fun onRawLocationChanged(rawLocation: Location) {
@@ -115,17 +109,7 @@ class NavActivity :
         Log.d(TAG, "updateLocation: List of locations Called: $locations")
 
         //location update is the recommended method to update the location component
-        //but causes jerky movement
-
-//        var locationUpdateBuilder = LocationUpdate.Builder()
-//        locationUpdateBuilder
-//            .location(locations[0])
-//            .animationDuration(300)
-//        if(locations.count()>1){
-//            locationUpdateBuilder.intermediatePoints(locations.subList(1,locations.count()-1))
-//        }
-//        var locationUpdate = locationUpdateBuilder.build()
-//        mapboxMap.locationComponent.forceLocationUpdate(locationUpdate)
+        //but caused jerky movement
         mapboxMap.locationComponent.forceLocationUpdate(locations,false)
     }
 
@@ -310,7 +294,9 @@ class NavActivity :
             mapCamera.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
             mapCamera.start(commute.getDriverRoute())
 
+            //set location puck render mode
             mapboxMap.locationComponent.renderMode = RenderMode.GPS
+            
             //start session
             this.mapboxNavigation.startTripSession()
 
