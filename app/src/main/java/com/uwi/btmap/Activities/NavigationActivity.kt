@@ -107,16 +107,16 @@ class NavigationActivity :
 
             val clickPointSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
             val routeLineString = LineString.fromPolyline(
-                    commute.getDriverRoute().geometry()!!,
+                    commute.driverRoute!!.geometry()!!,
                     6
             )
 //                    add the returned route to the route line source
             clickPointSource?.setGeoJson(routeLineString)
 
-            updateSource(it, "ORIGIN_SOURCE",commute.getOrigin())
-            updateSource(it, "DESTINATION_SOURCE",commute.getDestination())
-            updateSource(it, "PICKUP_POINT",commute.getPickup())
-            updateSource(it, "DROP_OFF_SOURCE",commute.getDropOff())
+            updateSource(it, "ORIGIN_SOURCE",commute.origin!!)
+            updateSource(it, "DESTINATION_SOURCE",commute.destination!!)
+            updateSource(it, "PICKUP_POINT",commute.pickup!!)
+            updateSource(it, "DROP_OFF_SOURCE",commute.dropOff!!)
         }
     }
 

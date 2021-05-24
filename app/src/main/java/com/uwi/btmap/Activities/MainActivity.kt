@@ -88,6 +88,8 @@ class MainActivity :
         submitButton.setOnClickListener{
             var navActivityIntent = Intent(this, NavActivity::class.java)
                     .putExtra("commute", commute)
+            var selectorIntent = Intent(this, RegisterCommuteActivity::class.java)
+            //startActivity(selectorIntent)
             startActivity(navActivityIntent)
         }
     }
@@ -233,22 +235,22 @@ class MainActivity :
 
         if(this.currentSelectedLocation == 0){
             Toast.makeText(this,"Set origin location",Toast.LENGTH_SHORT).show()
-            commute.setOrigin(selectedPoint)
+            commute.origin = selectedPoint
             sourceId = "ORIGIN_SOURCE"
         }
         if(this.currentSelectedLocation == 1){
             Toast.makeText(this,"Set destination location",Toast.LENGTH_SHORT).show()
-            commute.setDestination(selectedPoint)
+            commute.destination = selectedPoint
             sourceId = "DESTINATION_SOURCE"
         }
         if(this.currentSelectedLocation == 2){
             Toast.makeText(this,"Set passenger location",Toast.LENGTH_SHORT).show()
-            commute.setPassenger(selectedPoint)
+            commute.passenger = selectedPoint
             sourceId = "PASSENGER_SOURCE"
         }
         if(this.currentSelectedLocation == 3){
             Toast.makeText(this,"Set dropoff location",Toast.LENGTH_SHORT).show()
-            commute.setDropOff(selectedPoint)
+            commute.dropOff = selectedPoint
             sourceId = "DROP_OFF_SOURCE"
         }
 
@@ -281,7 +283,7 @@ class MainActivity :
     private val routesReqCallback = object : RoutesRequestCallback{
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
             if (routes.isNotEmpty()){
-                commute.setDriverRoute(routes[0])
+                commute.driverRoute = routes[0]
                 mapboxMap?.getStyle {
                     val clickPointSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
                     val routeLineString = LineString.fromPolyline(
@@ -319,7 +321,7 @@ class MainActivity :
     private val passengerRoutesReqCallback = object : RoutesRequestCallback{
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
             if (routes.isNotEmpty()){
-                commute.setPassengerRoute(routes[0])
+                commute.passengerRoute = routes[0]
                 mapboxMap?.getStyle {
                     val clickPointSource = it.getSourceAs<GeoJsonSource>("PASSENGER_ROUTE_SOURCE_ID")
                     val routeLineString = LineString.fromPolyline(

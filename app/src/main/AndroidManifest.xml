@@ -11,7 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BTMAP">
-        <activity android:name=".NavActivity"></activity>
+        <activity
+            android:name=".nav"
+            android:label="@string/title_activity_nav"
+            android:theme="@style/Theme.BTMAP.NoActionBar"></activity>
+        <activity android:name=".Activities.RegisterCommuteActivity" />
+        <activity android:name=".NavActivity" />
         <activity android:name=".Activities.NavigationActivity" />
         <activity android:name=".Activities.MainActivity">
             <intent-filter>

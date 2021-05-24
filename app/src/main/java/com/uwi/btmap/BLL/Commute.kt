@@ -22,62 +22,13 @@ class Commute() : Serializable{
     /* Stores and generated commute route information  */
     private var tag = "Commute"
 
-    private var driverRoute: DirectionsRoute? = null
-    private var passengerRoute: DirectionsRoute? = null
-    private var origin: Point?  = null
-    private var destination: Point?  = null
-    private var pickup: Point?  = null
-    private var dropOff: Point? = null
-    private var passenger: Point? = null
-
-    fun setDriverRoute(route:DirectionsRoute){
-        this.driverRoute = route
-    }
-    fun getDriverRoute(): DirectionsRoute {
-        return this.driverRoute!!
-    }
-
-    fun setPassengerRoute(route:DirectionsRoute){
-        this.passengerRoute = route
-    }
-    fun getPassengerRoute(): DirectionsRoute {
-        return this.passengerRoute!!
-    }
-
-    fun setOrigin(origin: Point){
-        this.origin = origin
-    }
-    fun getOrigin(): Point{
-        return this.origin!!
-    }
-
-    fun setDestination(destination: Point){
-        this.destination = destination
-    }
-    fun getDestination(): Point{
-        return this.destination!!
-    }
-
-    fun setPickup(pickup: Point){
-        this.pickup = pickup
-    }
-    fun getPickup(): Point{
-        return this.pickup!!
-    }
-
-    fun setDropOff(dropOff: Point){
-        this.dropOff = dropOff
-    }
-    fun getDropOff(): Point{
-        return this.dropOff!!
-    }
-
-    fun setPassenger(passenger: Point){
-        this.passenger = passenger
-    }
-    fun getPassenger(): Point{
-        return this.passenger!!
-    }
+    var driverRoute: DirectionsRoute? = null
+    var passengerRoute: DirectionsRoute? = null
+    var origin: Point?  = null
+    var destination: Point?  = null
+    var pickup: Point?  = null
+    var dropOff: Point? = null
+    var passenger: Point? = null
 
     fun isValid(): Boolean{
         return origin!=null && destination!=null && pickup!=null && dropOff!=null

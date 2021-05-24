@@ -268,18 +268,18 @@ class NavActivity :
             mapboxNavigation.navigationOptions.locationEngine.getLastLocation(myLocationEngineCallback)
 
             //add route to map
-            this.navigationMap?.drawRoute(commute.getDriverRoute())
+            this.navigationMap?.drawRoute(commute.driverRoute!!)
             this.navigationMap?.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
 
             this.navigationMap?.setPuckDrawableSupplier(MyPuckDrawableSupplier())
 
             //add route to navigation object
-            this.mapboxNavigation.setRoutes(listOf(commute.getDriverRoute()))
+            this.mapboxNavigation.setRoutes(listOf(commute.driverRoute!!))
 
             //start trip
             //camera start route
             mapCamera.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
-            mapCamera.start(commute.getDriverRoute())
+            mapCamera.start(commute.driverRoute)
 
             //set location puck render mode
             mapboxMap.locationComponent.renderMode = RenderMode.GPS
