@@ -11,15 +11,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BTMAP">
-        <activity android:name=".NavActivity"></activity>
+        <activity android:name=".NavActivity"/>
         <activity android:name=".NavigationActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MapActivity"/>
+
+        <activity android:name=".UpdateProfileActivity"/>
+        <activity android:name=".ProfileActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.BTMAP.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".VerifyActivity"
+            android:theme="@style/Theme.BTMAP.NoActionBar" />
+        <activity
+            android:name=".PhoneAuthActivity"
+            android:theme="@style/Theme.BTMAP.NoActionBar" />
+        <activity android:name=".LoginOptionActivity" />
     </application>
 
 </manifest>
