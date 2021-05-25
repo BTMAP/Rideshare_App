@@ -8,13 +8,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
+import com.uwi.btmap.*
 import com.uwi.btmap.BLL.CommuteViewModel
-import com.uwi.btmap.DateSelectorFragment
-import com.uwi.btmap.R
-import com.uwi.btmap.TimeSelectorFragment
-import com.uwi.btmap.TypeSelectorFragment
 
-private const val NUM_PAGES = 3
+private const val NUM_PAGES = 4
 
 class RegisterCommuteActivity : AppCompatActivity() {
 
@@ -49,8 +46,9 @@ class RegisterCommuteActivity : AppCompatActivity() {
             var fragment : Fragment = TypeSelectorFragment()
             when (position){
                 0 -> fragment = TypeSelectorFragment()
-                1 -> fragment = TimeSelectorFragment()
+                1 -> fragment = LocationSelectionFragment()
                 2 -> fragment = DateSelectorFragment()
+                3 -> fragment = TimeSelectorFragment()
             }
             return fragment
         }

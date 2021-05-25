@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".Activities.RegisterCommuteActivity">
 
+    <fragment
+        android:name="com.uwi.btmap.RoutePreviewFragment"
+        android:id="@+id/register_route_main_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/selector_pager_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </fragment>
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/selector_pager_view"
         android:layout_width="match_parent"

@@ -3,12 +3,16 @@ package com.uwi.btmap.BLL
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.mapbox.geojson.Point
 import java.sql.Time
 import java.util.*
 
 class CommuteViewModel : ViewModel() {
     var commute = Commute()
     var commuteType = MutableLiveData<Int>()
+
+    var origin = MutableLiveData<Point>()
+    var destination = MutableLiveData<Point>()
 
     var calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
 
