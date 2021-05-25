@@ -89,8 +89,8 @@ class MainActivity :
             var navActivityIntent = Intent(this, NavActivity::class.java)
                     .putExtra("commute", commute)
             var selectorIntent = Intent(this, RegisterCommuteActivity::class.java)
-            //startActivity(selectorIntent)
-            startActivity(navActivityIntent)
+            startActivity(selectorIntent)
+            //startActivity(navActivityIntent)
         }
     }
 

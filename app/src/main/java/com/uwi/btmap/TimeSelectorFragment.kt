@@ -1,59 +1,76 @@
 package com.uwi.btmap
 
+import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.DatePicker
+import android.widget.TextView
+import android.widget.TimePicker
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.uwi.btmap.BLL.CommuteViewModel
+import org.w3c.dom.Text
+import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val TAG = "TimeSelectorFragment"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TimeSelectorFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TimeSelectorFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private lateinit var viewModel : CommuteViewModel
+
+    private lateinit var typeDisplay: TextView
+
+    private lateinit var timeButton: Button
+
+    private lateinit var timePickerDialog: TimePickerDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            //init vars from bundle
         }
+
+        viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_time_selector, container, false)
+        var view = inflater.inflate(R.layout.fragment_time_selector, container, false)
+        typeDisplay = view.findViewById(R.id.type_display)
+
+        initTimePicker()
+
+        timeButton = view.findViewById(R.id.time_picker_button)
+        timeButton.setOnClickListener {
+            timePickerDialog.show()
+        }
+
+        viewModel.timeString().observe(requireActivity(),Observer{
+            timeButton.text = it
+        })
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TimeSelectorFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TimeSelectorFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun initTimePicker(){
+        var timeSetListener = TimePickerDialog.OnTimeSetListener{ timePicker: TimePicker, hour: Int, minute: Int ->
+            viewModel.setTime(hour,minute)
+        }
+
+        var hour = viewModel.calendar.get(Calendar.HOUR_OF_DAY)
+        var minute = viewModel.calendar.get(Calendar.MINUTE)
+
+        var style = AlertDialog.THEME_HOLO_LIGHT
+
+        timePickerDialog = TimePickerDialog(requireContext(),style,timeSetListener,hour,minute,true)
     }
 }

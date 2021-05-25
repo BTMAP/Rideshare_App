@@ -1,59 +1,56 @@
 package com.uwi.btmap
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.uwi.btmap.BLL.CommuteViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val TAG = "TypeSelectorFragment"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TypeSelectorFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TypeSelectorFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var driverButton: Button
+    private lateinit var passengerButton: Button
+
+    private lateinit var viewModel: CommuteViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            //set vars from bundle
         }
+
+        viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
+
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_type_selector, container, false)
+        val view = inflater.inflate(R.layout.fragment_type_selector, container, false)
+
+        driverButton = view.findViewById(R.id.driver_button)
+        passengerButton = view.findViewById(R.id.passenger_button)
+
+        driverButton.setOnClickListener {
+            viewModel.setCommuteType(0)
+            Log.d(TAG, "onCreateView: DriverType Set: ${viewModel.commuteType}")
+        }
+
+        passengerButton.setOnClickListener {
+            viewModel.setCommuteType(1)
+            Log.d(TAG, "onCreateView: DriverType Set: ${viewModel.commuteType}")
+        }
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TypeSelectorFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TypeSelectorFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
