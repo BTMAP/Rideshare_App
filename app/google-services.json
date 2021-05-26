@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "969449454362",
+    "firebase_url": "https://rideshare-app-67d7c-default-rtdb.firebaseio.com",
+    "project_id": "rideshare-app-67d7c",
+    "storage_bucket": "rideshare-app-67d7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969449454362:android:1fa123f7c45f73ac2d0aa3",
+        "android_client_info": {
+          "package_name": "com.uwi.btmap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "969449454362-7ashl5q8gq4crihcr54i96f7jndb5k8h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uwi.btmap",
+            "certificate_hash": "e11b0139927dd470d28ca5fca7e07c1fa1bf6716"
+          }
+        },
+        {
+          "client_id": "969449454362-ododl6eurrcarqsovd7o9vr89poblj4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAjcTblddojWeu9TWLjulPigcjFEUFvBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "969449454362-ododl6eurrcarqsovd7o9vr89poblj4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969449454362:android:9a6c06becce748982d0aa3",
+        "android_client_info": {
+          "package_name": "com.uwi.rideshareapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "969449454362-djc503129mie705eivthn8nfttr6btik.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uwi.rideshareapp",
+            "certificate_hash": "e11b0139927dd470d28ca5fca7e07c1fa1bf6716"
+          }
+        },
+        {
+          "client_id": "969449454362-ododl6eurrcarqsovd7o9vr89poblj4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAjcTblddojWeu9TWLjulPigcjFEUFvBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "969449454362-ododl6eurrcarqsovd7o9vr89poblj4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

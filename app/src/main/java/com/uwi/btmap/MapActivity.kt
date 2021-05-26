@@ -1,10 +1,11 @@
-package com.uwi.btmap.Activities
+package com.uwi.btmap
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -37,10 +38,8 @@ import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.BLL.Commute
-import com.uwi.btmap.NavActivity
-import com.uwi.btmap.R
 
-class MainActivity :
+class MapActivity :
     AppCompatActivity(),
     OnMapReadyCallback,
     PermissionsListener,
@@ -69,8 +68,10 @@ class MainActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
+        supportActionBar!!.setTitle("Map")
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_map)
 
         setupLocationSpinner()
         setupRouteButton()
@@ -88,10 +89,18 @@ class MainActivity :
         submitButton.setOnClickListener{
             var navActivityIntent = Intent(this, NavActivity::class.java)
                     .putExtra("commute", commute)
-            var selectorIntent = Intent(this, RegisterCommuteActivity::class.java)
-            startActivity(selectorIntent)
-//            startActivity(navActivityIntent)
+            startActivity(navActivityIntent)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -113,7 +122,7 @@ class MainActivity :
                 BitmapUtils.getBitmapFromDrawable(
                         ContextCompat.getDrawable(
                                 this,
-                            R.drawable.mapbox_marker_icon_default
+                                R.drawable.mapbox_marker_icon_default
                         )
                 )!!
         )
@@ -179,7 +188,7 @@ class MainActivity :
             if(PermissionsManager.areLocationPermissionsGranted(this)){
                 val customLocationComponentOptions = LocationComponentOptions.builder(this)
                         .trackingGesturesManagement(true)
-                        .accuracyColor(ContextCompat.getColor(this, R.color.mapbox_blue))
+                        .accuracyColor(ContextCompat.getColor(this,R.color.mapbox_blue))
                         .build()
 
                 val locationComponentActivationOptions =
