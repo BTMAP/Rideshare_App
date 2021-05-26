@@ -3,16 +3,13 @@ package com.uwi.btmap
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mapbox.api.directions.v5.DirectionsCriteria
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.RouteOptions
-import com.mapbox.geojson.GeoJson
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.camera.CameraPosition
@@ -31,7 +28,6 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
-import com.mapbox.navigation.base.internal.extensions.coordinates
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.BLL.CommuteViewModel
@@ -41,15 +37,15 @@ private const val TAG = "MapboxPreviewFragment"
 class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview), 
     OnMapReadyCallback{
 
-    val routeSourceID = "ROUTE _SOURCE_ID"
-    val originSourceID = "ORIGIN_SOURCE_ID"
-    val destinationSourceID = "DESTINATION_SOURCE_ID"
+    private val routeSourceID = "ROUTE _SOURCE_ID"
+    private val originSourceID = "ORIGIN_SOURCE_ID"
+    private val destinationSourceID = "DESTINATION_SOURCE_ID"
 
-    val routeLayerID = "ROUTE_LAYER_ID"
-    val originLayerID = "ORIGIN_LAYER_ID"
-    val destinationLayerID = "DESTINATION_LAYER_ID"
+    private val routeLayerID = "ROUTE_LAYER_ID"
+    private val originLayerID = "ORIGIN_LAYER_ID"
+    private val destinationLayerID = "DESTINATION_LAYER_ID"
 
-    val locationMarkerID = "LOCATION_MARKER_ID"
+    private val locationMarkerID = "LOCATION_MARKER_ID"
 
     private lateinit var mapView: MapView
     private lateinit var mapboxMap: MapboxMap
@@ -66,11 +62,11 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
-        mapboxMap.setStyle(Style.MAPBOX_STREETS){
+        mapboxMap.setStyle(Style.MAPBOX_STREETS){ style ->
             this.mapboxMap = mapboxMap
 
-            initLocationIcons(it)
-            initMapLayers(it)
+            initLocationIcons(style)
+            initMapLayers(style)
 
             mapboxMap.addOnMapLongClickListener{
                 onMapClick(it)
@@ -83,7 +79,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         viewModel.origin().observe(requireActivity(), Observer {
             //add/update source
             if (it != null){
-                var source = mapboxMap.style?.getSourceAs<GeoJsonSource>(originSourceID)
+                val source = mapboxMap.style?.getSourceAs<GeoJsonSource>(originSourceID)
                 source?.setGeoJson(it)
             }
             //reset selection mode
@@ -93,14 +89,14 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         viewModel.destination().observe(requireActivity(), Observer {
             //add/update source
             if (it != null){
-                var source = mapboxMap.style?.getSourceAs<GeoJsonSource>(destinationSourceID)
+                val source = mapboxMap.style?.getSourceAs<GeoJsonSource>(destinationSourceID)
                 source?.setGeoJson(it)
             }
             //reset selection mode
             viewModel.locationSelectionMode = 0
         })
 
-        viewModel.routePreview().observe(requireActivity(), Observer { it ->
+        viewModel.routePreview().observe(requireActivity(), Observer {
             if (it != null){
                 //draw route to map
                val style =  mapboxMap.style
@@ -115,7 +111,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     }
     
     private fun centerMapCamera(mapboxMap: MapboxMap){
-        //bim coords: 13.1939° N, 59.5432° W
+        //bim coordinates: 13.1939° N, 59.5432° W
         // lat: 13.1939, long: -59.5432
         val position = CameraPosition.Builder()
             .zoom(10.0)
@@ -155,8 +151,8 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     //mapbox object setup functions
     private fun initMapView(view: View, savedInstanceState: Bundle?){
         this.mapView = view.findViewById(R.id.route_preview_map_view)
-        this.mapView?.onCreate(savedInstanceState)
-        this.mapView?.getMapAsync(this)
+        this.mapView.onCreate(savedInstanceState)
+        this.mapView.getMapAsync(this)
     }
 
     private fun initMapNavigation(){
@@ -248,37 +244,37 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     //---------------------- mapbox lifecycle functions -----------------------
     override fun onStart() {
         super.onStart()
-        mapView?.onStart()
+        mapView.onStart()
     }
 
     override fun onResume() {
         super.onResume()
-        mapView?.onResume()
+        mapView.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView?.onPause()
+        mapView.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        mapView?.onStop()
+        mapView.onStop()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        mapView?.onSaveInstanceState(outState)
+        mapView.onSaveInstanceState(outState)
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView?.onLowMemory()
+        mapView.onLowMemory()
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView?.onDestroy()
+        mapView.onDestroy()
     }
 }
