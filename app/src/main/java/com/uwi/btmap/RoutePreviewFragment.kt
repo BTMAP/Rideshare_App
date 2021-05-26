@@ -9,7 +9,11 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.mapbox.api.directions.v5.DirectionsCriteria
+import com.mapbox.api.directions.v5.models.DirectionsRoute
+import com.mapbox.api.directions.v5.models.RouteOptions
 import com.mapbox.geojson.GeoJson
+import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
@@ -26,6 +30,10 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.utils.BitmapUtils
+import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
+import com.mapbox.navigation.base.internal.extensions.coordinates
+import com.mapbox.navigation.core.MapboxNavigation
+import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.BLL.CommuteViewModel
 
 private const val TAG = "MapboxPreviewFragment"
@@ -45,6 +53,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
 
     private lateinit var mapView: MapView
     private lateinit var mapboxMap: MapboxMap
+    private lateinit var mapboxNavigation: MapboxNavigation
 
     private lateinit var viewModel: CommuteViewModel
 
@@ -52,13 +61,8 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
-        setupMapView(view,savedInstanceState)
-    }
-
-    private fun setupMapView(view: View, savedInstanceState: Bundle?){
-        this.mapView = view.findViewById(R.id.route_preview_map_view)
-        this.mapView?.onCreate(savedInstanceState)
-        this.mapView?.getMapAsync(this)
+        initMapView(view,savedInstanceState)
+        initMapNavigation()
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -95,6 +99,19 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
             //reset selection mode
             viewModel.locationSelectionMode = 0
         })
+
+        viewModel.routePreview().observe(requireActivity(), Observer { it ->
+            if (it != null){
+                //draw route to map
+               val style =  mapboxMap.style
+
+                val routeSource = style?.getSourceAs<GeoJsonSource>(routeSourceID)
+                val routeLineString = LineString.fromPolyline(
+                    it.geometry()!!,6)
+
+                routeSource?.setGeoJson(routeLineString)
+            }
+        })
     }
     
     private fun centerMapCamera(mapboxMap: MapboxMap){
@@ -116,15 +133,73 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         if(viewModel.locationSelectionMode == 1){
             Log.d(TAG, "onMapClick: Add origin location: $point")
             viewModel.origin.value = Point.fromLngLat(point.longitude,point.latitude)
-//            var source = mapboxMap.style?.getSourceAs<GeoJsonSource>(originSourceID)
-//            source?.setGeoJson(viewModel.origin.value)
+            //if both points set get route
+            //update viewModel routePreview
+            if (viewModel.origin.value != null && viewModel.destination.value != null) {
+                getRoute(viewModel.origin.value!!, viewModel.destination.value!!)
+            }
         }
         if(viewModel.locationSelectionMode == 2){
             Log.d(TAG, "onMapClick: Add destination location: $point")
             viewModel.destination.value = Point.fromLngLat(point.longitude,point.latitude)
+            //if both points set get route
+            //update viewModel routePreview
+            if (viewModel.origin.value != null && viewModel.destination.value != null) {
+                getRoute(viewModel.origin.value!!, viewModel.destination.value!!)
+            }
         }
 
         return true
+    }
+
+    //mapbox object setup functions
+    private fun initMapView(view: View, savedInstanceState: Bundle?){
+        this.mapView = view.findViewById(R.id.route_preview_map_view)
+        this.mapView?.onCreate(savedInstanceState)
+        this.mapView?.getMapAsync(this)
+    }
+
+    private fun initMapNavigation(){
+        val mapboxNavigationOptions = MapboxNavigation
+            .defaultNavigationOptionsBuilder(requireContext(), getString(R.string.mapbox_access_token))
+            .build()
+        this.mapboxNavigation = MapboxNavigation(mapboxNavigationOptions)
+    }
+
+    //route functions
+    private fun getRoute(origin:Point,destination:Point){
+        val routeOptions = RouteOptions.builder()
+            .applyDefaultParams()
+            .accessToken(getString(R.string.mapbox_access_token))
+            .coordinates(listOf(origin,destination))
+            .alternatives(false)
+            .profile(DirectionsCriteria.PROFILE_DRIVING)
+            .voiceInstructions(false)
+            .steps(false)
+            .build()
+
+        mapboxNavigation.requestRoutes(routeOptions,routesReqCallback)
+    }
+
+    private val routesReqCallback = object: RoutesRequestCallback{
+        override fun onRoutesReady(routes: List<DirectionsRoute>) {
+            if (routes.isNotEmpty()){
+                //save to view model
+                viewModel.routePreview.value = routes[0]
+
+            }else{
+                Log.d(TAG, "onRoutesReady: No routes found.")
+            }
+        }
+
+        override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
+            Log.d(TAG, "onRoutesRequestCanceled: Route request cancelled.")
+        }
+
+        override fun onRoutesRequestFailure(throwable: Throwable, routeOptions: RouteOptions) {
+            Log.d(TAG, "onRoutesRequestFailure: Route request failed.")
+        }
+
     }
 
     //functions to setup sources

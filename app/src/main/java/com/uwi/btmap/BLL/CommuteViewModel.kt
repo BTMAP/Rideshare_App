@@ -3,6 +3,7 @@ package com.uwi.btmap.BLL
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
 import java.sql.Time
 import java.util.*
@@ -14,6 +15,8 @@ class CommuteViewModel : ViewModel() {
     /* ------------------------ Location Information ----------------------- */
     var origin = MutableLiveData<Point>()
     var destination = MutableLiveData<Point>()
+
+    var routePreview = MutableLiveData<DirectionsRoute>()
 
     /* --------------------- Date and Time Information --------------------- */
     var calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
@@ -41,6 +44,10 @@ class CommuteViewModel : ViewModel() {
 
     fun destination(): LiveData<Point>{
         return destination
+    }
+
+    fun routePreview(): LiveData<DirectionsRoute>{
+        return routePreview
     }
 
     fun setCommuteType(i:Int){
