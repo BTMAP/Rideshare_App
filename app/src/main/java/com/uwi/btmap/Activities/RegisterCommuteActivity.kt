@@ -11,7 +11,7 @@ import androidx.viewpager.widget.ViewPager
 import com.uwi.btmap.*
 import com.uwi.btmap.BLL.CommuteViewModel
 
-private const val NUM_PAGES = 4
+private const val NUM_PAGES = 5
 
 class RegisterCommuteActivity : AppCompatActivity() {
 
@@ -49,6 +49,7 @@ class RegisterCommuteActivity : AppCompatActivity() {
                 1 -> fragment = LocationSelectionFragment()
                 2 -> fragment = DateSelectorFragment()
                 3 -> fragment = TimeSelectorFragment()
+                4 -> fragment = SubmitCommuteFragment()
             }
             return fragment
         }
