@@ -101,6 +101,19 @@ class CommuteViewModel : ViewModel() {
     }
 
     private fun makeTimeString(hour:Int,minute:Int):String{
-        return hour.toString() + ":" + minute.toString()
+        var hourString = hour.toString()
+        var minuteString = minute.toString()
+
+        //check if length of hour or min is 1
+        //concatenate with '0'
+        if(hourString.length < 2){
+            hourString = "0$hourString"
+        }
+
+        if(minuteString.length < 2){
+            minuteString = "0$minuteString"
+        }
+
+        return "$hourString:$minuteString"
     }
 }
