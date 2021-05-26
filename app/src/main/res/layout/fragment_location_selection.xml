@@ -27,6 +27,7 @@
                 android:background="#ffffff" />
 
             <Button
+                android:id="@+id/origin_selection_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"/>
@@ -48,6 +49,7 @@
                 android:background="#ffffff" />
 
             <Button
+                android:id="@+id/destination_selection_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"/>

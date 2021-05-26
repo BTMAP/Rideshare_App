@@ -11,13 +11,16 @@ class CommuteViewModel : ViewModel() {
     var commute = Commute()
     var commuteType = MutableLiveData<Int>()
 
+    /* ------------------------ Location Information ----------------------- */
     var origin = MutableLiveData<Point>()
     var destination = MutableLiveData<Point>()
 
+    /* --------------------- Date and Time Information --------------------- */
     var calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
-
     var dateString : MutableLiveData<String> = MutableLiveData()
     var timeString : MutableLiveData<String> = MutableLiveData()
+
+    var locationSelectionMode = 0
 
     init {
         commuteType.value = 0
@@ -30,6 +33,14 @@ class CommuteViewModel : ViewModel() {
 
         dateString.value = makeDateString(day,month,year)
         timeString.value = makeTimeString(hour,minute)
+    }
+
+    fun origin(): LiveData<Point>{
+        return origin
+    }
+
+    fun destination(): LiveData<Point>{
+        return destination
     }
 
     fun setCommuteType(i:Int){

@@ -90,7 +90,7 @@ class MainActivity :
                     .putExtra("commute", commute)
             var selectorIntent = Intent(this, RegisterCommuteActivity::class.java)
             startActivity(selectorIntent)
-            //startActivity(navActivityIntent)
+//            startActivity(navActivityIntent)
         }
     }
 
