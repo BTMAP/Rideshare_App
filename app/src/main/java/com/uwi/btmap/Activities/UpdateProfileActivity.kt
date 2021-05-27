@@ -1,4 +1,4 @@
-package com.uwi.btmap
+package com.uwi.btmap.Activities
 
 import android.app.Activity
 import android.content.Intent
@@ -15,10 +15,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.uwi.btmap.R
 import com.uwi.btmap.databinding.ActivityUpdateProfileBinding
 import com.uwi.btmap.model.User
 import kotlinx.android.synthetic.main.activity_update_profile.*
-import kotlinx.android.synthetic.main.activity_update_profile.view.*
 import java.util.*
 
 class UpdateProfileActivity : AppCompatActivity() {

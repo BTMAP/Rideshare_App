@@ -1,4 +1,4 @@
-package com.uwi.btmap.BLL
+package com.uwi.btmap.model
 
 import android.content.Context
 import com.mapbox.api.directions.v5.models.DirectionsRoute

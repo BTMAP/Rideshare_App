@@ -1,9 +1,11 @@
-package com.uwi.btmap
+package com.uwi.btmap.Fragments
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +14,7 @@ import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.RouteOptions
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
+import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -31,10 +34,11 @@ import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.BLL.CommuteViewModel
+import com.uwi.btmap.R
 
 private const val TAG = "MapboxPreviewFragment"
 
-class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview), 
+class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     OnMapReadyCallback{
 
     private val routeSourceID = "ROUTE _SOURCE_ID"
@@ -53,9 +57,14 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
 
     private lateinit var viewModel: CommuteViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Mapbox.getInstance(requireContext(),getString(R.string.mapbox_access_token))
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
         initMapView(view,savedInstanceState)
         initMapNavigation()
@@ -157,7 +166,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
 
     private fun initMapNavigation(){
         val mapboxNavigationOptions = MapboxNavigation
-            .defaultNavigationOptionsBuilder(requireContext(), getString(R.string.mapbox_access_token))
+            .defaultNavigationOptionsBuilder(requireContext(), viewModel.token)
             .build()
         this.mapboxNavigation = MapboxNavigation(mapboxNavigationOptions)
     }
@@ -166,7 +175,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     private fun getRoute(origin:Point,destination:Point){
         val routeOptions = RouteOptions.builder()
             .applyDefaultParams()
-            .accessToken(getString(R.string.mapbox_access_token))
+            .accessToken(viewModel.token)
             .coordinates(listOf(origin,destination))
             .alternatives(false)
             .profile(DirectionsCriteria.PROFILE_DRIVING)

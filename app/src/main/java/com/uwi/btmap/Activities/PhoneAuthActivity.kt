@@ -1,4 +1,4 @@
-package com.uwi.btmap
+package com.uwi.btmap.Activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.uwi.btmap.MainActivity
+import com.uwi.btmap.R
 import java.util.concurrent.TimeUnit
 
 class PhoneAuthActivity : AppCompatActivity() {

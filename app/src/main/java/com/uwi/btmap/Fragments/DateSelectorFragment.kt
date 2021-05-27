@@ -1,4 +1,4 @@
-package com.uwi.btmap
+package com.uwi.btmap.Fragments
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
 import com.uwi.btmap.BLL.CommuteViewModel
+import com.uwi.btmap.R
 import java.util.*
 
 private const val TAG = "DateSelectorFragment"

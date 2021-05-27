@@ -1,4 +1,4 @@
-package com.uwi.btmap
+package com.uwi.btmap.Fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
 import com.uwi.btmap.BLL.CommuteViewModel
+import com.uwi.btmap.R
 
 private const val TAG = "LocationSelectionFragment"
 

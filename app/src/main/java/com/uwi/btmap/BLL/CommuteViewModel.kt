@@ -5,10 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
-import java.sql.Time
+import com.uwi.btmap.R
+import com.uwi.btmap.model.Commute
 import java.util.*
 
 class CommuteViewModel : ViewModel() {
+
+    var token = ""
     var commute = Commute()
     var commuteType = MutableLiveData<Int>()
 

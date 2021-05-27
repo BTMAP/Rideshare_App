@@ -1,4 +1,4 @@
-package com.uwi.btmap
+package com.uwi.btmap.Fragments
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -16,6 +16,7 @@ import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.uwi.btmap.BLL.CommuteViewModel
+import com.uwi.btmap.R
 import org.w3c.dom.Text
 import java.util.*
 

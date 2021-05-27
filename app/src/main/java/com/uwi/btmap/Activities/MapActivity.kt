@@ -1,4 +1,4 @@
-package com.uwi.btmap
+package com.uwi.btmap.Activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -37,7 +37,9 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
-import com.uwi.btmap.BLL.Commute
+import com.uwi.btmap.model.Commute
+import com.uwi.btmap.NavActivity
+import com.uwi.btmap.R
 
 class MapActivity :
     AppCompatActivity(),
@@ -122,7 +124,7 @@ class MapActivity :
                 BitmapUtils.getBitmapFromDrawable(
                         ContextCompat.getDrawable(
                                 this,
-                                R.drawable.mapbox_marker_icon_default
+                            R.drawable.mapbox_marker_icon_default
                         )
                 )!!
         )
@@ -188,7 +190,7 @@ class MapActivity :
             if(PermissionsManager.areLocationPermissionsGranted(this)){
                 val customLocationComponentOptions = LocationComponentOptions.builder(this)
                         .trackingGesturesManagement(true)
-                        .accuracyColor(ContextCompat.getColor(this,R.color.mapbox_blue))
+                        .accuracyColor(ContextCompat.getColor(this, R.color.mapbox_blue))
                         .build()
 
                 val locationComponentActivationOptions =

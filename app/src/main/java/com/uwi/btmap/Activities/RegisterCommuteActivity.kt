@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.uwi.btmap.*
 import com.uwi.btmap.BLL.CommuteViewModel
+import com.uwi.btmap.Fragments.*
 
 private const val NUM_PAGES = 5
 
@@ -29,6 +30,7 @@ class RegisterCommuteActivity : AppCompatActivity() {
         pager.adapter = pagerAdapter
 
         val commuteViewModel = ViewModelProvider(this).get(CommuteViewModel::class.java)
+        commuteViewModel.token = getString(R.string.mapbox_access_token)
     }
 
     override fun onBackPressed() {

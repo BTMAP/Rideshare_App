@@ -1,4 +1,4 @@
-package com.uwi.btmap
+package com.uwi.btmap.Fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +10,7 @@ import android.widget.Button
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.uwi.btmap.BLL.CommuteViewModel
+import com.uwi.btmap.R
 
 private const val TAG = "TypeSelectorFragment"
 
