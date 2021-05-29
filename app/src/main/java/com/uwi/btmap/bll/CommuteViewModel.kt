@@ -1,11 +1,10 @@
-package com.uwi.btmap.BLL
+package com.uwi.btmap.bll
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
-import com.uwi.btmap.R
 import com.uwi.btmap.model.Commute
 import java.util.*
 

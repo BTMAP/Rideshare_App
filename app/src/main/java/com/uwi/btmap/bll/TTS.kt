@@ -1,6 +1,5 @@
-package com.uwi.btmap.BLL
+package com.uwi.btmap.bll
 
-import android.app.Activity
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.util.Log

@@ -1,4 +1,4 @@
-package com.uwi.btmap.Activities
+package com.uwi.btmap.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent

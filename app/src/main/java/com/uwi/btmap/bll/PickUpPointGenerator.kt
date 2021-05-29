@@ -1,9 +1,7 @@
-package com.uwi.btmap.BLL
+package com.uwi.btmap.bll
 
-import android.util.Log
 import com.mapbox.geojson.Point
 import com.mapbox.turf.TurfMeasurement
-import com.mapbox.turf.TurfTransformation
 import kotlin.math.*
 
 class PickUpPointGenerator(){

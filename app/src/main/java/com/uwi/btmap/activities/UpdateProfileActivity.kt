@@ -1,4 +1,4 @@
-package com.uwi.btmap.Activities
+package com.uwi.btmap.activities
 
 import android.app.Activity
 import android.content.Intent

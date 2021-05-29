@@ -16,9 +16,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.uwi.btmap.Activities.MapActivity
-import com.uwi.btmap.Activities.PhoneAuthActivity
-import com.uwi.btmap.Activities.ProfileActivity
+import com.uwi.btmap.activities.MapActivity
+import com.uwi.btmap.activities.PhoneAuthActivity
+import com.uwi.btmap.activities.ProfileActivity
 
 
 class MainActivity : AppCompatActivity() {

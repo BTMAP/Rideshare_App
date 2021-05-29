@@ -8,13 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.uwi.btmap.Activities.MapActivity
-import com.uwi.btmap.Activities.RegisterCommuteActivity
+import com.uwi.btmap.activities.MapActivity
+import com.uwi.btmap.activities.RegisterCommuteActivity
 import com.uwi.btmap.R
 
 class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {

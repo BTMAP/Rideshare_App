@@ -35,7 +35,7 @@ import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.puck.PuckDrawableSupplier
 import com.mapbox.navigation.ui.summary.SummaryBottomSheet
 import com.uwi.btmap.model.Commute
-import com.uwi.btmap.BLL.TTS
+import com.uwi.btmap.bll.TTS
 import java.lang.ref.WeakReference
 
 

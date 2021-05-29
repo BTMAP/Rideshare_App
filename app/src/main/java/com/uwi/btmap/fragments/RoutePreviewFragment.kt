@@ -1,11 +1,9 @@
-package com.uwi.btmap.Fragments
+package com.uwi.btmap.fragments
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,7 +31,7 @@ import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
-import com.uwi.btmap.BLL.CommuteViewModel
+import com.uwi.btmap.bll.CommuteViewModel
 import com.uwi.btmap.R
 
 private const val TAG = "MapboxPreviewFragment"
@@ -93,6 +91,9 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
             }
             //reset selection mode
             viewModel.locationSelectionMode = 0
+            if (viewModel.origin.value != null && viewModel.destination.value != null) {
+                getRoute(viewModel.origin.value!!, viewModel.destination.value!!)
+            }
         })
 
         viewModel.destination().observe(requireActivity(), Observer {
@@ -103,6 +104,10 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
             }
             //reset selection mode
             viewModel.locationSelectionMode = 0
+
+            if (viewModel.origin.value != null && viewModel.destination.value != null) {
+                getRoute(viewModel.origin.value!!, viewModel.destination.value!!)
+            }
         })
 
         viewModel.routePreview().observe(requireActivity(), Observer {
@@ -138,20 +143,10 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         if(viewModel.locationSelectionMode == 1){
             Log.d(TAG, "onMapClick: Add origin location: $point")
             viewModel.origin.value = Point.fromLngLat(point.longitude,point.latitude)
-            //if both points set get route
-            //update viewModel routePreview
-            if (viewModel.origin.value != null && viewModel.destination.value != null) {
-                getRoute(viewModel.origin.value!!, viewModel.destination.value!!)
-            }
         }
         if(viewModel.locationSelectionMode == 2){
             Log.d(TAG, "onMapClick: Add destination location: $point")
             viewModel.destination.value = Point.fromLngLat(point.longitude,point.latitude)
-            //if both points set get route
-            //update viewModel routePreview
-            if (viewModel.origin.value != null && viewModel.destination.value != null) {
-                getRoute(viewModel.origin.value!!, viewModel.destination.value!!)
-            }
         }
 
         return true

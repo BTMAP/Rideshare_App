@@ -1,16 +1,15 @@
-package com.uwi.btmap.Activities
+package com.uwi.btmap.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ViewParent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.uwi.btmap.*
-import com.uwi.btmap.BLL.CommuteViewModel
-import com.uwi.btmap.Fragments.*
+import com.uwi.btmap.bll.CommuteViewModel
+import com.uwi.btmap.fragments.*
 
 private const val NUM_PAGES = 5
 

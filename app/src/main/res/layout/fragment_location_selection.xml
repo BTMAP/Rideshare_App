@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    tools:context=".LocationSelectionFragment"
+    tools:context="fragments.LocationSelectionFragment"
     android:background="#ffff88">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,10 +21,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
+            <TextView
+                android:id="@+id/origin_edit_text"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
-                android:background="#ffffff" />
+                android:background="#ffffff"
+                android:text="Origin"/>
 
             <Button
                 android:id="@+id/origin_selection_button"
@@ -43,10 +45,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-            <EditText
+            <TextView
+                android:id="@+id/destination_edit_text"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
-                android:background="#ffffff" />
+                android:background="#ffffff"
+                android:text="Destination"/>
 
             <Button
                 android:id="@+id/destination_selection_button"

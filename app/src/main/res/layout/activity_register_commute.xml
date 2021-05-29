@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.RegisterCommuteActivity">
+    tools:context=".activities.RegisterCommuteActivity">
 
     <fragment
-        android:name="com.uwi.btmap.Fragments.RoutePreviewFragment"
+        android:name="com.uwi.btmap.fragments.RoutePreviewFragment"
         android:id="@+id/register_route_main_fragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
