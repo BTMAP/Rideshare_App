@@ -1,5 +1,7 @@
 package com.uwi.btmap.bll
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +9,11 @@ import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
 import com.uwi.btmap.model.Commute
 import java.util.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseAuth
+import com.uwi.btmap.activities.ProfileActivity
+import com.uwi.btmap.model.Trip
 
 class CommuteViewModel : ViewModel() {
 
@@ -117,5 +124,25 @@ class CommuteViewModel : ViewModel() {
         }
 
         return "$hourString:$minuteString"
+    }
+
+    fun saveCommute(){
+        var mAuth = FirebaseAuth.getInstance()
+        //If not work
+        //move to top (line 21 ProfileActivity)
+        //reference to Commutes collection in database
+        var database = FirebaseDatabase.getInstance().getReference("CommutesTestCollection")
+
+        //create object to store commute(trip) info
+        var tripInfo = Trip("name", "bio", "address", "email")
+
+        //set doc in collection
+        database.push().setValue(tripInfo)
+            .addOnSuccessListener {
+            //Toast.makeText(this, "Successfully Saved", Toast.LENGTH_SHORT).show()
+        }
+            .addOnFailureListener {
+            //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+        }
     }
 }
