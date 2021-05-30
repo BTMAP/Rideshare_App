@@ -128,13 +128,19 @@ class CommuteViewModel : ViewModel() {
 
     fun saveCommute(){
         var mAuth = FirebaseAuth.getInstance()
-        //If not work
-        //move to top (line 21 ProfileActivity)
         //reference to Commutes collection in database
         var database = FirebaseDatabase.getInstance().getReference("CommutesTestCollection")
 
+
+        //get userId
+        //convert caledar to date
+        //figure out best way to store route locations
+        //check that all values are valid before submission
+        
         //create object to store commute(trip) info
-        var tripInfo = Trip("name", "bio", "address", "email")
+        var tripInfo = Trip("J00001", Date(), "origin", "destination",
+            origin().value?.latitude(),origin().value?.longitude(),
+            destination().value?.latitude(),destination().value?.longitude())
 
         //set doc in collection
         database.push().setValue(tripInfo)
