@@ -1,6 +1,7 @@
 package com.uwi.btmap.bll
 
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,8 +13,17 @@ import java.util.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
+import com.mapbox.api.geocoding.v5.GeocodingCriteria
+import com.mapbox.api.geocoding.v5.MapboxGeocoding
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse
+import com.uwi.btmap.R
 import com.uwi.btmap.activities.ProfileActivity
 import com.uwi.btmap.model.Trip
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+private const val TAG = "CommuteViewModel"
 
 class CommuteViewModel : ViewModel() {
 
@@ -24,6 +34,9 @@ class CommuteViewModel : ViewModel() {
     /* ------------------------ Location Information ----------------------- */
     var origin = MutableLiveData<Point>()
     var destination = MutableLiveData<Point>()
+
+    var originAddress = MutableLiveData<String>()
+    var destinationAddress = MutableLiveData<String>()
 
     var routePreview = MutableLiveData<DirectionsRoute>()
 
@@ -53,6 +66,14 @@ class CommuteViewModel : ViewModel() {
 
     fun destination(): LiveData<Point>{
         return destination
+    }
+
+    fun originAddress(): LiveData<String>{
+        return originAddress
+    }
+
+    fun destinationAddress(): LiveData<String>{
+        return destinationAddress
     }
 
     fun routePreview(): LiveData<DirectionsRoute>{
@@ -136,7 +157,7 @@ class CommuteViewModel : ViewModel() {
         //convert caledar to date
         //figure out best way to store route locations
         //check that all values are valid before submission
-        
+
         //create object to store commute(trip) info
         var tripInfo = Trip("J00001", Date(), "origin", "destination",
             origin().value?.latitude(),origin().value?.longitude(),
@@ -150,5 +171,46 @@ class CommuteViewModel : ViewModel() {
             .addOnFailureListener {
             //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun geoCodeRequest(accessToken:String,point: Point,location:Int){
+        Log.d(TAG, "geoCodeRequest: Called.")
+        val mapboxGeocoding = MapboxGeocoding.builder()
+            .accessToken(accessToken)
+            .query(point)
+
+            .build()
+        //.geocodingTypes(GeocodingCriteria.TYPE_PLACE)
+
+        mapboxGeocoding.enqueueCall(object:
+            Callback<GeocodingResponse> {
+            override fun onResponse(
+                call: Call<GeocodingResponse>,
+                response: Response<GeocodingResponse>
+            ) {
+                Log.d(TAG, "onResponse: Geocoder response called.")
+                val results = response.body()!!.features()
+
+                if (results.size > 0) {
+                    when(location){
+                        1 -> originAddress.value = results[0].placeName()
+                        2 -> destinationAddress.value = results[0].placeName()
+                    }
+                        for(result in results){
+                        Log.d(TAG, "onResponse: Result: $result")
+                        //find closest result
+                        //set location text
+                    }
+
+                }else{
+                    Log.d(TAG, "onResponse: No result found.")
+                }
+            }
+
+            override fun onFailure(call: Call<GeocodingResponse>, t: Throwable) {
+                t.printStackTrace()
+            }
+
+        })
     }
 }

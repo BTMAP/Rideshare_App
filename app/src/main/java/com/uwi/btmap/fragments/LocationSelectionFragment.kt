@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mapbox.api.geocoding.v5.GeocodingCriteria
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
@@ -31,8 +32,8 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
     private lateinit var originButton: Button
     private lateinit var destinationButton: Button
 
-    private lateinit var originEditText: TextView
-    private lateinit var destinationEditText: TextView
+    private lateinit var originAddressText: TextView
+    private lateinit var destinationAddressText: TextView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,8 +43,8 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
         originButton = view.findViewById(R.id.origin_selection_button)
         destinationButton = view.findViewById(R.id.destination_selection_button)
 
-        originEditText = view.findViewById(R.id.origin_edit_text)
-        destinationEditText = view.findViewById(R.id.destination_edit_text)
+        originAddressText = view.findViewById(R.id.origin_edit_text)
+        destinationAddressText = view.findViewById(R.id.destination_edit_text)
 
         originButton.setOnClickListener {
             if (viewModel.locationSelectionMode == 1){
@@ -60,7 +61,7 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
             }
         }
 
-        originEditText.setOnClickListener{
+        originAddressText.setOnClickListener{
             var intent = PlaceAutocomplete.IntentBuilder()
                 .accessToken(getString(R.string.mapbox_access_token))
                 .placeOptions(PlaceOptions.builder()
@@ -72,7 +73,7 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
             startActivityForResult(intent,1)
         }
 
-        destinationEditText.setOnClickListener{
+        destinationAddressText.setOnClickListener{
             var intent = PlaceAutocomplete.IntentBuilder()
                 .accessToken(getString(R.string.mapbox_access_token))
                 .placeOptions(PlaceOptions.builder()
@@ -83,6 +84,14 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
 
             startActivityForResult(intent,2)
         }
+
+        viewModel.originAddress().observe(requireActivity(), Observer {
+            originAddressText.text = it
+        })
+
+        viewModel.destinationAddress().observe(requireActivity(), Observer {
+            destinationAddressText.text = it
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -90,46 +99,21 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
         if (resultCode == Activity.RESULT_OK && requestCode == 1) {
             val feature = PlaceAutocomplete.getPlace(data)
             viewModel.origin.value = feature.center()
+            //set text using placeName
+            //feature.text is shorter (could use instead)
+            //could use address if it is not null
+            viewModel.originAddress.value = feature.placeName()
         }
 
         if (resultCode == Activity.RESULT_OK && requestCode == 2) {
             val feature = PlaceAutocomplete.getPlace(data)
             viewModel.destination.value = feature.center()
+            //set text using placeName
+            //feature.text is shorter (could use instead)
+            //could use address if it is not null
+            viewModel.destinationAddress.value = feature.placeName()
         }
     }
 
-    private fun geoCodeRequest(){
-        Log.d(TAG, "geoCodeRequest: Called.")
-        val mapboxGeocoding = MapboxGeocoding.builder()
-            .accessToken(getString(R.string.mapbox_access_token))
-            .query("Barbados Bridgetown")
-            .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
-            .build()
 
-        mapboxGeocoding.enqueueCall(object:
-            Callback<GeocodingResponse> {
-            override fun onResponse(
-                call: Call<GeocodingResponse>,
-                response: Response<GeocodingResponse>
-            ) {
-                Log.d(TAG, "onResponse: Geocoder response called.")
-                val results = response.body()!!.features()
-
-                if (results.size > 0) {
-
-                    for(result in results){
-                        Log.d(TAG, "onResponse: Result: $result")
-                    }
-
-                }else{
-                    Log.d(TAG, "onResponse: No result found.")
-                }
-            }
-
-            override fun onFailure(call: Call<GeocodingResponse>, t: Throwable) {
-                t.printStackTrace()
-            }
-
-        })
-    }
 }

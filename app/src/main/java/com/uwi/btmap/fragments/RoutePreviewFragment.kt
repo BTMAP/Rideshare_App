@@ -142,11 +142,17 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         }
         if(viewModel.locationSelectionMode == 1){
             Log.d(TAG, "onMapClick: Add origin location: $point")
+            //reverse geocode point
+            //add returned feature to point and text
             viewModel.origin.value = Point.fromLngLat(point.longitude,point.latitude)
+            viewModel.geoCodeRequest(getString(R.string.mapbox_access_token),Point.fromLngLat(point.longitude,point.latitude),1)
         }
         if(viewModel.locationSelectionMode == 2){
             Log.d(TAG, "onMapClick: Add destination location: $point")
+            //reverse geocode point
+            //add returned feature to point and text
             viewModel.destination.value = Point.fromLngLat(point.longitude,point.latitude)
+            viewModel.geoCodeRequest(getString(R.string.mapbox_access_token),Point.fromLngLat(point.longitude,point.latitude),2)
         }
 
         return true

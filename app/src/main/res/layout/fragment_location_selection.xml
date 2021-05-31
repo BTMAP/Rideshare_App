@@ -26,6 +26,7 @@
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:background="#ffffff"
+                android:textColor="#222222"
                 android:text="Origin"/>
 
             <Button
@@ -50,6 +51,7 @@
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:background="#ffffff"
+                android:textColor="#222222"
                 android:text="Destination"/>
 
             <Button
