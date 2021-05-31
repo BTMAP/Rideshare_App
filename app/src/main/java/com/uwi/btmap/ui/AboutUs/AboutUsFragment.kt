@@ -1,4 +1,4 @@
-package com.uwi.btmap.ui.commute_list
+package com.uwi.btmap.ui.CommuteList
 
 import android.os.Bundle
 import android.view.LayoutInflater
