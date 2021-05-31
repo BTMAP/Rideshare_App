@@ -111,6 +111,7 @@ class CommuteViewModel : ViewModel() {
     private fun makeDateString(day:Int,month:Int,year:Int): String{
         return formatMonth(month) + " " + day + " " + year
     }
+
     private fun formatMonth(month:Int):String{
         var monthString = ""
         when (month){
