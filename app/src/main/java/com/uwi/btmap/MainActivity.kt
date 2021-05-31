@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_commute
+                R.id.nav_home, R.id.nav_commute, R.id.nav_about
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -116,6 +116,18 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_map -> {
                     drawerLayout.close()
                     val intent = Intent(this, MapActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+        navView.menu.findItem(R.id.nav_commute_list).setCheckable(false)
+        navView.menu.findItem(R.id.nav_commute_list).setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.nav_commute_list -> {
+                    drawerLayout.close()
+                    val intent = Intent(this, CommuteListActivity::class.java)
                     startActivity(intent)
                     true
                 }

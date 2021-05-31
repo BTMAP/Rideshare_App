@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -18,7 +19,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.uwi.btmap.databinding.ActivityUpdateProfileBinding
 import com.uwi.btmap.model.User
 import kotlinx.android.synthetic.main.activity_update_profile.*
-import kotlinx.android.synthetic.main.activity_update_profile.view.*
 import java.util.*
 
 class UpdateProfileActivity : AppCompatActivity() {
@@ -59,7 +59,6 @@ class UpdateProfileActivity : AppCompatActivity() {
         }
 
         //Update user information
-
         database = FirebaseDatabase.getInstance().getReference("Users")
         database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
             if (it.exists()) {
@@ -109,6 +108,7 @@ class UpdateProfileActivity : AppCompatActivity() {
     }
 
     private fun uploadImageToFirebaseStorage() {
+
         if (selectedPhotoUri == null)
             return
         val filename = UUID.randomUUID().toString()
@@ -119,8 +119,6 @@ class UpdateProfileActivity : AppCompatActivity() {
                 Log.d(TAG, "Successfully uploaded image: ${it.metadata?.path}")
 
                 ref.downloadUrl.addOnSuccessListener {
-                    Log.d(TAG, "File Location: $it")
-
                     saveUserToFirebaseDatabase(it.toString())
                 }
             }
@@ -141,7 +139,7 @@ class UpdateProfileActivity : AppCompatActivity() {
         val userInfo = User(name, bio, address, email, profileImageUrl)
         database.child(mAuth?.currentUser?.uid!!).setValue(userInfo).addOnSuccessListener {
 
-            val intent = Intent(this, ProfileActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
 
             Toast.makeText(this, "Successfully Saved", Toast.LENGTH_SHORT).show()
@@ -153,7 +151,18 @@ class UpdateProfileActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (profile_image == null){
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Required")
+            builder.setMessage("A profile photo is required. For more information, visit the about page.")
 
+            builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+            }
+            builder.show()
+        }
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

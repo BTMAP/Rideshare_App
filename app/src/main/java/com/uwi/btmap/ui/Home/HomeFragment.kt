@@ -1,4 +1,4 @@
-package com.uwi.btmap.ui.home
+package com.uwi.btmap.ui.Home
 
 import android.os.Bundle
 import android.view.LayoutInflater

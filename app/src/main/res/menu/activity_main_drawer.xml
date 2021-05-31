@@ -13,6 +13,10 @@
                 android:id="@+id/nav_commute"
                 android:icon="@drawable/ic_commute"
                 android:title="@string/menu_commute" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/person"
+                android:title="@string/menu_about" />
         </menu>
     </item>
 
@@ -22,6 +26,10 @@
                 android:id="@+id/nav_map"
                 android:icon="@drawable/ic_map"
                 android:title="@string/menu_map" />
+            <item
+                android:id="@+id/nav_commute_list"
+                android:icon="@drawable/ic_commute"
+                android:title="@string/menu_commute" />
         </menu>
     </item>
 

@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import com.uwi.btmap.databinding.ActivityProfileBinding
+import com.uwi.btmap.model.Commutes
 import com.uwi.btmap.model.User
 import kotlinx.android.synthetic.main.activity_update_profile.*
 
@@ -79,7 +80,14 @@ class ProfileActivity : AppCompatActivity() {
             val intent = Intent(this, UpdateProfileActivity::class.java)
             startActivity(intent)
         }
+
+//        binding.button.setOnClickListener{
+//            database = FirebaseDatabase.getInstance().getReference("Commutes")
+//            val commuteInfo = Commutes("Chloe Sullivan", "Oliver Queen", "10-28-2021", "7:55 AM")
+//            database.push().setValue(commuteInfo)
+//        }
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
