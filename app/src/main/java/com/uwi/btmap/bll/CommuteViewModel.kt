@@ -22,6 +22,7 @@ import com.uwi.btmap.model.Trip
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "CommuteViewModel"
 
@@ -48,7 +49,7 @@ class CommuteViewModel : ViewModel() {
     var locationSelectionMode = 0
 
     init {
-        commuteType.value = 0
+        commuteType.value = -1
 
         var year = calendar.get(Calendar.YEAR)
         var month = calendar.get(Calendar.MONTH)
@@ -60,25 +61,15 @@ class CommuteViewModel : ViewModel() {
         timeString.value = makeTimeString(hour,minute)
     }
 
-    fun origin(): LiveData<Point>{
-        return origin
-    }
+    fun origin(): LiveData<Point>{return origin}
 
-    fun destination(): LiveData<Point>{
-        return destination
-    }
+    fun destination(): LiveData<Point>{return destination}
 
-    fun originAddress(): LiveData<String>{
-        return originAddress
-    }
+    fun originAddress(): LiveData<String>{return originAddress}
 
-    fun destinationAddress(): LiveData<String>{
-        return destinationAddress
-    }
+    fun destinationAddress(): LiveData<String>{return destinationAddress}
 
-    fun routePreview(): LiveData<DirectionsRoute>{
-        return routePreview
-    }
+    fun routePreview(): LiveData<DirectionsRoute>{return routePreview}
 
     fun setCommuteType(i:Int){
         commuteType.value = i
@@ -157,6 +148,10 @@ class CommuteViewModel : ViewModel() {
         //get userId
         //figure out best way to store route locations
         //check that all values are valid before submission
+            //check no values are null
+            //check locations are in barbados
+            //check time and date are after current time
+            //check no conflicts with other commutes
 
         //create object to store commute(trip) info
         var tripInfo = Trip("J00001", calendar.time, "origin", "destination",
@@ -171,6 +166,28 @@ class CommuteViewModel : ViewModel() {
             .addOnFailureListener {
             //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun isCommuteTypeValid():Boolean{
+        return commuteType.value!! > -1
+    }
+
+    private fun isPointValid():Boolean{
+        return origin.value != null && destination.value != null
+    }
+
+    private fun isTimeDateValid():Boolean{
+        //check if calendar is greater than current time
+        return calendar > (Calendar.getInstance())
+
+    }
+
+    private fun isRouteValid():Boolean{
+        return routePreview!=null
+    }
+    
+    fun isCommuteValid():Boolean{
+        return isCommuteTypeValid() && isTimeDateValid() && isPointValid() && isRouteValid()
     }
 
     fun geoCodeRequest(accessToken:String,point: Point,location:Int){
