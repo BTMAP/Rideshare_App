@@ -37,11 +37,15 @@ class CommuteViewModel : ViewModel() {
     var routePreview = MutableLiveData<DirectionsRoute?>()
 
     /* --------------------- Date and Time Information --------------------- */
-    var calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
+    var calendar: Calendar = Calendar.getInstance()//TimeZone.getDefault())
     var dateString : MutableLiveData<String> = MutableLiveData()
     var timeString : MutableLiveData<String> = MutableLiveData()
 
     var locationSelectionMode = 0
+
+    /* ---------------------------- DB Success ----------------------------- */
+
+    var commuteSaveSuccess = MutableLiveData<Boolean>()
 
     init {
         commuteType.value = -1
@@ -54,7 +58,11 @@ class CommuteViewModel : ViewModel() {
 
         dateString.value = makeDateString(day,month,year)
         timeString.value = makeTimeString(hour,minute)
+
+        commuteSaveSuccess.value = false
     }
+
+    /* ---------------------- GET LiveDate Functions ----------------------- */
 
     fun origin(): LiveData<Point>{return origin}
 
@@ -66,12 +74,16 @@ class CommuteViewModel : ViewModel() {
 
     fun routePreview(): LiveData<DirectionsRoute?>{return routePreview}
 
+    fun dateString():LiveData<String>{return dateString}
+
+    fun timeString():LiveData<String>{return timeString}
+
+    fun commuteSaveSuccess():LiveData<Boolean>{return commuteSaveSuccess}
+
+    /* -------------------------- SET Functions --------------------------- */
+
     fun setCommuteType(i:Int){
         commuteType.value = i
-    }
-
-    fun dateString():LiveData<String>{
-        return dateString
     }
 
     fun setDate(year:Int,month:Int,day:Int){
@@ -82,10 +94,6 @@ class CommuteViewModel : ViewModel() {
         this.dateString.value = makeDateString(day,month,year)
     }
 
-    fun timeString():LiveData<String>{
-        return timeString
-    }
-
     fun setTime(hour:Int,minute:Int){
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
@@ -93,6 +101,8 @@ class CommuteViewModel : ViewModel() {
         this.calendar.set(year,month,day,hour,minute)
         this.timeString.value = makeTimeString(hour,minute)
     }
+
+    /* ------------------------ String Formatters ------------------------- */
 
     private fun makeDateString(day:Int,month:Int,year:Int): String{
         return formatMonth(month) + " " + day + " " + year
@@ -134,34 +144,7 @@ class CommuteViewModel : ViewModel() {
         return "$hourString:$minuteString"
     }
 
-    fun saveCommute(){
-        val mAuth = FirebaseAuth.getInstance()
-        //reference to Commutes collection in database
-        val database = FirebaseDatabase.getInstance().getReference("CommutesTestCollection")
-
-
-        //get userId
-        //figure out best way to store route locations
-        //check that all values are valid before submission
-            //check no values are null
-            //check locations are in barbados
-            //check time and date are after current time
-            //check no conflicts with other commutes
-
-        //create object to store commute(trip) info
-        val tripInfo = Trip("J00001", calendar.time, "origin", "destination",
-            origin().value?.latitude(),origin().value?.longitude(),
-            destination().value?.latitude(),destination().value?.longitude())
-
-        //set doc in collection
-        database.push().setValue(tripInfo)
-            .addOnSuccessListener {
-            //Toast.makeText(this, "Successfully Saved", Toast.LENGTH_SHORT).show()
-        }
-            .addOnFailureListener {
-            //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
-        }
-    }
+    /* ---------------------- Validation Functions ----------------------- */
 
     private fun isCommuteTypeValid():Boolean{
         return commuteType.value!! > -1
@@ -188,7 +171,7 @@ class CommuteViewModel : ViewModel() {
 
     private fun isTimeDateValid():Boolean{
         //check if calendar is greater than current time
-        return calendar > (Calendar.getInstance())
+        return calendar.timeInMillis > (Calendar.getInstance().timeInMillis)
 
     }
 
@@ -200,12 +183,36 @@ class CommuteViewModel : ViewModel() {
         return isCommuteTypeValid() && isTimeDateValid() && isPointValid() && isRouteValid()
     }
 
+    /* --------------------------- DB Functions --------------------------- */
+
+    fun saveCommute(){
+        val mAuth = FirebaseAuth.getInstance()
+        //reference to Commutes collection in database
+        val database = FirebaseDatabase.getInstance().getReference("CommutesTestCollection")
+
+        //create object to store commute(trip) info
+        val tripInfo = Trip("J00001", calendar.time, "origin", "destination",
+            origin().value?.latitude(),origin().value?.longitude(),
+            destination().value?.latitude(),destination().value?.longitude())
+
+        //set doc in collection
+        database.push().setValue(tripInfo)
+            .addOnSuccessListener {
+                commuteSaveSuccess.value = true
+                //Toast.makeText(this, "Successfully Saved", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    /* -------------------------- Map Functions --------------------------- */
+
     fun geoCodeRequest(accessToken:String,point: Point,location:Int){
         Log.d(TAG, "geoCodeRequest: Called.")
         val mapboxGeocoding = MapboxGeocoding.builder()
             .accessToken(accessToken)
             .query(point)
-
             .build()
         //.geocodingTypes(GeocodingCriteria.TYPE_PLACE)
 
@@ -220,20 +227,18 @@ class CommuteViewModel : ViewModel() {
 
                 if (results.size > 0) {
                     when(location){
+                        //find closest result
+                        //set location text
                         1 -> originAddress.value = results[0].placeName()
                         2 -> destinationAddress.value = results[0].placeName()
                     }
                         for(result in results){
                         Log.d(TAG, "onResponse: Result: $result")
-                        //find closest result
-                        //set location text
                     }
-
                 }else{
                     Log.d(TAG, "onResponse: No result found.")
                 }
             }
-
             override fun onFailure(call: Call<GeocodingResponse>, t: Throwable) {
                 t.printStackTrace()
             }

@@ -54,7 +54,7 @@ class DateSelectorFragment : Fragment() {
     }
 
     private fun initDatePicker(){
-        var dateSetListener = DatePickerDialog.OnDateSetListener{ datePicker: DatePicker, day: Int, month: Int, year: Int ->
+        var dateSetListener = DatePickerDialog.OnDateSetListener{ datePicker: DatePicker, year: Int, month: Int, day: Int ->
             viewModel.setDate(year,month,day)
         }
 
