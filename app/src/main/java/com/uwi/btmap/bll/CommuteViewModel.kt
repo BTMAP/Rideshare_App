@@ -155,12 +155,11 @@ class CommuteViewModel : ViewModel() {
 
 
         //get userId
-        //convert caledar to date
         //figure out best way to store route locations
         //check that all values are valid before submission
 
         //create object to store commute(trip) info
-        var tripInfo = Trip("J00001", Date(), "origin", "destination",
+        var tripInfo = Trip("J00001", calendar.time, "origin", "destination",
             origin().value?.latitude(),origin().value?.longitude(),
             destination().value?.latitude(),destination().value?.longitude())
 
