@@ -24,6 +24,7 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
 
         submitButton = view.findViewById(R.id.submit_commute_button)
         submitButton.setOnClickListener{
+            //check if commute is valid
             viewModel.saveCommute()
             val intent = Intent(requireContext(),MainActivity::class.java)
             startActivity(intent)

@@ -137,6 +137,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     }
 
     private fun onMapClick(point: LatLng): Boolean {
+
         if(viewModel.locationSelectionMode == 0){
             Log.d(TAG, "onMapClick: Don't add location")
         }

@@ -1,6 +1,5 @@
 package com.uwi.btmap.bll
 
-import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -10,19 +9,15 @@ import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
 import com.uwi.btmap.model.Commute
 import java.util.*
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
-import com.mapbox.api.geocoding.v5.GeocodingCriteria
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse
-import com.uwi.btmap.R
-import com.uwi.btmap.activities.ProfileActivity
 import com.uwi.btmap.model.Trip
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.TimeUnit
+
 
 private const val TAG = "CommuteViewModel"
 
@@ -39,7 +34,7 @@ class CommuteViewModel : ViewModel() {
     var originAddress = MutableLiveData<String>()
     var destinationAddress = MutableLiveData<String>()
 
-    var routePreview = MutableLiveData<DirectionsRoute>()
+    var routePreview = MutableLiveData<DirectionsRoute?>()
 
     /* --------------------- Date and Time Information --------------------- */
     var calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
@@ -51,11 +46,11 @@ class CommuteViewModel : ViewModel() {
     init {
         commuteType.value = -1
 
-        var year = calendar.get(Calendar.YEAR)
-        var month = calendar.get(Calendar.MONTH)
-        var day = calendar.get(Calendar.DAY_OF_MONTH)
-        var hour = calendar.get(Calendar.HOUR_OF_DAY)
-        var minute = calendar.get(Calendar.MINUTE)
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
 
         dateString.value = makeDateString(day,month,year)
         timeString.value = makeTimeString(hour,minute)
@@ -69,7 +64,7 @@ class CommuteViewModel : ViewModel() {
 
     fun destinationAddress(): LiveData<String>{return destinationAddress}
 
-    fun routePreview(): LiveData<DirectionsRoute>{return routePreview}
+    fun routePreview(): LiveData<DirectionsRoute?>{return routePreview}
 
     fun setCommuteType(i:Int){
         commuteType.value = i
@@ -80,8 +75,8 @@ class CommuteViewModel : ViewModel() {
     }
 
     fun setDate(year:Int,month:Int,day:Int){
-        var hour = calendar.get(Calendar.HOUR_OF_DAY)
-        var minute = calendar.get(Calendar.MINUTE)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
 
         this.calendar.set(year,month,day,hour,minute)
         this.dateString.value = makeDateString(day,month,year)
@@ -92,9 +87,9 @@ class CommuteViewModel : ViewModel() {
     }
 
     fun setTime(hour:Int,minute:Int){
-        var year = calendar.get(Calendar.YEAR)
-        var month = calendar.get(Calendar.MONTH)
-        var day = calendar.get(Calendar.SECOND)
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.SECOND)
         this.calendar.set(year,month,day,hour,minute)
         this.timeString.value = makeTimeString(hour,minute)
     }
@@ -140,9 +135,9 @@ class CommuteViewModel : ViewModel() {
     }
 
     fun saveCommute(){
-        var mAuth = FirebaseAuth.getInstance()
+        val mAuth = FirebaseAuth.getInstance()
         //reference to Commutes collection in database
-        var database = FirebaseDatabase.getInstance().getReference("CommutesTestCollection")
+        val database = FirebaseDatabase.getInstance().getReference("CommutesTestCollection")
 
 
         //get userId
@@ -154,7 +149,7 @@ class CommuteViewModel : ViewModel() {
             //check no conflicts with other commutes
 
         //create object to store commute(trip) info
-        var tripInfo = Trip("J00001", calendar.time, "origin", "destination",
+        val tripInfo = Trip("J00001", calendar.time, "origin", "destination",
             origin().value?.latitude(),origin().value?.longitude(),
             destination().value?.latitude(),destination().value?.longitude())
 
@@ -173,7 +168,22 @@ class CommuteViewModel : ViewModel() {
     }
 
     private fun isPointValid():Boolean{
-        return origin.value != null && destination.value != null
+        //check if points are in barbados
+        return if (origin.value != null && destination.value != null){
+            isPointInBarbados(origin.value!!) && isPointInBarbados(destination.value!!)
+        }else{
+            false
+        }
+    }
+
+    private fun isPointInBarbados(point:Point):Boolean{
+        //specify bounding box and check if point falls inside
+        val barUpperBound = 13.43
+        val barLowerBound = 12.95
+        val barEastBound = -59.75
+        val barWestBound = -59.33
+        return (point.latitude()>barLowerBound && point.latitude()<barUpperBound) &&
+                (point.longitude()>barEastBound && point.longitude()<barWestBound)
     }
 
     private fun isTimeDateValid():Boolean{
@@ -183,9 +193,9 @@ class CommuteViewModel : ViewModel() {
     }
 
     private fun isRouteValid():Boolean{
-        return routePreview!=null
+        return routePreview != null
     }
-    
+
     fun isCommuteValid():Boolean{
         return isCommuteTypeValid() && isTimeDateValid() && isPointValid() && isRouteValid()
     }
