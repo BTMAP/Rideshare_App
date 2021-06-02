@@ -16,7 +16,13 @@
         android:name="com.uwi.btmap.ui.commute_list.CommuteListFragment"
         android:label="@string/menu_commute"
         tools:layout="@layout/fragment_commute_list" >
+    </fragment>
 
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="com.uwi.btmap.ui.AboutUs.AboutUsFragment"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about_us" >
     </fragment>
 
 

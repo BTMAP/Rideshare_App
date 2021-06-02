@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -13,12 +15,16 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.uwi.btmap.activities.MapActivity
 import com.uwi.btmap.activities.PhoneAuthActivity
 import com.uwi.btmap.activities.ProfileActivity
+import com.uwi.btmap.activities.UpdateProfileActivity
+import kotlinx.android.synthetic.main.activity_update_profile.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,54 +50,53 @@ class MainActivity : AppCompatActivity() {
         val profileName: TextView = headerView.findViewById(R.id.nav_view_name)
         val profileImage: ImageView = headerView.findViewById(R.id.nav_view_image)
 
+        if (mAuth?.currentUser != null) {
+            profileNumber.text = mAuth?.currentUser?.phoneNumber.toString()
 
-        if (mAuth?.currentUser != null || true) {
-//            profileNumber.text = mAuth?.currentUser?.phoneNumber.toString()
-//
-//            database = FirebaseDatabase.getInstance().getReference("Users")
-//            database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
-//                if (it.exists()) {
-//                    val profilePhoto = it.child("profileImageUrl").value
-//
-//                    Glide.with(this)
-//                        .load(profilePhoto)
-//                        .into(profileImage)
-//
-//                    val name = it.child("name").value
-//
-//                    profileName.text = name.toString()
-//                } else {
-//                    Toast.makeText(this, "User Doesn't Exist", Toast.LENGTH_SHORT).show()
-//
-//                    val builder = AlertDialog.Builder(this)
-//                    builder.setTitle("Update Profile")
-//                    builder.setMessage("Please update profile information to continue.")
-//
-//                    builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-//                        val intent = Intent(this@MainActivity, UpdateProfileActivity::class.java)
-//                        startActivity(intent)
-//                        finish()
-//                    }
-//
-//                    builder.setNegativeButton(android.R.string.no) { dialog, which ->
-//                        mAuth!!.signOut()
-//                        startActivity(Intent(this, PhoneAuthActivity::class.java))
-//                        finish()
-//                    }
-//
-//                    builder.show()
-//
-//                }
-//            }.addOnFailureListener {
-//                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
-//            }
+            database = FirebaseDatabase.getInstance().getReference("Users")
+            database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
+                if (it.exists()) {
+                    val profilePhoto = it.child("profileImageUrl").value
+
+                    Glide.with(this)
+                        .load(profilePhoto)
+                        .into(profileImage)
+
+                    val name = it.child("name").value
+
+                    profileName.text = name.toString()
+                } else {
+                    Toast.makeText(this, "User Doesn't Exist", Toast.LENGTH_SHORT).show()
+
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("Update Profile")
+                    builder.setMessage("Please update profile information to continue.")
+
+                    builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        val intent = Intent(this@MainActivity, UpdateProfileActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+
+                    builder.setNegativeButton(android.R.string.no) { dialog, which ->
+                        mAuth!!.signOut()
+                        startActivity(Intent(this, PhoneAuthActivity::class.java))
+                        finish()
+                    }
+
+                    builder.show()
+
+                }
+            }.addOnFailureListener {
+                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_commute
+                R.id.nav_home, R.id.nav_commute, R.id.nav_about
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -121,6 +126,18 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+//        navView.menu.findItem(R.id.nav_commute_list).setCheckable(false)
+//        navView.menu.findItem(R.id.nav_commute_list).setOnMenuItemClickListener { item ->
+//            when (item.itemId) {
+//                R.id.nav_commute_list -> {
+//                    drawerLayout.close()
+//                    val intent = Intent(this, CommuteListActivity::class.java)
+//                    startActivity(intent)
+//                    true
+//                }
+//                else -> false
+//            }
+//        }
         navView.menu.findItem(R.id.nav_logout).setCheckable(false)
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -158,12 +175,12 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//        if (mAuth?.currentUser == null) {
-//            val intent = Intent(this@MainActivity, PhoneAuthActivity::class.java)
-//            startActivity(intent)
-//            finish()
-//        }
-//    }
+    override fun onStart() {
+        super.onStart()
+        if (mAuth?.currentUser == null) {
+            val intent = Intent(this@MainActivity, PhoneAuthActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
 }
