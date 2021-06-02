@@ -12,6 +12,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.uwi.btmap.R
 import com.uwi.btmap.databinding.ActivityProfileBinding
+<<<<<<< HEAD:app/src/main/java/com/uwi/btmap/activities/ProfileActivity.kt
+=======
+import com.uwi.btmap.model.Commutes
+import com.uwi.btmap.model.User
+>>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09:app/src/main/java/com/uwi/btmap/ProfileActivity.kt
 import kotlinx.android.synthetic.main.activity_update_profile.*
 
 
@@ -77,7 +82,14 @@ class ProfileActivity : AppCompatActivity() {
             val intent = Intent(this, UpdateProfileActivity::class.java)
             startActivity(intent)
         }
+
+//        binding.button.setOnClickListener{
+//            database = FirebaseDatabase.getInstance().getReference("Commutes")
+//            val commuteInfo = Commutes("Chloe Sullivan", "Oliver Queen", "10-28-2021", "7:55 AM")
+//            database.push().setValue(commuteInfo)
+//        }
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

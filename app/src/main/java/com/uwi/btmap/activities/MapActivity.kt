@@ -48,7 +48,7 @@ class MapActivity :
     MapboxMap.OnMapLongClickListener,
     AdapterView.OnItemSelectedListener {
 
-    private val TAG = "Main Activity"
+    private val TAG = "Map Activity"
 
     private var mapView: MapView? = null
     private lateinit var mapboxMap: MapboxMap

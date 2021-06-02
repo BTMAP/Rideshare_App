@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/SkyBlue"
+<<<<<<< HEAD
     tools:context="ui.AboutUs.AboutUsFragment">
+=======
+    tools:context=".ui.AboutUs.AboutUsFragment">
+>>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09
 
     <ImageView
         android:id="@+id/imageView"
@@ -110,4 +114,8 @@
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
+<<<<<<< HEAD
 </androidx.constraintlayout.widget.ConstraintLayout>
+=======
+</androidx.constraintlayout.widget.ConstraintLayout>
+>>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09

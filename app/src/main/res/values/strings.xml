@@ -20,7 +20,11 @@
     <string name="google_login_btn">Sign In With Google</string>
     <string name="phone_login_btn">Sign In With Phone</string>
 
+<<<<<<< HEAD
     <string name="rideshare_app"><b>BTMAP: Rideshare App</b> is a mobile application designed to allow for users to share a commute in an attempt to reduce vehicular traffic. </string>
+=======
+    <string name="rideshare_app"><b>BTMAP: Rideshare App</b> is a mobile application designed to allow for users to share a commute in an attempt to reduce vehicular traffic, </string>
+>>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09
     <string name="why_prof_photo">A profile picture is necessary to allow drivers and passengers alike to have an idea of what the other person looks like before they enter the vehicle.</string>
     <string name="contact_us">Questions, queries or comments?</string>
     <string name="contact_us_link"><b><i>Contact Us</i></b></string>

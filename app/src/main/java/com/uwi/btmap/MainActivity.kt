@@ -126,6 +126,7 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+<<<<<<< HEAD
 //        navView.menu.findItem(R.id.nav_commute_list).setCheckable(false)
 //        navView.menu.findItem(R.id.nav_commute_list).setOnMenuItemClickListener { item ->
 //            when (item.itemId) {
@@ -138,6 +139,20 @@ class MainActivity : AppCompatActivity() {
 //                else -> false
 //            }
 //        }
+=======
+        navView.menu.findItem(R.id.nav_commute_list).setCheckable(false)
+        navView.menu.findItem(R.id.nav_commute_list).setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.nav_commute_list -> {
+                    drawerLayout.close()
+                    val intent = Intent(this, CommuteListActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+>>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09
         navView.menu.findItem(R.id.nav_logout).setCheckable(false)
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener { item ->
             when (item.itemId) {

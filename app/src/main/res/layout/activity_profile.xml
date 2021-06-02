@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+<<<<<<< HEAD
     tools:context=".activities.ProfileActivity">
+=======
+    tools:context=".ProfileActivity">
+>>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -165,6 +169,7 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+<<<<<<< HEAD
         <TextView
             android:id="@+id/userEmail"
             android:layout_width="400dp"
@@ -215,4 +220,72 @@
 
     </LinearLayout>
 
+=======
+                <TextView
+                    android:id="@+id/userEmail"
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAlignment="viewStart"
+                    android:hint="Email Address"
+                    android:textSize="18sp"
+                    android:background="@drawable/input"
+                    android:backgroundTint="@color/AliceBlue"
+                    android:drawableLeft="@drawable/ic_email"
+                    android:padding="10dp"
+                    android:layout_margin="5dp"
+                    tools:ignore="RtlCompat" />
+
+                <TextView
+                    android:id="@+id/userAddress"
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAlignment="viewStart"
+                    android:hint="Home Address"
+                    android:textSize="18sp"
+                    android:drawableLeft="@drawable/address"
+                    android:background="@drawable/input"
+                    android:backgroundTint="@color/AliceBlue"
+                    android:padding="10dp"
+                    android:layout_margin="5dp"
+                    tools:ignore="RtlCompat" />
+
+                <TextView
+                    android:id="@+id/userBio"
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAlignment="viewStart"
+                    android:hint="Bio"
+                    android:textSize="18sp"
+                    android:drawableLeft="@drawable/person"
+                    android:background="@drawable/input"
+                    android:backgroundTint="@color/AliceBlue"
+                    android:padding="10dp"
+                    android:layout_margin="5dp"
+                    tools:ignore="RtlCompat" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
+    <!--    <Button-->
+<!--        android:id="@+id/updateProfile"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:backgroundTint="@color/purple_500"-->
+<!--        android:text="Update"-->
+<!--        android:textAllCaps="true"-->
+<!--        android:textColor="#FFFFFF" />-->
+>>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09
 </LinearLayout>
