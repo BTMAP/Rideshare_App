@@ -47,11 +47,20 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         val headerView: View = navView.getHeaderView(0)
         val profileNumber: TextView = headerView.findViewById(R.id.nav_view_number)
+        val userType: TextView = headerView.findViewById(R.id.nav_view_user_type)
         val profileName: TextView = headerView.findViewById(R.id.nav_view_name)
         val profileImage: ImageView = headerView.findViewById(R.id.nav_view_image)
 
         if (mAuth?.currentUser != null) {
             profileNumber.text = mAuth?.currentUser?.phoneNumber.toString()
+
+            database = FirebaseDatabase.getInstance().getReference("UserCommuteType")
+            database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
+                if (it.exists()) {
+                    val user = it.child("userType").value
+                    userType.text = user.toString()
+                }
+            }
 
             database = FirebaseDatabase.getInstance().getReference("Users")
             database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
@@ -66,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
                     profileName.text = name.toString()
                 } else {
-                    Toast.makeText(this, "User Doesn't Exist", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "User Doesn't Exist", Toast.LENGTH_SHORT).show()
 
                     val builder = AlertDialog.Builder(this)
                     builder.setTitle("Update Profile")
@@ -126,33 +135,20 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-<<<<<<< HEAD
-//        navView.menu.findItem(R.id.nav_commute_list).setCheckable(false)
-//        navView.menu.findItem(R.id.nav_commute_list).setOnMenuItemClickListener { item ->
-//            when (item.itemId) {
-//                R.id.nav_commute_list -> {
-//                    drawerLayout.close()
-//                    val intent = Intent(this, CommuteListActivity::class.java)
-//                    startActivity(intent)
-//                    true
-//                }
-//                else -> false
-//            }
-//        }
-=======
-        navView.menu.findItem(R.id.nav_commute_list).setCheckable(false)
-        navView.menu.findItem(R.id.nav_commute_list).setOnMenuItemClickListener { item ->
+
+        navView.menu.findItem(R.id.nav_test).setCheckable(false)
+        navView.menu.findItem(R.id.nav_test).setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.nav_commute_list -> {
+                R.id.nav_test -> {
                     drawerLayout.close()
-                    val intent = Intent(this, CommuteListActivity::class.java)
+                    val intent = Intent(this, TestActivity::class.java)
                     startActivity(intent)
                     true
                 }
                 else -> false
             }
         }
->>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09
+
         navView.menu.findItem(R.id.nav_logout).setCheckable(false)
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener { item ->
             when (item.itemId) {

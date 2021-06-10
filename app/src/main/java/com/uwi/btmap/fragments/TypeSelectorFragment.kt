@@ -25,10 +25,7 @@ class TypeSelectorFragment : Fragment() {
         arguments?.let {
             //set vars from bundle
         }
-
         viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
-
-
     }
 
     override fun onCreateView(

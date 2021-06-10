@@ -12,11 +12,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.uwi.btmap.R
 import com.uwi.btmap.databinding.ActivityProfileBinding
-<<<<<<< HEAD:app/src/main/java/com/uwi/btmap/activities/ProfileActivity.kt
-=======
-import com.uwi.btmap.model.Commutes
-import com.uwi.btmap.model.User
->>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09:app/src/main/java/com/uwi/btmap/ProfileActivity.kt
 import kotlinx.android.synthetic.main.activity_update_profile.*
 
 

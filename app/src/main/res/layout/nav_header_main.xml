@@ -45,5 +45,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nav_view_name" />
+        app:layout_constraintTop_toBottomOf="@+id/nav_view_name"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <TextView
+        android:id="@+id/nav_view_user_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Type"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nav_view_number" />
 </androidx.constraintlayout.widget.ConstraintLayout>

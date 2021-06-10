@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 import com.uwi.btmap.adapter.MyAdapter
-import com.uwi.btmap.model.Commutes
+import com.uwi.btmap.model.Trip
 
 class CommuteListActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var commuteView: RecyclerView
-    private lateinit var commuteArrayList: ArrayList<Commutes>
+    private lateinit var commuteArrayList: ArrayList<Trip>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,19 +21,19 @@ class CommuteListActivity : AppCompatActivity() {
         commuteView.layoutManager = LinearLayoutManager(this)
         commuteView.setHasFixedSize(true)
 
-        commuteArrayList = arrayListOf<Commutes>()
+        commuteArrayList = arrayListOf<Trip>()
         getUserData()
     }
 
     private fun getUserData() {
 
-        database = FirebaseDatabase.getInstance().getReference("Commutes")
+        database = FirebaseDatabase.getInstance().getReference("Commute Collection")
         database.addValueEventListener(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
-                        val commuteList = userSnapshot.getValue(Commutes::class.java)
+                        val commuteList = userSnapshot.getValue(Trip::class.java)
                         commuteArrayList.add(commuteList!!)
                     }
                     commuteView.adapter = MyAdapter(commuteArrayList)

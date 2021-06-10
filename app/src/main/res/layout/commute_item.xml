@@ -24,21 +24,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Driver: "
+                android:text="Origin: "
                 android:textColor="@color/purple_500"
-                android:textSize="26sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/driverName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="John Snow"
-                android:textColor="@color/WhiteSmoke"
                 android:textSize="20sp"
                 android:textStyle="bold"/>
 
+            <TextView
+                android:id="@+id/originName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="The Night King"
+                android:textColor="@color/WhiteSmoke"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <LinearLayout
@@ -50,21 +49,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Passenger: "
+                android:text="Destination: "
                 android:textColor="@color/purple_500"
-                android:textSize="26sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/passengerName"
+                android:id="@+id/destinationName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="The Night King"
                 android:textColor="@color/WhiteSmoke"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold"/>
-
         </LinearLayout>
 
         <LinearLayout
@@ -78,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:text="Date: "
                 android:textColor="@color/purple_500"
-                android:textSize="26sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -88,7 +86,7 @@
                 android:layout_marginStart="8dp"
                 android:text="04-13-2021"
                 android:textColor="@color/WhiteSmoke"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold"/>
         </LinearLayout>
 
@@ -103,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:text="Time: "
                 android:textColor="@color/purple_500"
-                android:textSize="26sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -113,10 +111,9 @@
                 android:layout_marginStart="8dp"
                 android:text="12:45 PM"
                 android:textColor="@color/WhiteSmoke"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold"/>
         </LinearLayout>
-
 
     </LinearLayout>
 

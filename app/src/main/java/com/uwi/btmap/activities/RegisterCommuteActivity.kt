@@ -33,19 +33,20 @@ class RegisterCommuteActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (pager.currentItem == 0){
+        if (pager.currentItem == 0) {
             super.onBackPressed()
-        }else {
+        } else {
             pager.currentItem = pager.currentItem - 1
         }
     }
 
-    private inner class ScreenSlidePagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private inner class ScreenSlidePagerAdapter(fm: FragmentManager) :
+        FragmentStatePagerAdapter(fm) {
         override fun getCount(): Int = NUM_PAGES
 
         override fun getItem(position: Int): Fragment {
-            var fragment : Fragment = TypeSelectorFragment()
-            when (position){
+            var fragment: Fragment = TypeSelectorFragment()
+            when (position) {
                 0 -> fragment = TypeSelectorFragment()
                 1 -> fragment = LocationSelectionFragment()
                 2 -> fragment = DateSelectorFragment()

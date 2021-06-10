@@ -45,6 +45,7 @@ class VerifyActivity : AppCompatActivity() {
 
     }
 
+
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->

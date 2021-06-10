@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.uwi.btmap.R
-import com.uwi.btmap.model.Commutes
+import com.uwi.btmap.model.Trip
 
-class MyAdapter(private val commuteList : ArrayList<Commutes>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(private val commuteList : ArrayList<Trip>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -24,10 +24,10 @@ class MyAdapter(private val commuteList : ArrayList<Commutes>) : RecyclerView.Ad
 
         val currentItem = commuteList[position]
 
-        holder.driverName.text = currentItem.driverName
-        holder.passengerName.text = currentItem.passengerName
-        holder.date.text = currentItem.commuteDate
-        holder.time.text = currentItem.commuteTime
+        holder.origin.text = currentItem.originName
+        holder.destination.text = currentItem.destinationName
+        holder.date.text = currentItem.dateTime.toString()
+        holder.time.text = currentItem.dateTime.toString()
 
     }
 
@@ -39,8 +39,8 @@ class MyAdapter(private val commuteList : ArrayList<Commutes>) : RecyclerView.Ad
 
     class MyViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
-        val driverName : TextView = itemView.findViewById(R.id.driverName)
-        val passengerName : TextView = itemView.findViewById(R.id.passengerName)
+        val origin : TextView = itemView.findViewById(R.id.originName)
+        val destination : TextView = itemView.findViewById(R.id.destinationName)
         val date : TextView = itemView.findViewById(R.id.commuteDate)
         val time : TextView = itemView.findViewById(R.id.commuteTime)
 

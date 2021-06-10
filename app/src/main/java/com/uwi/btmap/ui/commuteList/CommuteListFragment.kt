@@ -1,48 +1,24 @@
-package com.uwi.btmap.ui.AboutUs
+package com.uwi.btmap.ui.commuteList
 
-<<<<<<< HEAD
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import com.uwi.btmap.R
-
-=======
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-<<<<<<<< HEAD:app/src/main/java/com/uwi/btmap/ui/AboutUs/AboutUsFragment.kt
-========
 import android.widget.Button
->>>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09:app/src/main/java/com/uwi/btmap/ui/commute_list/CommuteListFragment.kt
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.*
+import com.uwi.btmap.R
 import com.uwi.btmap.activities.MapActivity
 import com.uwi.btmap.activities.RegisterCommuteActivity
-import com.uwi.btmap.R
+import com.uwi.btmap.adapter.MyAdapter
+import com.uwi.btmap.model.Trip
+import kotlinx.android.synthetic.main.fragment_commute_list.*
 
-<<<<<<<< HEAD:app/src/main/java/com/uwi/btmap/ui/AboutUs/AboutUsFragment.kt
->>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09
-
-class AboutUsFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_about_us, container, false)
-
-<<<<<<< HEAD
-=======
-        view?.findViewById(R.id.link) as TextView
-========
 class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
 
     private lateinit var commutes: List<String>
@@ -52,28 +28,29 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
 
         val addCommuteButton = view.findViewById<Button>(R.id.add_commute_button)
         val recyclerView = view.findViewById<RecyclerView>(R.id.commute_recycler_view)
-        commutes = listOf("Commute 1","Commute 2","Commute 3")
+        commutes = listOf("Commute 1", "Commute 2", "Commute 3")
         Log.d("TAG", "onViewCreated: ${commutes.size}")
         val adapter = CommutesAdapter(commutes)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
-        addCommuteButton.setOnClickListener{
+        add_commute.setOnClickListener {
             //switch to register commute activity
-            val intent: Intent = Intent(requireContext(),RegisterCommuteActivity::class.java)
+            val intent: Intent = Intent(requireContext(), RegisterCommuteActivity::class.java)
             startActivity(intent)
         }
     }
 
-    class CommutesAdapter (private val commutes:List<String>) :RecyclerView.Adapter<CommutesAdapter.ViewHolder>(){
+    class CommutesAdapter(private val commutes: List<String>) :
+        RecyclerView.Adapter<CommutesAdapter.ViewHolder>() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
         ): CommutesAdapter.ViewHolder {
             val context = parent.context
             val inflater = LayoutInflater.from(context)
-            val commuteView = inflater.inflate(R.layout.commute_list_item,parent,false)
+            val commuteView = inflater.inflate(R.layout.commute_list_item, parent, false)
             return ViewHolder(commuteView)
         }
 
@@ -87,20 +64,18 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
         override fun getItemCount(): Int {
             return commutes.size
         }
-        
-        inner class ViewHolder(listItemView:View):RecyclerView.ViewHolder(listItemView){
+
+        inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
             val textView: TextView = itemView.findViewById<TextView>(R.id.commute_item_text)
 
             init {
-                listItemView.setOnClickListener{
+                listItemView.setOnClickListener {
                     //switch to map activity
-                    val intent: Intent = Intent(listItemView.context,MapActivity::class.java)
+                    val intent: Intent = Intent(listItemView.context, MapActivity::class.java)
                     listItemView.context.startActivity(intent)
                 }
             }
         }
 
->>>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09:app/src/main/java/com/uwi/btmap/ui/commute_list/CommuteListFragment.kt
->>>>>>> 205e1c5ae536bde12fd6731b514ccf2f77b2cc09
     }
 }

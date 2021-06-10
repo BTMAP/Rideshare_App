@@ -1,17 +1,27 @@
-package com.uwi.btmap
+package com.uwi.btmap.activities
 
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.mapbox.android.core.location.*
 import com.mapbox.android.core.location.LocationEngineCallback
-import com.mapbox.android.core.location.LocationEngineResult
+import com.mapbox.android.core.permissions.PermissionsListener
+import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.api.directions.v5.models.BannerInstructions
 import com.mapbox.api.directions.v5.models.VoiceInstructions
+import com.mapbox.geojson.Point
+import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
 import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
@@ -22,8 +32,10 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.style.layers.LineLayer
 import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.base.trip.model.RouteProgress
 import com.mapbox.navigation.base.trip.model.RouteProgressState
 import com.mapbox.navigation.core.MapboxNavigation
@@ -34,14 +46,17 @@ import com.mapbox.navigation.ui.instruction.InstructionView
 import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.puck.PuckDrawableSupplier
 import com.mapbox.navigation.ui.summary.SummaryBottomSheet
+import com.uwi.btmap.R
 import com.uwi.btmap.model.Commute
 import com.uwi.btmap.bll.TTS
+import com.uwi.btmap.model.DriverLiveLocation
+import com.uwi.btmap.model.User
 import java.lang.ref.WeakReference
 
 
 class NavActivity :
-    AppCompatActivity(),
-    OnMapReadyCallback{
+    AppCompatActivity(), PermissionsListener,
+    OnMapReadyCallback {
 
     private val TAG = "NAV_ACTIVITY"
     private lateinit var accessToken: String
@@ -65,6 +80,16 @@ class NavActivity :
     //custom commute object
     private lateinit var commute: Commute
 
+    private lateinit var permissionsManager: PermissionsManager
+    private lateinit var locationEngine: LocationEngine
+    private lateinit var callback: LocationChangeListeningCallback
+
+    private lateinit var database: DatabaseReference
+    var mAuth: FirebaseAuth? = null
+
+    private lateinit var driverLocationDriver: DriverLiveLocation
+
+
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------- Location and route progress observer ---------------------------*/
 
@@ -73,7 +98,7 @@ class NavActivity :
             enhancedLocation: Location,
             keyPoints: List<Location>
         ) {
-            Log.d(TAG, "onEnhancedLocationChanged: Called")
+            Log.d(TAG, "onEnhancedLocationChanged: $keyPoints")
             if (keyPoints.isEmpty()) {
                 updateLocation(enhancedLocation)
             } else {
@@ -88,8 +113,59 @@ class NavActivity :
     }
 
     private fun updateLocation(location: Location) {
+        mAuth = FirebaseAuth.getInstance()
+
         Log.d(TAG, "updateLocation: Single location Called: $location")
         updateLocation(listOf(location))
+
+//        database = FirebaseDatabase.getInstance().getReference("UserCommuteType")
+//        val currUserType = database.child(mAuth?.currentUser?.uid!!).child("userType")
+
+        database = FirebaseDatabase.getInstance().getReference("DriverLiveLocation")
+        val lat = location.latitude.toString()
+        val lng = location.longitude.toString()
+        val bearing = location.bearing.toString()
+
+//        val currLat = DriverLiveLocation(DriverLatitude = "$lat")
+//        val currLng = DriverLiveLocation(DriverLongitude = "$lng")
+//        val currBearing = DriverLiveLocation(DriverBearing = "$bearing")
+
+        val driverCurrentLocation = DriverLiveLocation(lat, lng, bearing)
+
+        database.child(mAuth?.currentUser?.uid!!).setValue(driverCurrentLocation)
+
+
+        database.child(mAuth?.currentUser?.uid!!)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                }
+
+                override fun onDataChange(p0: DataSnapshot) {
+                    val currentLatitude = p0.child("driverLatitude").getValue(String::class.java)
+                    val currentLongitude = p0.child("driverLongitude").getValue(String::class.java)
+
+                    val selectedPoint: Point = Point.fromLngLat(
+                        currentLongitude!!.toDouble(),
+                        currentLatitude!!.toDouble()
+                    )
+//                    val selectedPoint = LatLng(currentLatitude!!.toDouble(), currentLongitude!!.toDouble())
+
+
+//                Log.d(TAG, "Driver Current Latitude " + selectedPoint)
+//                Log.d(TAG, "Driver Current Longitude " + currentLongitude)
+
+                    val sourceId = "PASSENGER_LOCATION"
+
+                    mapboxMap?.getStyle {
+                        updateSource(it, sourceId, selectedPoint)
+                    }
+                }
+            })
+    }
+
+    private fun updateSource(style: Style, source_id: String, point: Point) {
+        var source = style.getSourceAs<GeoJsonSource>(source_id)
+        source?.setGeoJson(point)
     }
 
     internal fun updateLocation(locations: List<Location>) {
@@ -97,11 +173,11 @@ class NavActivity :
 
         //location update is the recommended method to update the location component
         //but caused jerky movement
-        mapboxMap.locationComponent.forceLocationUpdate(locations,false)
+        mapboxMap.locationComponent.forceLocationUpdate(locations, false)
     }
 
 
-    private val routeProgressObserver = object : RouteProgressObserver{
+    private val routeProgressObserver = object : RouteProgressObserver {
         override fun onRouteProgressChanged(routeProgress: RouteProgress) {
             Log.d(TAG, "onRouteProgressChanged: Changed!!!!!!!!!!!!!!!!!!")
             instructionView.updateDistanceWith(routeProgress)
@@ -109,8 +185,10 @@ class NavActivity :
 
             //check if leg complete
             //record progress commute
-            Log.d(TAG, "onRouteProgressChanged: Leg Progress - " +
-                    "" + routeProgress.currentLegProgress)
+            Log.d(
+                TAG, "onRouteProgressChanged: Leg Progress - " +
+                        "" + routeProgress.currentLegProgress
+            )
         }
     }
 
@@ -124,7 +202,7 @@ class NavActivity :
             //use the route in the nav component to update the map
             var currentRoutes = mapboxNavigation.getRoutes()
 
-            if (currentRoutes != null && currentRoutes.count()>0){
+            if (currentRoutes != null && currentRoutes.count() > 0) {
                 navigationMap.drawRoute(currentRoutes[0])
             }
         }
@@ -161,12 +239,12 @@ class NavActivity :
     /*--------------------------------- Voice Instructions ---------------------------------------*/
 
     private var isVoiceMuted = false
-    private lateinit var ttsPlayer : TTS
+    private lateinit var ttsPlayer: TTS
 
     private val voiceInstructionsObserver = object : VoiceInstructionsObserver {
         override fun onNewVoiceInstructions(voiceInstructions: VoiceInstructions) {
             Log.d(TAG, "onNewVoiceInstructions: ${voiceInstructions.announcement()}")
-            if(voiceInstructions.announcement() != null && !isVoiceMuted){
+            if (voiceInstructions.announcement() != null && !isVoiceMuted) {
                 ttsPlayer.play(voiceInstructions.announcement()!!)
             }
         }
@@ -176,7 +254,7 @@ class NavActivity :
 
     /*--------------------------------------------------------------------------------------------*/
     /*---------------------------------- Source Functions ----------------------------------------*/
-    private fun initializeDriverRouteLayer(style: Style){
+    private fun initializeDriverRouteLayer(style: Style) {
         style.addSource(
             GeoJsonSource(
                 "ROUTE_LINE_SOURCE_ID",
@@ -195,6 +273,61 @@ class NavActivity :
             "mapbox-location-shadow-layer"
         )
     }
+
+    private fun setupMapIcons(style: Style) {
+        style.addImage(
+            "ICON_ID",
+            BitmapUtils.getBitmapFromDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.mapbox_marker_icon_default
+                )
+            )!!
+        )
+    }
+
+    private fun setupIconLayerBelow(
+        style: Style,
+        sourceId: String,
+        layerId: String,
+        belowLayer: String
+    ) {
+        style.addSource(GeoJsonSource(sourceId))
+        style.addLayerBelow(
+            SymbolLayer(layerId, sourceId)
+                .withProperties(PropertyFactory.iconImage("ICON_ID")), belowLayer
+        )
+    }
+
+    private fun setupLocationMarkerLayers(style: Style) {
+        setupIconLayerBelow(
+            style,
+            "PASSENGER_LOCATION",
+            "PASSENGER_LAYER",
+            "mapbox-location-shadow-layer"
+        )
+    }
+
+
+//    private fun getDriverCurrentLocation() {
+//        mAuth = FirebaseAuth.getInstance()
+//
+//        database = FirebaseDatabase.getInstance().getReference("LiveLocation")
+//
+//        fun currentLocationReference(): DatabaseReference =
+//            database.child(mAuth?.currentUser?.uid!!).child("DriverLocation")
+//
+//        currentLocationReference().addListenerForSingleValueEvent(
+//            ValueListenerAdapter {
+//                driverLocation = it.currentLocation()!!
+//                val res = driverLocation
+//
+//                Log.d(TAG, "Driver Location: $res")
+//            }
+//        )
+//
+//    }
+
 
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------------------- OnCreate --------------------------------------------*/
@@ -235,9 +368,9 @@ class NavActivity :
                 .defaultNavigationOptionsBuilder(this, accessToken)
                 .build()
             this.mapboxNavigation = MapboxNavigation(mapboxNavigationOptions)
-            this.navigationMap = NavigationMapboxMap.Builder(mapView,mapboxMap,this)
+            this.navigationMap = NavigationMapboxMap.Builder(mapView, mapboxMap, this)
                 .vanishRouteLineEnabled(true)
-                .build().also{
+                .build().also {
                     //it.addProgressChangeListener(mapboxNavigation)
                 }
 
@@ -264,8 +397,10 @@ class NavActivity :
             }
 
             //get last location with custom location engine callback
-            val myLocationEngineCallback = com.uwi.btmap.LocationEngineCallback(this)
-            mapboxNavigation.navigationOptions.locationEngine.getLastLocation(myLocationEngineCallback)
+            val myLocationEngineCallback = LocationEngineCallback(this)
+            mapboxNavigation.navigationOptions.locationEngine.getLastLocation(
+                myLocationEngineCallback
+            )
 
             //add route to map
             this.navigationMap?.drawRoute(commute.driverRoute!!)
@@ -287,6 +422,9 @@ class NavActivity :
             //start session
             this.mapboxNavigation.startTripSession()
 
+            //Add icon
+            setupMapIcons(it)
+            setupLocationMarkerLayers(it)
         }
 
     }
@@ -316,13 +454,13 @@ class NavActivity :
         super.onStart()
         mapView?.onStart()
 
-        if(this::mapboxNavigation.isInitialized){
+        if (this::mapboxNavigation.isInitialized) {
 //            Log.d(TAG, "onStart: register locationObserver")
 //            mapboxNavigation.registerLocationObserver(locationObserver)
             mapboxNavigation.registerTripSessionStateObserver(tripSessionStateObserver)
             mapboxNavigation.registerOffRouteObserver(offRouteObserver)
         }
-        if(this::mapCamera.isInitialized){
+        if (this::mapCamera.isInitialized) {
             mapCamera.onStart()
         }
     }
@@ -366,6 +504,109 @@ class NavActivity :
         mapView?.onDestroy()
     }
 
+
+/*------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
+
+    @SuppressLint("MissingPermission")
+    private fun enableLocationComponent(loadedMapStyle: Style) {
+        if (PermissionsManager.areLocationPermissionsGranted(this)) {
+            val locationComponentActivationOptions =
+                LocationComponentActivationOptions.builder(this, loadedMapStyle)
+                    .useDefaultLocationEngine(false)
+                    .build()
+            mapboxMap.locationComponent.apply {
+                activateLocationComponent(locationComponentActivationOptions)
+                isLocationComponentEnabled = true // Enable to make component visible
+                cameraMode = CameraMode.TRACKING  // Set the component's camera mode
+                renderMode = RenderMode.COMPASS   // Set the component's render mode
+            }
+            initLocationEngine()
+        } else {
+            permissionsManager = PermissionsManager(this)
+            permissionsManager.requestLocationPermissions(this)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun initLocationEngine() {
+        locationEngine = LocationEngineProvider.getBestLocationEngine(this)
+        val request = LocationEngineRequest
+            .Builder(1000L)
+            .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
+            .setMaxWaitTime(1000L * 5)
+            .build()
+        locationEngine.requestLocationUpdates(request, callback, mainLooper)
+        locationEngine.getLastLocation(callback)
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private inner class LocationChangeListeningCallback :
+        LocationEngineCallback<LocationEngineResult> {
+
+        override fun onSuccess(result: LocationEngineResult?) {
+            result?.lastLocation
+                ?: return //BECAREFULL HERE, IF NAME LOCATION UPDATE DONT USER -> val resLoc = result.lastLocation ?: return
+            if (result.lastLocation != null) {
+                val lat = result.lastLocation?.latitude!!
+                val lng = result.lastLocation?.longitude!!
+                val latLng = LatLng(lat, lng)
+
+                if (result.lastLocation != null) {
+                    mapboxMap.locationComponent.forceLocationUpdate(result.lastLocation)
+                    val position = CameraPosition.Builder()
+                        .target(latLng)
+                        .zoom(13.0) //disable this for not follow zoom
+                        .tilt(10.0)
+                        .build()
+                    mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position))
+                    Toast.makeText(
+                        this@NavActivity,
+                        "Location update : $latLng",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+//                    database = FirebaseDatabase.getInstance().getReference("CurrentLocation")
+//                    val coordinates = Coords(latLng)
+//                    Log.d(TAG, "Coordinates: $latLng")
+//                    database.child(mAuth?.currentUser?.uid!!).setValue(coordinates)
+                }
+
+            }
+
+        }
+
+        override fun onFailure(exception: Exception) {}
+    }
+
+    override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
+        Toast.makeText(this, "Permission not granted!!", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPermissionResult(granted: Boolean) {
+        if (granted) {
+            mapboxMap.getStyle {
+                enableLocationComponent(it)
+            }
+        } else {
+            Toast.makeText(this, "Permission not granted!! app will be EXIT", Toast.LENGTH_LONG)
+                .show()
+            Handler().postDelayed({
+                finish()
+            }, 3000)
+        }
+    }
+
+
 }
 
 
@@ -385,7 +626,7 @@ class LocationEngineCallback(activity: NavActivity) : LocationEngineCallback<Loc
             //initialize location puck position
             activityRef?.get()?.updateLocation(result.locations)
             Log.d(TAG, "onSuccess: $result.locations")
-        }else{
+        } else {
             Log.e(TAG, "onSuccess: Failed to update location (result == null)")
         }
     }
