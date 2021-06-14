@@ -13,9 +13,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse
 import com.uwi.btmap.models.Trip
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 
 
 private const val TAG = "CommuteViewModel"
@@ -244,4 +251,61 @@ class RegisterCommuteViewModel : ViewModel() {
 
         })
     }
+
+    /* -------------------------- API Functions --------------------------- */
+
+    fun registerDriverCommute(){
+        val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
+        var url = "http://smallkins.pythonanywhere.com/add_commute"
+        val json = "{\n" +
+                "    \"driverId\":\"d001\",\n" +
+                "    \"polyline\":\"oxgoAvgnjJv@|D~j@dC|NnEpC~HjHrCrZh_@dSxHjCoGPc@nw@r@zBrRrV`d@~J|e@jM|LlAhRxUqOz\\\\uBhe@^nViG~^`CdR}Nt@|CrDz@aDlRbCvQyBfElAfP|L|\\\\aG`LaCdPoHlAd@tDdSw@uBbFjAb@\",\n" +
+                "    \"time\":[2021,8,7,8,30],\n" +
+                "    \"eta\":[2021,8,7,9,15]\n" +
+                "}"
+        val rBody: RequestBody = json.toRequestBody(JSON)
+
+        val request = Request.Builder()
+            .url(url)
+            .post(rBody)
+            .build()
+
+        Log.d(TAG, "registerDriverCommute: ${request.toString()}")
+
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object: okhttp3.Callback {
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                Log.d(TAG, "onResponse: ${response.body?.string()} ")
+            }
+
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                //log error
+            }
+        })
+    }
+
+    fun findSuitablePairs(){
+        var url = "http://smallkins.pythonanywhere.com/find_pairs"
+        val query = "?commute={" +
+                "\"origin\":[-59.55374,13.14492],"+
+                "\"dest\":[-59.58509,13.08673],"+
+                "\"time\":[2021,8,7,9,0]"+
+                "}"
+
+        val request = Request.Builder()
+            .url(url+query)
+            .build()
+        val client = OkHttpClient()
+
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                Log.d(TAG, "onResponse: ${response.body?.string()} ")
+            }
+
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                //log error
+            }
+        })
+    }
+
 }
