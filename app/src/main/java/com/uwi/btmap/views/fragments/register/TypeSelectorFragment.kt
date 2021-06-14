@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
 import com.uwi.btmap.R
-import com.uwi.btmap.viewmodels.CommuteViewModel
+import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 
 private const val TAG = "TypeSelectorFragment"
 
@@ -17,7 +17,7 @@ class TypeSelectorFragment : Fragment() {
     private lateinit var driverButton: Button
     private lateinit var passengerButton: Button
 
-    private lateinit var viewModel: CommuteViewModel
+    private lateinit var viewModel: RegisterCommuteViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +25,7 @@ class TypeSelectorFragment : Fragment() {
         arguments?.let {
             //set vars from bundle
         }
-        viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(RegisterCommuteViewModel::class.java)
     }
 
     override fun onCreateView(

@@ -33,7 +33,7 @@ import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 
 import com.uwi.btmap.R
-import com.uwi.btmap.viewmodels.CommuteViewModel
+import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 
 private const val TAG = "MapboxPreviewFragment"
 
@@ -54,7 +54,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     private lateinit var mapboxMap: MapboxMap
     private lateinit var mapboxNavigation: MapboxNavigation
 
-    private lateinit var viewModel: CommuteViewModel
+    private lateinit var viewModel: RegisterCommuteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +64,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(RegisterCommuteViewModel::class.java)
         initMapView(view,savedInstanceState)
         initMapNavigation()
     }

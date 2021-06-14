@@ -14,13 +14,13 @@ import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions
 
 import com.uwi.btmap.R
-import com.uwi.btmap.viewmodels.CommuteViewModel
+import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 
 private const val TAG = "LocationSelectFragment"
 
 class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection) {
 
-    private lateinit var viewModel: CommuteViewModel
+    private lateinit var viewModel: RegisterCommuteViewModel
 
     private lateinit var originButton: Button
     private lateinit var destinationButton: Button
@@ -31,7 +31,7 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(RegisterCommuteViewModel::class.java)
 
         originButton = view.findViewById(R.id.origin_selection_button)
         destinationButton = view.findViewById(R.id.destination_selection_button)

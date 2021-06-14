@@ -14,14 +14,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
 import com.uwi.btmap.R
-import com.uwi.btmap.viewmodels.CommuteViewModel
+import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 import java.util.*
 
 private const val TAG = "TimeSelectorFragment"
 
 class TimeSelectorFragment : Fragment() {
 
-    private lateinit var viewModel : CommuteViewModel
+    private lateinit var viewModel : RegisterCommuteViewModel
 
     private lateinit var typeDisplay: TextView
 
@@ -35,7 +35,7 @@ class TimeSelectorFragment : Fragment() {
             //init vars from bundle
         }
 
-        viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(RegisterCommuteViewModel::class.java)
     }
 
     override fun onCreateView(

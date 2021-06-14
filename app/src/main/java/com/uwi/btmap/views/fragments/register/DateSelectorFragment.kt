@@ -12,13 +12,13 @@ import android.widget.DatePicker
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
 import com.uwi.btmap.R
-import com.uwi.btmap.viewmodels.CommuteViewModel
+import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 import java.util.*
 
 private const val TAG = "DateSelectorFragment"
 
 class DateSelectorFragment : Fragment() {
-    private lateinit var viewModel : CommuteViewModel
+    private lateinit var viewModel : RegisterCommuteViewModel
 
     private lateinit var dateButton: Button
 
@@ -30,7 +30,7 @@ class DateSelectorFragment : Fragment() {
             //init vars from bundle
         }
 
-        viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(RegisterCommuteViewModel::class.java)
     }
 
     override fun onCreateView(

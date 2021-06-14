@@ -20,7 +20,7 @@ import retrofit2.Response
 
 private const val TAG = "CommuteViewModel"
 
-class CommuteViewModel : ViewModel() {
+class RegisterCommuteViewModel : ViewModel() {
 
     var token = ""
     var commute = Commute()

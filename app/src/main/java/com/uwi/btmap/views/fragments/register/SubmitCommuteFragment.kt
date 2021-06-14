@@ -10,19 +10,19 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.uwi.btmap.MainActivity
 import com.uwi.btmap.R
-import com.uwi.btmap.viewmodels.CommuteViewModel
+import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 
 private const val TAG = "SubmitCommuteFragment"
 
 class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
 
-    private lateinit var  viewModel: CommuteViewModel
+    private lateinit var  viewModel: RegisterCommuteViewModel
     private lateinit var submitButton: Button
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(CommuteViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(RegisterCommuteViewModel::class.java)
 
         submitButton = view.findViewById(R.id.submit_commute_button)
         submitButton.setOnClickListener{

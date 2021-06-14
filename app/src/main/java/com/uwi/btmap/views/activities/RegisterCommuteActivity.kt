@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.uwi.btmap.*
-import com.uwi.btmap.viewmodels.CommuteViewModel
+import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 
 import com.uwi.btmap.views.fragments.register.*
 
@@ -29,7 +29,7 @@ class RegisterCommuteActivity : AppCompatActivity() {
         val pagerAdapter = ScreenSlidePagerAdapter(supportFragmentManager)
         pager.adapter = pagerAdapter
 
-        val commuteViewModel = ViewModelProvider(this).get(CommuteViewModel::class.java)
+        val commuteViewModel = ViewModelProvider(this).get(RegisterCommuteViewModel::class.java)
         commuteViewModel.token = getString(R.string.mapbox_access_token)
     }
 
