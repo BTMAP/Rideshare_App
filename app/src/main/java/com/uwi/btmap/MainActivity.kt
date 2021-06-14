@@ -20,10 +20,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.uwi.btmap.activities.MapActivity
-import com.uwi.btmap.activities.PhoneAuthActivity
-import com.uwi.btmap.activities.ProfileActivity
-import com.uwi.btmap.activities.UpdateProfileActivity
+import com.uwi.btmap.views.activities.*
 import kotlinx.android.synthetic.main.activity_update_profile.*
 
 

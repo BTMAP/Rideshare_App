@@ -12,14 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BTMAP">
-        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".views.activities.TestActivity"></activity>
         <activity
-            android:name=".activities.NavActivity"
+            android:name="com.uwi.btmap.views.activities.NavActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />
-        <activity android:name=".activities.MapActivity" />
-        <activity android:name=".activities.UpdateProfileActivity" />
-        <activity android:name=".activities.ProfileActivity" />
-        <activity android:name=".activities.RegisterCommuteActivity" />
+        <activity android:name="com.uwi.btmap.views.activities.MapActivity" />
+        <activity android:name="com.uwi.btmap.views.activities.UpdateProfileActivity" />
+        <activity android:name="com.uwi.btmap.views.activities.ProfileActivity" />
+        <activity android:name="com.uwi.btmap.views.activities.RegisterCommuteActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -31,13 +31,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.VerifyActivity"
+            android:name="com.uwi.btmap.views.activities.VerifyActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />
         <activity
-            android:name=".activities.PhoneAuthActivity"
+            android:name="com.uwi.btmap.views.activities.PhoneAuthActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />
         <activity
-            android:name=".CommuteListActivity"
+            android:name=".views.activities.CommuteListActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />
     </application>
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    tools:context="fragments.LocationSelectionFragment"
+    tools:context=".views.fragments.LocationSelectionFragment"
     android:background="#ffff88">
 
     <androidx.constraintlayout.widget.ConstraintLayout
