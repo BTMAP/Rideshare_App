@@ -193,7 +193,15 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
             if (routes.isNotEmpty()){
                 //save to view model
                 viewModel.routePreview.value = routes[0]
-
+                Log.d(TAG, "onRoutesReady: All of Route: ${routes[0]}")
+                Log.d(TAG, "onRoutesReady: Legs: ${routes[0].legs()}")
+                Log.d(TAG, "onRoutesReady: Index: ${routes[0].routeIndex()}")
+                Log.d(TAG, "onRoutesReady: Geometry: ${routes[0].geometry()}")
+                val routeLineString = LineString.fromPolyline(
+                    routes[0].geometry()!!,6)
+                routeLineString.coordinates()
+                Log.d(TAG, "onRoutesReady: LineString: ${routeLineString}")
+                Log.d(TAG, "onRoutesReady: LineStringCoords: ${routeLineString.coordinates()}")
             }else{
                 Log.d(TAG, "onRoutesReady: No routes found.")
             }
