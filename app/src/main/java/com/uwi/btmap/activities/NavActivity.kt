@@ -1,6 +1,8 @@
 package com.uwi.btmap.activities
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -8,10 +10,12 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.annotations.NotNull
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -36,9 +40,11 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.utils.BitmapUtils
+import com.mapbox.navigation.base.trip.model.RouteLegProgress
 import com.mapbox.navigation.base.trip.model.RouteProgress
 import com.mapbox.navigation.base.trip.model.RouteProgressState
 import com.mapbox.navigation.core.MapboxNavigation
+import com.mapbox.navigation.core.arrival.ArrivalObserver
 import com.mapbox.navigation.core.trip.session.*
 import com.mapbox.navigation.ui.camera.NavigationCamera
 import com.mapbox.navigation.ui.camera.NavigationCamera.NAVIGATION_TRACKING_MODE_GPS
@@ -86,8 +92,6 @@ class NavActivity :
 
     private lateinit var database: DatabaseReference
     var mAuth: FirebaseAuth? = null
-
-    private lateinit var driverLocationDriver: DriverLiveLocation
 
 
     /*--------------------------------------------------------------------------------------------*/
@@ -179,28 +183,71 @@ class NavActivity :
 
     private val routeProgressObserver = object : RouteProgressObserver {
         override fun onRouteProgressChanged(routeProgress: RouteProgress) {
-            Log.d(TAG, "onRouteProgressChanged: Changed!!!!!!!!!!!!!!!!!!")
             instructionView.updateDistanceWith(routeProgress)
             summaryBottomSheet.update(routeProgress)
 
-            //check if leg complete
-            //record progress commute
-            Log.d(
-                TAG, "onRouteProgressChanged: Leg Progress - " +
-                        "" + routeProgress.currentLegProgress
-            )
+            routeProgress.currentState.let { currentState ->
+                val state = currentState
+            }
         }
     }
+
+
+    private val arrivalObserver = object : ArrivalObserver {
+        override fun onFinalDestinationArrival(routeProgress: RouteProgress) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onNextRouteLegStart(routeLegProgress: RouteLegProgress) {
+            if (routeLegProgress.legIndex == 1){
+                Log.d(TAG, "Pickup Point")
+                onAlertDialog()
+            }
+            if (routeLegProgress.legIndex == 2){
+                Log.d(TAG, "Drop-off Point")
+                onAlertDialog()
+            }
+        }
+    }
+
+    fun onAlertDialog() {
+        //Instantiate builder variable
+        val builder = AlertDialog.Builder(this)
+
+        // set title
+        builder.setTitle("Continue Onwards")
+
+        //set content area
+        builder.setMessage("Continue on to the next leg?")
+
+        //set negative button
+        builder.setPositiveButton(
+            "Continue"
+        ) { dialog, id ->
+            // User clicked Update Now button
+            Log.d(TAG, "Continue!")
+        }
+
+        //set positive button
+        builder.setNegativeButton(
+            "Cancel????"
+        ) { dialog, id ->
+            // User cancelled the dialog
+            Log.d(TAG, "I don't know what to do!!!!")
+        }
+        builder.show()
+    }
+
 
     /*--------------------------------------------------------------------------------------------*/
     /*------------------------------------ Off Route Detection -----------------------------------*/
 
     private val offRouteObserver = object : OffRouteObserver {
         override fun onOffRouteStateChanged(offRoute: Boolean) {
-            Log.d(TAG, "onOffRouteStateChanged: Called")
+//            Log.d(TAG, "onOffRouteStateChanged: Called")
             //nav component automatically creates new route when user goes off route
             //use the route in the nav component to update the map
-            var currentRoutes = mapboxNavigation.getRoutes()
+            val currentRoutes = mapboxNavigation.getRoutes()
 
             if (currentRoutes != null && currentRoutes.count() > 0) {
                 navigationMap.drawRoute(currentRoutes[0])
@@ -243,12 +290,11 @@ class NavActivity :
 
     private val voiceInstructionsObserver = object : VoiceInstructionsObserver {
         override fun onNewVoiceInstructions(voiceInstructions: VoiceInstructions) {
-            Log.d(TAG, "onNewVoiceInstructions: ${voiceInstructions.announcement()}")
+//            Log.d(TAG, "onNewVoiceInstructions: ${voiceInstructions.announcement()}")
             if (voiceInstructions.announcement() != null && !isVoiceMuted) {
                 ttsPlayer.play(voiceInstructions.announcement()!!)
             }
         }
-
     }
 
 
@@ -307,27 +353,6 @@ class NavActivity :
             "mapbox-location-shadow-layer"
         )
     }
-
-
-//    private fun getDriverCurrentLocation() {
-//        mAuth = FirebaseAuth.getInstance()
-//
-//        database = FirebaseDatabase.getInstance().getReference("LiveLocation")
-//
-//        fun currentLocationReference(): DatabaseReference =
-//            database.child(mAuth?.currentUser?.uid!!).child("DriverLocation")
-//
-//        currentLocationReference().addListenerForSingleValueEvent(
-//            ValueListenerAdapter {
-//                driverLocation = it.currentLocation()!!
-//                val res = driverLocation
-//
-//                Log.d(TAG, "Driver Location: $res")
-//            }
-//        )
-//
-//    }
-
 
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------------------- OnCreate --------------------------------------------*/
@@ -393,7 +418,8 @@ class NavActivity :
             }
 
             this.muteButton.setOnClickListener {
-                isVoiceMuted = !isVoiceMuted
+//                isVoiceMuted = !isVoiceMuted
+                onAlertDialog()
             }
 
             //get last location with custom location engine callback
@@ -459,6 +485,7 @@ class NavActivity :
 //            mapboxNavigation.registerLocationObserver(locationObserver)
             mapboxNavigation.registerTripSessionStateObserver(tripSessionStateObserver)
             mapboxNavigation.registerOffRouteObserver(offRouteObserver)
+            mapboxNavigation.registerArrivalObserver(arrivalObserver)
         }
         if (this::mapCamera.isInitialized) {
             mapCamera.onStart()
@@ -479,6 +506,7 @@ class NavActivity :
         super.onStop()
         mapCamera.onStop()
         mapboxNavigation.unregisterOffRouteObserver(offRouteObserver)
+        mapboxNavigation.unregisterArrivalObserver(arrivalObserver)
         mapboxNavigation.unregisterLocationObserver(locationObserver)
         mapboxNavigation.unregisterBannerInstructionsObserver(bannerInstructionsObserver)
         mapboxNavigation.unregisterTripSessionStateObserver(tripSessionStateObserver)

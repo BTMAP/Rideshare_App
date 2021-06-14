@@ -279,6 +279,7 @@ class MapActivity :
         if (this.currentSelectedLocation == 2) {
             Toast.makeText(this, "Set passenger location", Toast.LENGTH_SHORT).show()
             commute.passenger = selectedPoint
+            Log.d(TAG, "Test lat and lng: $selectedPoint")
             sourceId = "PASSENGER_SOURCE"
         }
         if (this.currentSelectedLocation == 3) {
