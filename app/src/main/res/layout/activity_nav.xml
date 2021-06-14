@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NavActivity">
+    tools:context=".activities.NavActivity">
 
     <Button
         android:id="@+id/recenter_button"
@@ -12,6 +12,7 @@
         android:layout_height="50dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
+        android:background="@drawable/ic_my_location"
         app:layout_constraintBottom_toTopOf="@+id/nav_summary_sheet"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -19,8 +20,9 @@
         android:id="@+id/mute_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="32dp"
+        android:background="@drawable/ic_mute"
         app:layout_constraintBottom_toTopOf="@+id/nav_summary_sheet"
         app:layout_constraintEnd_toStartOf="@+id/recenter_button" />
 

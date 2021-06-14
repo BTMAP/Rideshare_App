@@ -3,6 +3,7 @@
     package="com.uwi.btmap">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,15 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BTMAP">
+        <activity android:name=".TestActivity"></activity>
         <activity
-            android:name=".NavActivity"
-            android:theme="@style/Theme.BTMAP.NoActionBar"
-            />
+            android:name=".activities.NavActivity"
+            android:theme="@style/Theme.BTMAP.NoActionBar" />
         <activity android:name=".activities.MapActivity" />
-
         <activity android:name=".activities.UpdateProfileActivity" />
         <activity android:name=".activities.ProfileActivity" />
-
         <activity android:name=".activities.RegisterCommuteActivity" />
         <activity
             android:name=".MainActivity"
@@ -36,6 +35,9 @@
             android:theme="@style/Theme.BTMAP.NoActionBar" />
         <activity
             android:name=".activities.PhoneAuthActivity"
+            android:theme="@style/Theme.BTMAP.NoActionBar" />
+        <activity
+            android:name=".CommuteListActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />
     </application>
 

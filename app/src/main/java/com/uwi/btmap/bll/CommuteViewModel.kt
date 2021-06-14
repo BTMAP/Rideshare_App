@@ -188,10 +188,10 @@ class CommuteViewModel : ViewModel() {
     fun saveCommute(){
         val mAuth = FirebaseAuth.getInstance()
         //reference to Commutes collection in database
-        val database = FirebaseDatabase.getInstance().getReference("CommutesTestCollection")
+        val database = FirebaseDatabase.getInstance().getReference("Commute Collection")
 
         //create object to store commute(trip) info
-        val tripInfo = Trip("J00001", calendar.time, "origin", "destination",
+        val tripInfo = Trip(mAuth.currentUser?.uid, calendar.time, "origin", "destination",
             origin().value?.latitude(),origin().value?.longitude(),
             destination().value?.latitude(),destination().value?.longitude())
 
@@ -232,7 +232,7 @@ class CommuteViewModel : ViewModel() {
                         1 -> originAddress.value = results[0].placeName()
                         2 -> destinationAddress.value = results[0].placeName()
                     }
-                        for(result in results){
+                    for(result in results){
                         Log.d(TAG, "onResponse: Result: $result")
                     }
                 }else{
