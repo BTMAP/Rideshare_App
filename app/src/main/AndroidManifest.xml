@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BTMAP"
         android:usesCleartextTraffic="true">
-        
+
         <activity android:name=".views.activities.TestActivity"></activity>
         <activity
             android:name="com.uwi.btmap.views.activities.NavActivity"

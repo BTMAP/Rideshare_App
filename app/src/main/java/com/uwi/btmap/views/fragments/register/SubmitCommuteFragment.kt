@@ -30,7 +30,15 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
             Log.d(TAG, "---------------------------------------------------------")
             if (viewModel.isCommuteValid()){
                 Log.d(TAG, "onViewCreated: Is Valid: true")
-                viewModel.saveCommute()
+
+                if (viewModel.commuteType.value == 0){
+//                if driver register commute
+                    viewModel.registerDriverCommute()
+                }
+                if (viewModel.commuteType.value == 1){
+//                if passenger find pairs
+                    viewModel.findSuitableCommutePairs()
+                }
             }else{
                 Log.d(TAG, "onViewCreated: Is Valid: false")
             }

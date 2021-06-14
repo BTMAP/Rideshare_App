@@ -255,14 +255,38 @@ class RegisterCommuteViewModel : ViewModel() {
     /* -------------------------- API Functions --------------------------- */
 
     fun registerDriverCommute(){
+        val mAuth = FirebaseAuth.getInstance()
+        val driverId = mAuth.currentUser?.uid
+
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val eta = calendar
+        val duration = routePreview.value?.durationTypical()
+        if (duration != null) {
+            eta.add(Calendar.SECOND,duration.toInt())
+        }
+
+        val etaYear = calendar.get(Calendar.YEAR)
+        val etaMonth = calendar.get(Calendar.MONTH)
+        val etaDay = calendar.get(Calendar.DAY_OF_MONTH)
+        val etaHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val etaMinute = calendar.get(Calendar.MINUTE)
+
+        val polyline = routePreview.value?.geometry()?.replace("\\","\\\\")
+
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
         var url = "http://smallkins.pythonanywhere.com/add_commute"
         val json = "{\n" +
-                "    \"driverId\":\"d001\",\n" +
-                "    \"polyline\":\"oxgoAvgnjJv@|D~j@dC|NnEpC~HjHrCrZh_@dSxHjCoGPc@nw@r@zBrRrV`d@~J|e@jM|LlAhRxUqOz\\\\uBhe@^nViG~^`CdR}Nt@|CrDz@aDlRbCvQyBfElAfP|L|\\\\aG`LaCdPoHlAd@tDdSw@uBbFjAb@\",\n" +
-                "    \"time\":[2021,8,7,8,30],\n" +
-                "    \"eta\":[2021,8,7,9,15]\n" +
+                "    \"driverId\":\"$driverId\",\n" +
+                "    \"polyline\":\"${polyline}\",\n" +
+                "    \"time\":[$year,$month,$day,$hour,$minute],\n" +
+                "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute]\n" +
                 "}"
+
         val rBody: RequestBody = json.toRequestBody(JSON)
 
         val request = Request.Builder()
@@ -270,7 +294,9 @@ class RegisterCommuteViewModel : ViewModel() {
             .post(rBody)
             .build()
 
-        Log.d(TAG, "registerDriverCommute: ${request.toString()}")
+        Log.d(TAG, "request: ${request.toString()}")
+        Log.d(TAG, "attached JSON: ${json.toString()}")
+        Log.d(TAG, "polyline: ${polyline}")
 
         val client = OkHttpClient()
         client.newCall(request).enqueue(object: okhttp3.Callback {
@@ -284,12 +310,18 @@ class RegisterCommuteViewModel : ViewModel() {
         })
     }
 
-    fun findSuitablePairs(){
+    fun findSuitableCommutePairs(){
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
         var url = "http://smallkins.pythonanywhere.com/find_pairs"
         val query = "?commute={" +
-                "\"origin\":[-59.55374,13.14492],"+
-                "\"dest\":[-59.58509,13.08673],"+
-                "\"time\":[2021,8,7,9,0]"+
+                "\"origin\":[${origin.value?.longitude()},${origin.value?.latitude()}],"+
+                "\"dest\":[${destination.value?.longitude()},${destination.value?.latitude()}],"+
+                "\"time\":[$year,$month,$day,$hour,$minute]"+
                 "}"
 
         val request = Request.Builder()
