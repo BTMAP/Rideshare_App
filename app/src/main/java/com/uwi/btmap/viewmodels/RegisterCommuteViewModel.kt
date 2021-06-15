@@ -10,8 +10,12 @@ import com.uwi.btmap.models.Commute
 import java.util.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse
+import com.uwi.btmap.models.CommuteOptions
+import com.uwi.btmap.models.PairableCommute
 import com.uwi.btmap.models.Trip
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -331,7 +335,16 @@ class RegisterCommuteViewModel : ViewModel() {
 
         client.newCall(request).enqueue(object : okhttp3.Callback {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                Log.d(TAG, "onResponse: ${response.body?.string()} ")
+
+                val body = response.body?.string()
+
+                Log.d(TAG, "onResponse: ${body} ")
+
+                val pairableCommutes = GsonBuilder().create().fromJson(body,
+                    CommuteOptions::class.java
+                )
+
+                Log.d(TAG, "onResponse: ${pairableCommutes.toString()}")
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
