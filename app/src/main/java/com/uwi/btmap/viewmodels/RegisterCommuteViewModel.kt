@@ -97,18 +97,17 @@ class RegisterCommuteViewModel : ViewModel() {
     }
 
     fun setDate(year:Int,month:Int,day:Int){
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
+        this.calendar.set(Calendar.YEAR,year)
+        this.calendar.set(Calendar.MONTH,month)
+        this.calendar.set(Calendar.DAY_OF_MONTH,day)
 
-        this.calendar.set(year,month,day,hour,minute)
         this.dateString.value = makeDateString(day,month,year)
     }
 
     fun setTime(hour:Int,minute:Int){
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.SECOND)
-        this.calendar.set(year,month,day,hour,minute)
+        this.calendar.set(Calendar.HOUR_OF_DAY,hour)
+        this.calendar.set(Calendar.MINUTE,minute)
+
         this.timeString.value = makeTimeString(hour,minute)
     }
 
