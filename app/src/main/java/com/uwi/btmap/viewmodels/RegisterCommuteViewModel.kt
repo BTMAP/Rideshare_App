@@ -268,10 +268,12 @@ class RegisterCommuteViewModel : ViewModel() {
         val minute = calendar.get(Calendar.MINUTE)
 
         val eta = calendar
-        val duration = routePreview.value?.durationTypical()
+        val duration = routePreview.value?.duration()
         if (duration != null) {
             eta.add(Calendar.SECOND,duration.toInt())
         }
+
+        Log.d(TAG, "registerDriverCommute: $duration")
 
         val etaYear = calendar.get(Calendar.YEAR)
         val etaMonth = calendar.get(Calendar.MONTH)
