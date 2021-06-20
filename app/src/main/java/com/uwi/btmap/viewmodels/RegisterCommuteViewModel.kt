@@ -10,7 +10,6 @@ import com.uwi.btmap.models.Commute
 import java.util.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse
@@ -24,7 +23,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
-import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -56,6 +54,9 @@ class RegisterCommuteViewModel : ViewModel() {
     /* ---------------------------- DB Success ----------------------------- */
 
     var commuteSaveSuccess = MutableLiveData<Boolean>()
+    var findPairSuccess = MutableLiveData<Boolean>()
+
+    var commuteOptions = CommuteOptions()
 
     init {
         commuteType.value = -1
@@ -70,6 +71,7 @@ class RegisterCommuteViewModel : ViewModel() {
         timeString.value = makeTimeString(hour,minute)
 
         commuteSaveSuccess.value = false
+        findPairSuccess.value = false
     }
 
     /* ---------------------- GET LiveDate Functions ----------------------- */
@@ -89,6 +91,8 @@ class RegisterCommuteViewModel : ViewModel() {
     fun timeString():LiveData<String>{return timeString}
 
     fun commuteSaveSuccess():LiveData<Boolean>{return commuteSaveSuccess}
+
+    fun findPairSuccess():LiveData<Boolean>{return findPairSuccess}
 
     /* -------------------------- SET Functions --------------------------- */
 
@@ -307,6 +311,7 @@ class RegisterCommuteViewModel : ViewModel() {
         client.newCall(request).enqueue(object: okhttp3.Callback {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 Log.d(TAG, "onResponse: ${response.body?.string()} ")
+                commuteSaveSuccess.postValue(true)
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
@@ -339,13 +344,12 @@ class RegisterCommuteViewModel : ViewModel() {
 
                 val body = response.body?.string()
 
-                Log.d(TAG, "onResponse: ${body} ")
-
-                val pairableCommutes = GsonBuilder().create().fromJson(body,
+                commuteOptions = GsonBuilder().create().fromJson(body,
                     CommuteOptions::class.java
                 )
 
-                Log.d(TAG, "onResponse: ${pairableCommutes.toString()}")
+                //trigger switch activity to select pair activity
+                findPairSuccess.postValue(true)
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {

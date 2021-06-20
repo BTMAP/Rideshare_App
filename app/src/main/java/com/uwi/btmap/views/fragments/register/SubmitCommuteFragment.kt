@@ -43,13 +43,5 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
                 Log.d(TAG, "onViewCreated: Is Valid: false")
             }
         }
-
-        viewModel.commuteSaveSuccess().observe(requireActivity(), Observer{
-            if(it){
-                val intent = Intent(requireContext(),MainActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
     }
 }
