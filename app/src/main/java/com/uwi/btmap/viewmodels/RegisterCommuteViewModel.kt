@@ -348,6 +348,8 @@ class RegisterCommuteViewModel : ViewModel() {
                     CommuteOptions::class.java
                 )
 
+                Log.d(TAG, "onResponse: ${ commuteOptions }")
+                
                 //trigger switch activity to select pair activity
                 findPairSuccess.postValue(true)
             }
