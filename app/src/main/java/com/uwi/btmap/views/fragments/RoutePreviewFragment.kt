@@ -40,7 +40,7 @@ private const val TAG = "MapboxPreviewFragment"
 class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     OnMapReadyCallback{
 
-    private val routeSourceID = "ROUTE _SOURCE_ID"
+    private val routeSourceID = "ROUTE_SOURCE_ID"
     private val originSourceID = "ORIGIN_SOURCE_ID"
     private val destinationSourceID = "DESTINATION_SOURCE_ID"
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".views.activities.SelectPairActivity">
 
-    <fragment
+    <FrameLayout
         android:name="com.uwi.btmap.views.fragments.selectPair.ListCommutePairFragment"
         android:id="@+id/pair_select_fragment"
         android:layout_width="match_parent"

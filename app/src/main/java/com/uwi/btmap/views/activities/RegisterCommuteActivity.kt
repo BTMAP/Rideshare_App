@@ -51,6 +51,8 @@ class RegisterCommuteActivity : AppCompatActivity() {
                 //move this from the fragment ot the view model
                 val intent = Intent(this,SelectPairActivity::class.java)
                     .putExtra("CommuteOptions",viewModel.commuteOptions)
+                    .putExtra("PassengerOrigin",viewModel.origin.value)
+                    .putExtra("PassengerDestination",viewModel.destination.value)
                 startActivity(intent)
             }
         })
