@@ -18,15 +18,17 @@ const val TAG = "ListCommutePairs"
 
 class SelectPairActivity : AppCompatActivity() {
 
+    lateinit var viewModel:SelectPairViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_pair)
 
-        val viewModel = ViewModelProvider(this).get(SelectPairViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SelectPairViewModel::class.java)
 
         viewModel.commuteOptions.value = intent.getSerializableExtra("CommuteOptions") as CommuteOptions
-//        viewModel.origin.value = intent.getSerializableExtra("PassengerOrigin") as Point
-//        viewModel.destination.value = intent.getSerializableExtra("PassengerDestination") as Point
+        viewModel.origin.value = intent.getSerializableExtra("PassengerOrigin") as Point
+        viewModel.destination.value = intent.getSerializableExtra("PassengerDestination") as Point
 
         val fragment = ListCommutePairFragment()
         val transaction = supportFragmentManager.beginTransaction()
@@ -35,9 +37,12 @@ class SelectPairActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        //check current fragment
-        //switch fragment or
-        super.onBackPressed()
+        if (viewModel.currentFragment.value == 0) {
+            super.onBackPressed()
+        }else{
+            val fragment = ListCommutePairFragment()
+            replaceFragment(fragment)
+        }
     }
 
     private fun replaceFragment(fragment: Fragment){

@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.add
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,7 +34,8 @@ class ListCommutePairFragment : Fragment(R.layout.fragment_list_commute_pair_fra
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(SelectPairViewModel::class.java)
-        Log.d(TAG, "onCreate: List Commute Fragment started")
+
+        viewModel.currentFragment.value = 0
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,7 +80,7 @@ class ListCommutePairFragment : Fragment(R.layout.fragment_list_commute_pair_fra
             val startTime = outFormat.format(start)
             val etaTime = outFormat.format(eta)
 
-            indexTextView.text = position.toString()
+            indexTextView.text = (position+1).toString()
             startTextView.text = "Driver Start Time: $startTime"
             etaTextView.text = "Driver ETA: $etaTime"
 
@@ -86,7 +89,13 @@ class ListCommutePairFragment : Fragment(R.layout.fragment_list_commute_pair_fra
             holder.itemView.setOnClickListener{
                 val activity = it.context as AppCompatActivity
                 val fragment = PreviewCommutePairFragment()
-                activity.supportFragmentManager.beginTransaction().replace(R.id.pair_select_fragment,fragment).commit()
+
+
+                fragment.arguments = bundleOf("PairIndex" to position)
+                activity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.pair_select_fragment,fragment)
+                    .commit()
             }
         }
 

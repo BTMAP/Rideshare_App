@@ -1,6 +1,7 @@
 package com.uwi.btmap.views.fragments.commuteList
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.mapbox.api.directions.v5.DirectionsCriteria
+import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.RouteOptions
+import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
@@ -27,8 +30,12 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
 import com.mapbox.navigation.core.MapboxNavigation
+import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.SelectPairViewModel
+
+
+const val TAG = "RoutePreview"
 
 class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pair),
     OnMapReadyCallback{
@@ -65,6 +72,10 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(SelectPairViewModel::class.java)
+        viewModel.currentCommuteIndex.value = arguments?.getInt("CommuteIndex")
+
+        viewModel.currentFragment.value = 1
+
         Mapbox.getInstance(requireContext(),getString(R.string.mapbox_access_token))
     }
 
@@ -85,13 +96,34 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
             initLocationIcons(style)
             initRouteLayers(style)
             initIconLayers(style)
+
+            //display points
+            val originSource = style.getSourceAs<GeoJsonSource>(originSourceID)
+            val destinationSource = style.getSourceAs<GeoJsonSource>(destinationSourceID)
+            val pickupSource = style.getSourceAs<GeoJsonSource>(pickupPointSourceID)
+            val dropoffSource = style.getSourceAs<GeoJsonSource>(dropoffPointSourceID)
+
+            originSource?.setGeoJson(viewModel.origin.value)
+            val geoJson = destinationSource?.setGeoJson(viewModel.destination.value)
+
+
+            val currentCommute = viewModel.commuteOptions.value?.pairs?.get(viewModel.currentCommuteIndex.value!!)
+            val pickup = currentCommute?.pickupPoints?.get(0)
+            val dropoff = currentCommute?.dropoffPoints?.get(0)
+
+            val pickupPoint = Point.fromLngLat(pickup!!.lng?.toDouble(), pickup!!.lat?.toDouble())
+            val dropoffPoint = Point.fromLngLat(dropoff!!.lng?.toDouble(), dropoff!!.lat?.toDouble())
+
+            pickupSource?.setGeoJson(pickupPoint)
+            dropoffSource?.setGeoJson(dropoffPoint)
+
+            //get routes
+            getWalkingRoute(viewModel.origin.value!!,pickupPoint,firstLegRouteCallback)
+            getWalkingRoute(dropoffPoint,viewModel.destination.value!!,lastLegRouteCallback)
+            getDrivingRoute(pickupPoint,dropoffPoint)
         }
-        //display points
-        //get routes
-        //display routes
-        //calculate passenger travel info
-        //display travel info
     }
+
 
     private fun centerMapCamera(mapboxMap: MapboxMap){
         //bim coordinates: 13.1939° N, 59.5432° W
@@ -120,16 +152,15 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
 
     private fun initRouteLayers(style: Style){
         setupRouteLayer(style,drivingRouteSourceID,drivingRouteLayerID,"mapbox-location-shadow-layer","#2E4FC9")
-        setupRouteLayer(style,pickupRouteSourceID,pickupRouteLayerID,drivingRouteLayerID,"#2E4FC9")
-        setupRouteLayer(style,dropoffRouteSourceID,dropoffRouteLayerID,pickupRouteLayerID,"#2E4FC9")
+        setupRouteLayer(style,pickupRouteSourceID,pickupRouteLayerID,drivingRouteLayerID,"#25BE7A")
+        setupRouteLayer(style,dropoffRouteSourceID,dropoffRouteLayerID,pickupRouteLayerID,"#25BE7A")
     }
 
     private fun initIconLayers(style:Style){
-        setupIconLayer(style,originSourceID,originLayerID,drivingRouteLayerID,locationMarkerID)
-        setupIconLayer(style,destinationSourceID,destinationLayerID,originLayerID,locationMarkerID)
-        setupIconLayer(style,pickupPointSourceID,pickupPointLayerID,destinationLayerID,locationMarkerID)
+        setupIconLayer(style,pickupPointSourceID,pickupPointLayerID,drivingRouteLayerID,locationMarkerID)
         setupIconLayer(style,dropoffPointSourceID,dropoffPointLayerID,pickupPointLayerID,locationMarkerID)
-
+        setupIconLayer(style,originSourceID,originLayerID,dropoffPointLayerID,locationMarkerID)
+        setupIconLayer(style,destinationSourceID,destinationLayerID,originLayerID,locationMarkerID)
     }
 
     private fun setupRouteLayer(style:Style,routeSourceID:String,routeLayerID:String,belowLayer:String,color:String){
@@ -171,8 +202,80 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
         )
     }
 
+    private val firstLegRouteCallback = object: RoutesRequestCallback{
+        override fun onRoutesReady(routes: List<DirectionsRoute>) {
+            if (routes.isNotEmpty()){
+                val routeLineString = LineString.fromPolyline(
+                    routes[0].geometry()!!,6)
+                viewModel.firstLegRoute.value=routes[0]
+                mapboxMap.getStyle {
+                    val routeSource = it.getSourceAs<GeoJsonSource>(pickupRouteSourceID)
+                    routeSource?.setGeoJson(routeLineString)
+                }
+            }else{
+                Log.d(TAG, "onRoutesReady: No routes found.")
+            }
+        }
+
+        override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
+            Log.d(TAG, "onRoutesRequestCanceled: Route request cancelled.")
+        }
+
+        override fun onRoutesRequestFailure(throwable: Throwable, routeOptions: RouteOptions) {
+            Log.d(TAG, "onRoutesRequestFailure: Route request failed.")
+        }
+    }
+
+    private val lastLegRouteCallback = object: RoutesRequestCallback{
+        override fun onRoutesReady(routes: List<DirectionsRoute>) {
+            if (routes.isNotEmpty()){
+                val routeLineString = LineString.fromPolyline(
+                    routes[0].geometry()!!,6)
+                viewModel.lastLegRoute.value=routes[0]
+                mapboxMap.getStyle {
+                    val routeSource = it.getSourceAs<GeoJsonSource>(dropoffRouteSourceID)
+                    routeSource?.setGeoJson(routeLineString)
+                }
+            }else{
+                Log.d(TAG, "onRoutesReady: No routes found.")
+            }
+        }
+
+        override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
+            Log.d(TAG, "onRoutesRequestCanceled: Route request cancelled.")
+        }
+
+        override fun onRoutesRequestFailure(throwable: Throwable, routeOptions: RouteOptions) {
+            Log.d(TAG, "onRoutesRequestFailure: Route request failed.")
+        }
+    }
+
+    private val drivingLegRouteCallback = object: RoutesRequestCallback{
+        override fun onRoutesReady(routes: List<DirectionsRoute>) {
+            if (routes.isNotEmpty()){
+                val routeLineString = LineString.fromPolyline(
+                    routes[0].geometry()!!,6)
+                viewModel.drivingLegRoute.value=routes[0]
+                mapboxMap.getStyle {
+                    val routeSource = it.getSourceAs<GeoJsonSource>(drivingRouteSourceID)
+                    routeSource?.setGeoJson(routeLineString)
+                }
+            }else{
+                Log.d(TAG, "onRoutesReady: No routes found.")
+            }
+        }
+
+        override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
+            Log.d(TAG, "onRoutesRequestCanceled: Route request cancelled.")
+        }
+
+        override fun onRoutesRequestFailure(throwable: Throwable, routeOptions: RouteOptions) {
+            Log.d(TAG, "onRoutesRequestFailure: Route request failed.")
+        }
+    }
+
     //route functions
-    private fun getWalkingRoute(origin: Point, destination: Point){
+    private fun getWalkingRoute(origin: Point, destination: Point,callback:RoutesRequestCallback){
         val routeOptions = RouteOptions.builder()
             .applyDefaultParams()
             .accessToken(getString(R.string.mapbox_access_token))
@@ -183,7 +286,7 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
             .steps(false)
             .build()
 
-        //mapboxNavigation.requestRoutes(routeOptions,routesReqCallback)
+        mapboxNavigation.requestRoutes(routeOptions,callback)
     }
     private fun getDrivingRoute(origin: Point, destination: Point){
         val routeOptions = RouteOptions.builder()
@@ -196,7 +299,7 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
             .steps(false)
             .build()
 
-        //mapboxNavigation.requestRoutes(routeOptions,routesReqCallback)
+        mapboxNavigation.requestRoutes(routeOptions,drivingLegRouteCallback)
     }
 
     //---------------------- lifecycle functions -----------------------
