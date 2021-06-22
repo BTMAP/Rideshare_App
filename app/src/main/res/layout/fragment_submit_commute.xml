@@ -3,21 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="200dp"
     tools:context=".SubmitCommuteFragment"
-    android:background="#88ffff">
+    android:orientation="vertical"
+    android:background="@color/Gold">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/submit_commute_button"
+        <TextView
+            android:id="@+id/commute_submit_frag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Submit changes:"
+            android:textColor="@color/DarkViolet"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sub_prev_btn" />
+
+        <Button
+            android:id="@+id/submit_commute_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
             android:text="Submit"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:backgroundTint="@color/DeepPink"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/commute_submit_frag"
+            app:layout_constraintVertical_bias="0.6" />
+
+        <Button
+            android:id="@+id/sub_prev_btn"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_prev"
+            android:backgroundTint="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BTMAP">
-        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".RegisterVehicleActivity"></activity>
+        <activity android:name=".TestActivity" />
         <activity
             android:name=".activities.NavActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />

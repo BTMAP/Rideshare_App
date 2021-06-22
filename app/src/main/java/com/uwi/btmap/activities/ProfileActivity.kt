@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.uwi.btmap.R
+import com.uwi.btmap.RegisterVehicleActivity
 import com.uwi.btmap.databinding.ActivityProfileBinding
 import kotlinx.android.synthetic.main.activity_update_profile.*
 
@@ -65,7 +66,7 @@ class ProfileActivity : AppCompatActivity() {
 
                 Glide.with(this)
                     .load(profilePhoto)
-                    .into(profile_image)
+                    .into(vehicle_image)
             } else {
                 Toast.makeText(this, "User Doesn't Exist", Toast.LENGTH_SHORT).show()
             }
@@ -75,6 +76,11 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.updateProfile.setOnClickListener {
             val intent = Intent(this, UpdateProfileActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.registerVehicleBtn.setOnClickListener {
+            val intent = Intent(this, RegisterVehicleActivity::class.java)
             startActivity(intent)
         }
 

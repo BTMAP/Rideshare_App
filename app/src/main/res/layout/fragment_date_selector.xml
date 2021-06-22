@@ -2,25 +2,58 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="200dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".DateSelectorFragment"
-    android:background="#88ee88">
+    android:background="@color/Gold">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/commute_location_frag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select your commute date:"
+            android:textColor="@color/DarkViolet"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date_next_btn" />
+
         <Button
             android:id="@+id/date_picker_button"
             style="?android:spinnerStyle"
-            android:layout_width="250dp"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:text="JAN 01 2020"
-            android:textSize="30sp"
+            android:text="JAN-01-2020"
+            android:textColor="@color/DeepPink"
+            android:textSize="45sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.6" />
+
+        <Button
+            android:id="@+id/date_prev_btn"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_prev"
+            android:backgroundTint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/date_next_btn"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_forward"
+            android:backgroundTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

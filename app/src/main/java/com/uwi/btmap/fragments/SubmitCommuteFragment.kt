@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.uwi.btmap.MainActivity
 import com.uwi.btmap.R
+import com.uwi.btmap.activities.RegisterCommuteActivity
 import com.uwi.btmap.bll.CommuteViewModel
 
 private const val TAG = "SubmitCommuteFragment"
@@ -18,6 +19,7 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
 
     private lateinit var  viewModel:CommuteViewModel
     private lateinit var submitButton: Button
+    private lateinit var prevButton: Button
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,6 +36,11 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
             }else{
                 Log.d(TAG, "onViewCreated: Is Valid: false")
             }
+        }
+
+        prevButton = view.findViewById(R.id.sub_prev_btn)
+        prevButton.setOnClickListener{
+            (activity as RegisterCommuteActivity?)?.setPrevPage()
         }
 
         viewModel.commuteSaveSuccess().observe(requireActivity(), Observer{

@@ -2,20 +2,27 @@ package com.uwi.btmap.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.uwi.btmap.bll.CommuteViewModel
+import com.google.firebase.database.FirebaseDatabase
 import com.uwi.btmap.R
+import com.uwi.btmap.activities.RegisterCommuteActivity
+import com.uwi.btmap.bll.CommuteViewModel
+import com.uwi.btmap.model.UserType
+import kotlinx.android.synthetic.main.activity_test.*
 
 private const val TAG = "TypeSelectorFragment"
 
 class TypeSelectorFragment : Fragment() {
     private lateinit var driverButton: Button
     private lateinit var passengerButton: Button
+
+    private lateinit var nextButton: Button
 
     private lateinit var viewModel: CommuteViewModel
 
@@ -34,17 +41,47 @@ class TypeSelectorFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_type_selector, container, false)
 
-        driverButton = view.findViewById(R.id.driver_button)
-        passengerButton = view.findViewById(R.id.passenger_button)
+//        driverButton = view.findViewById(R.id.driver_button)
+//        passengerButton = view.findViewById(R.id.passenger_button)
 
-        driverButton.setOnClickListener {
-            viewModel.setCommuteType(0)
-            Log.d(TAG, "onCreateView: DriverType Set: ${viewModel.commuteType}")
+        nextButton = view.findViewById(R.id.sel_next_btn)
+
+//        driverButton.setOnClickListener {
+//            viewModel.setCommuteType(0)
+//            Log.d(TAG, "onCreateView: DriverType Set: ${viewModel.commuteType}")
+//        }
+//
+//        passengerButton.setOnClickListener {
+//            viewModel.setCommuteType(1)
+//            Log.d(TAG, "onCreateView: DriverType Set: ${viewModel.commuteType}")
+//        }
+
+        val driverCheckBox = view.findViewById<CheckBox>(R.id.driverCheckBox)
+        driverCheckBox?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                passengerCheckBox.setChecked(false)
+                viewModel.setCommuteType(0)
+
+//                val value = UserType(driver = true, passenger = false)
+//                database = FirebaseDatabase.getInstance().getReference("CommuteType")
+//                database.child(mAuth?.currentUser?.uid!!).setValue(value)
+            }
         }
 
-        passengerButton.setOnClickListener {
-            viewModel.setCommuteType(1)
-            Log.d(TAG, "onCreateView: DriverType Set: ${viewModel.commuteType}")
+        val passengerCheckBox = view.findViewById<CheckBox>(R.id.passengerCheckBox)
+        passengerCheckBox?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                driverCheckBox.setChecked(false)
+                viewModel.setCommuteType(1)
+
+//                val value = UserType(driver = false, passenger = true)
+//                database = FirebaseDatabase.getInstance().getReference("CommuteType")
+//                database.child(mAuth?.currentUser?.uid!!).setValue(value)
+            }
+        }
+
+        nextButton.setOnClickListener{
+            (activity as RegisterCommuteActivity?)?.setNextPage()
         }
 
         return view

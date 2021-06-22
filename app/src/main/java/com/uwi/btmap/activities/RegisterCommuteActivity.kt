@@ -2,11 +2,13 @@ package com.uwi.btmap.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
+import com.afollestad.viewpagerdots.DotsIndicator
 import com.uwi.btmap.*
 import com.uwi.btmap.bll.CommuteViewModel
 import com.uwi.btmap.fragments.*
@@ -16,17 +18,25 @@ private const val NUM_PAGES = 5
 class RegisterCommuteActivity : AppCompatActivity() {
 
     private lateinit var pager: ViewPager
+    private lateinit var dots: DotsIndicator
 
     private var commuteType = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar!!.setTitle("Register Commute")
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         setContentView(R.layout.activity_register_commute)
 
         pager = findViewById(R.id.selector_pager_view)
 
+        pager.setPageTransformer(true, ZoomOutPageTransformer())
+
         val pagerAdapter = ScreenSlidePagerAdapter(supportFragmentManager)
         pager.adapter = pagerAdapter
+
+        //dots.attachViewPager(pager)
+
 
         val commuteViewModel = ViewModelProvider(this).get(CommuteViewModel::class.java)
         commuteViewModel.token = getString(R.string.mapbox_access_token)
@@ -38,6 +48,24 @@ class RegisterCommuteActivity : AppCompatActivity() {
         } else {
             pager.currentItem = pager.currentItem - 1
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun setNextPage(){
+        pager.currentItem = pager.currentItem + 1
+    }
+
+    fun setPrevPage(){
+        pager.currentItem = pager.currentItem - 1
     }
 
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) :
@@ -55,6 +83,5 @@ class RegisterCommuteActivity : AppCompatActivity() {
             }
             return fragment
         }
-
     }
 }

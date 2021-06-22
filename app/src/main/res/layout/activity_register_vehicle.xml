@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.UpdateProfileActivity">
+    tools:context=".RegisterVehicleActivity">
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -53,12 +52,12 @@
             app:layout_constraintTop_toTopOf="@+id/selectvehiclephoto_btn" />
 
         <TextView
-            android:id="@+id/userName"
+            android:id="@+id/vehicleUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/vehicle_image"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@+id/vehicle_image"
             android:fontFamily="sans-serif-black"
             android:includeFontPadding="false"
             android:text="Your Name"
@@ -69,7 +68,7 @@
             android:id="@+id/userPhoneNo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/userName"
+            android:layout_below="@id/vehicleUserName"
             android:layout_marginStart="20dp"
             android:layout_toEndOf="@+id/vehicle_image"
             android:includeFontPadding="false"
@@ -80,96 +79,42 @@
     </RelativeLayout>
 
 
-
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:orientation="vertical"
+        android:layout_height="450dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/saveBtn"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Full Name"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="18dp"
+            android:text="Vehicle Make"
+            android:textAllCaps="true"
             android:textColor="@color/purple_500"
             android:textSize="18sp"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            android:paddingLeft="18dp"
-            android:layout_marginTop="10dp"/>
+            android:textStyle="bold" />
+
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText_name"
+            android:id="@+id/editText_vehicleMake"
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/input"
             android:backgroundTint="@color/AliceBlue"
-            android:hint="Full Name"
             android:paddingLeft="20dp"
             android:textColor="@color/DarkOrchid"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/updateHeader"
-            app:layout_constraintVertical_bias="0.111" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Bio"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            android:paddingLeft="18dp"
-            android:layout_marginTop="10dp"/>
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText_bio"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/input"
-            android:backgroundTint="@color/AliceBlue"
-            android:hint="Bio"
-            android:paddingLeft="20dp"
-            android:textColor="@color/DarkOrchid"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText_address"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Email Address"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            android:paddingLeft="18dp"
-            android:layout_marginTop="10dp"/>
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText_email"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/input"
-            android:backgroundTint="@color/AliceBlue"
-            android:hint="Email Address"
-            android:paddingLeft="20dp"
-            android:textColor="@color/DarkOrchid"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editText_name"
             app:layout_constraintVertical_bias="0.0" />
@@ -177,51 +122,95 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Address"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="18dp"
+            android:text="Vehicle Model"
+            android:textAllCaps="true"
             android:textColor="@color/purple_500"
             android:textSize="18sp"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            android:paddingLeft="18dp"
-            android:layout_marginTop="10dp"/>
+            android:textStyle="bold" />
+
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText_address"
+            android:id="@+id/editText_vehicleModel"
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/input"
             android:backgroundTint="@color/AliceBlue"
-            android:hint="Address"
             android:paddingLeft="20dp"
             android:textColor="@color/DarkOrchid"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText_phoneNumber"
+            app:layout_constraintTop_toBottomOf="@+id/updateHeader"
+            app:layout_constraintVertical_bias="0.111" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="18dp"
+            android:text="Vehicle Color"
+            android:textAllCaps="true"
+            android:textColor="@color/purple_500"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editText_vehicleColor"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/input"
+            android:backgroundTint="@color/AliceBlue"
+            android:paddingLeft="20dp"
+            android:textColor="@color/DarkOrchid"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText_address"
             app:layout_constraintVertical_bias="0.0" />
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="18dp"
+            android:text="License Plate Number"
+            android:textAllCaps="true"
+            android:textColor="@color/purple_500"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/saveBtn"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="@color/purple_500"
-        android:text="Save"
-        android:textColor="@color/white"
-        android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.95" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editText_vehicleLicensePlateNumber"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/input"
+            android:backgroundTint="@color/AliceBlue"
+            android:paddingLeft="20dp"
+            android:textColor="@color/DarkOrchid"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText_name"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/purple_500"
+            android:text="Save"
+            android:layout_marginTop="50dp"
+            android:textColor="@color/white"
+            android:textSize="18dp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

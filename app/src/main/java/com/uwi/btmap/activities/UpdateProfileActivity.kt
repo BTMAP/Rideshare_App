@@ -45,7 +45,7 @@ class UpdateProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //Profile Photo
-        selectphoto_btn.setOnClickListener {
+        selectvehiclephoto_btn.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 0)
@@ -68,7 +68,7 @@ class UpdateProfileActivity : AppCompatActivity() {
 
                 Glide.with(this)
                     .load(profilePhoto)
-                    .into(profile_image)
+                    .into(vehicle_image)
 
                 val name = it.child("name").value
                 val bio = it.child("bio").value
@@ -103,9 +103,9 @@ class UpdateProfileActivity : AppCompatActivity() {
 
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
 
-            profile_image.setImageBitmap(bitmap)
+            vehicle_image.setImageBitmap(bitmap)
 
-            selectphoto_btn.alpha = 0f
+            selectvehiclephoto_btn.alpha = 0f
         }
     }
 
@@ -155,7 +155,7 @@ class UpdateProfileActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (profile_image == null){
+        if (vehicle_image == null){
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Required")
             builder.setMessage("A profile photo is required. For more information, visit the about page.")

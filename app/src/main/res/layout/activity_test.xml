@@ -41,5 +41,29 @@
                 android:backgroundTint="@color/black"/>
         </LinearLayout>
     </FrameLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/button_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/button_background_color"
+        android:text="Click Me"
+        android:textColor="@color/button_text_color"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <Switch
+        android:id="@+id/buttonSwitch"
+        android:layout_width="160dp"
+        android:layout_height="80dp"
+        android:checked="true"
+        android:text="Enabled"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+</LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

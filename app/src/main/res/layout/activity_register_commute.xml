@@ -7,22 +7,51 @@
     tools:context=".activities.RegisterCommuteActivity">
 
     <fragment
-        android:name="com.uwi.btmap.fragments.RoutePreviewFragment"
         android:id="@+id/register_route_main_fragment"
+        android:name="com.uwi.btmap.fragments.RoutePreviewFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/selector_pager_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </fragment>
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/selector_pager_view"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--    <LinearLayout-->
+<!--        android:id="@+id/selector_pager_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="200dp"-->
+<!--        android:orientation="vertical"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent">-->
+
+<!--        <com.afollestad.viewpagerdots.DotsIndicator-->
+<!--            android:id="@+id/dots"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="48dp" />-->
+
+<!--        <androidx.viewpager.widget.ViewPager-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="200dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
+
+<!--    </LinearLayout>-->
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/selector_pager_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+<!--            <com.afollestad.viewpagerdots.DotsIndicator-->
+<!--                android:id="@+id/dots"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="48dp"-->
+<!--                />-->
+        </androidx.viewpager.widget.ViewPager>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
