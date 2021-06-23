@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="views.fragments.RoutePreviewFragment">
+    tools:context=".views.fragments.selectPair.ListCommutePairFragment">
 
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/route_preview_map_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/commute_pair_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

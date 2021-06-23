@@ -371,7 +371,6 @@ class NavActivity :
             "mapbox-location-shadow-layer"
         )
     }
-
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------------------- OnCreate --------------------------------------------*/
     override fun onCreate(savedInstanceState: Bundle?) {

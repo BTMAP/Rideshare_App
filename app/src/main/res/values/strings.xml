@@ -27,5 +27,7 @@
     <string name="why_prof_photo">A profile picture is necessary to allow drivers and passengers alike to have an idea of what the other person looks like before they enter the vehicle.</string>
     <string name="contact_us">Questions, queries or comments?</string>
     <string name="contact_us_link"><b><i>Contact Us</i></b></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

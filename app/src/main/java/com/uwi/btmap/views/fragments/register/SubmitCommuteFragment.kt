@@ -18,7 +18,7 @@ private const val TAG = "SubmitCommuteFragment"
 
 class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
 
-    private lateinit var  viewModel: RegisterCommuteViewModel
+    private lateinit var viewModel: RegisterCommuteViewModel
     private lateinit var submitButton: Button
     private lateinit var prevButton: Button
 
@@ -28,36 +28,35 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
         viewModel = ViewModelProvider(requireActivity()).get(RegisterCommuteViewModel::class.java)
 
         submitButton = view.findViewById(R.id.submit_commute_button)
-        submitButton.setOnClickListener{
+        submitButton.setOnClickListener {
             //check if commute is valid
             Log.d(TAG, "---------------------------------------------------------")
-            if (viewModel.isCommuteValid()){
+            if (viewModel.isCommuteValid()) {
                 Log.d(TAG, "onViewCreated: Is Valid: true")
 
-                if (viewModel.commuteType.value == 0){
+                if (viewModel.commuteType.value == 0) {
 //                if driver register commute
                     viewModel.registerDriverCommute()
                 }
-                if (viewModel.commuteType.value == 1){
+                if (viewModel.commuteType.value == 1) {
 //                if passenger find pairs
                     viewModel.findSuitableCommutePairs()
                 }
-            }else{
+            } else {
                 Log.d(TAG, "onViewCreated: Is Valid: false")
             }
         }
 
         prevButton = view.findViewById(R.id.sub_prev_btn)
-        prevButton.setOnClickListener{
+        prevButton.setOnClickListener {
             (activity as RegisterCommuteActivity?)?.setPrevPage()
         }
 
-        viewModel.commuteSaveSuccess().observe(requireActivity(), Observer{
-            if(it){
-                val intent = Intent(requireContext(),MainActivity::class.java)
+        viewModel.commuteSaveSuccess().observe(requireActivity(), Observer {
+            if (it) {
+                val intent = Intent(requireContext(), MainActivity::class.java)
                 startActivity(intent)
             }
         })
-
     }
 }

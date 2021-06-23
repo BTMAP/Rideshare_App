@@ -1,11 +1,13 @@
 package com.uwi.btmap.views.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.afollestad.viewpagerdots.DotsIndicator
@@ -37,9 +39,32 @@ class RegisterCommuteActivity : AppCompatActivity() {
         val pagerAdapter = ScreenSlidePagerAdapter(supportFragmentManager)
         pager.adapter = pagerAdapter
 
-        val commuteViewModel = ViewModelProvider(this).get(RegisterCommuteViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(RegisterCommuteViewModel::class.java)
+        viewModel.token = getString(R.string.mapbox_access_token)
 
-        commuteViewModel.token = getString(R.string.mapbox_access_token)
+        //add submit commute success livedata observer
+        //switch activity
+        viewModel.commuteSaveSuccess().observe(this, Observer {
+            if (it) {
+                //move this from the fragment ot the view model
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        //add pair commute success livedata observer
+        //switch activity
+        viewModel.findPairSuccess().observe(this, Observer {
+            if (it) {
+                //move this from the fragment ot the view model
+                val intent = Intent(this, SelectPairActivity::class.java)
+                    .putExtra("CommuteOptions", viewModel.commuteOptions)
+                    .putExtra("PassengerOrigin", viewModel.origin.value)
+                    .putExtra("PassengerDestination", viewModel.destination.value)
+                startActivity(intent)
+            }
+        })
+
     }
 
     override fun onBackPressed() {
