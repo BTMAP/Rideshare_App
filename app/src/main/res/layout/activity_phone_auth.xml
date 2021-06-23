@@ -7,7 +7,7 @@
     android:background="#F9FAFF"
     android:orientation="vertical"
     android:weightSum="2"
-    tools:context=".activities.PhoneAuthActivity">
+    tools:context=".views.activities.PhoneAuthActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

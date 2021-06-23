@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/SkyBlue"
-tools:context="ui.aboutUs.AboutUsFragment">
+tools:context=".views.fragments.aboutUs.AboutUsFragment">
 
 
 

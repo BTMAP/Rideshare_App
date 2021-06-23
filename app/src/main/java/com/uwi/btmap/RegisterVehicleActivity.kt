@@ -6,7 +6,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
@@ -15,9 +14,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import com.uwi.btmap.activities.UpdateProfileActivity
 import com.uwi.btmap.databinding.ActivityRegisterVehicleBinding
-import com.uwi.btmap.model.UserVehicle
+import com.uwi.btmap.models.UserVehicle
 import kotlinx.android.synthetic.main.activity_register_vehicle.*
 import kotlinx.android.synthetic.main.activity_update_profile.selectvehiclephoto_btn
 import kotlinx.android.synthetic.main.activity_update_profile.vehicle_image

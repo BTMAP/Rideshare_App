@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.commuteList.CommuteListFragment">
+    tools:context=".views.fragments.commuteList.CommuteListFragment">
 
     <ImageButton
         android:id="@+id/add_commute"
