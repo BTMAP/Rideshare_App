@@ -3,9 +3,8 @@ package com.uwi.btmap.views.fragments.commuteList
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.mapbox.api.directions.v5.DirectionsCriteria
@@ -40,6 +39,8 @@ const val TAG = "RoutePreview"
 class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pair),
     OnMapReadyCallback{
 
+    private lateinit var pairButton: Button
+
 //----------------------------------- source constants ---------------------------------------------
 
     private val drivingRouteSourceID = "DRIVING_ROUTE_SOURCE_ID"
@@ -72,10 +73,19 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(SelectPairViewModel::class.java)
-        viewModel.currentCommuteIndex.value = arguments?.getInt("CommuteIndex")
+        val currentIndex = arguments?.getInt("CommuteIndex")
+        viewModel.currentCommuteIndex.value = currentIndex
 
         viewModel.currentFragment.value = 1
 
+        val currentCommute = viewModel.commuteOptions.value?.pairs?.get(currentIndex!!)
+
+        viewModel.getPairEstimates(currentCommute!!.commuteId,
+            viewModel.origin.value!!,
+            viewModel.destination.value!!,
+            currentCommute.pickupPoints[0],
+            currentCommute.dropoffPoints[0]
+        )
         Mapbox.getInstance(requireContext(),getString(R.string.mapbox_access_token))
     }
 
@@ -85,6 +95,11 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
         //setup mapbox
         initMapView(view,savedInstanceState)
         initMapNavigation()
+
+        pairButton = view.findViewById(R.id.pair_button)
+        pairButton.setOnClickListener {
+            viewModel.pair()
+        }
     }
 
     //----------------------- mapbox functions -------------------------

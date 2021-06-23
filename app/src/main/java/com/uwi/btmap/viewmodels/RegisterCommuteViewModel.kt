@@ -334,6 +334,8 @@ class RegisterCommuteViewModel : ViewModel() {
                 "\"time\":[$year,$month,$day,$hour,$minute]"+
                 "}"
 
+        Log.d(TAG, "findSuitableCommutePairs: $query")
+        
         val request = Request.Builder()
             .url(url+query)
             .build()
@@ -344,6 +346,8 @@ class RegisterCommuteViewModel : ViewModel() {
 
                 val body = response.body?.string()
 
+                //handle error server error??
+                Log.d(TAG, "onResponse: ${ body }")
                 commuteOptions = GsonBuilder().create().fromJson(body,
                     CommuteOptions::class.java
                 )
