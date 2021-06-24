@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.uwi.btmap.R
-import com.uwi.btmap.RegisterVehicleActivity
 import com.uwi.btmap.databinding.ActivityProfileBinding
 import kotlinx.android.synthetic.main.activity_update_profile.*
 
@@ -41,13 +40,13 @@ class ProfileActivity : AppCompatActivity() {
         database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
             if (it.exists()) {
                 val name = it.child("name").value
-                val bio = it.child("bio").value
+                val occupation = it.child("occupation").value
                 val address = it.child("address").value
                 val email = it.child("email").value
 
 
                 binding.userName.text = name.toString()
-                binding.userBio.text = bio.toString()
+                binding.userOccupation.text = occupation.toString()
                 binding.userAddress.text = address.toString()
                 binding.userEmail.text = email.toString()
             }
@@ -66,7 +65,7 @@ class ProfileActivity : AppCompatActivity() {
 
                 Glide.with(this)
                     .load(profilePhoto)
-                    .into(vehicle_image)
+                    .into(profile_image)
             } else {
                 Toast.makeText(this, "User Doesn't Exist", Toast.LENGTH_SHORT).show()
             }

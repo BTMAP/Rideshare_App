@@ -46,7 +46,7 @@
             android:src="@drawable/ic_edit" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/vehicle_image"
+            android:id="@+id/profile_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerVertical="true"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/vehicle_image"
+            android:layout_toRightOf="@+id/profile_image"
             android:fontFamily="sans-serif-black"
             android:includeFontPadding="false"
             android:text="Your Name"
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/userName"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/vehicle_image"
+            android:layout_toEndOf="@+id/profile_image"
             android:includeFontPadding="false"
             android:text="Your Phone Number"
             android:textColor="@color/Wheat"
@@ -229,7 +229,7 @@
             tools:ignore="RtlCompat" />
 
         <TextView
-            android:id="@+id/userBio"
+            android:id="@+id/userOccupation"
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -238,7 +238,7 @@
             android:backgroundTint="@color/AliceBlue"
             android:drawableLeft="@drawable/person"
             android:gravity="center"
-            android:hint="Bio"
+            android:hint="Occupation"
             android:padding="10dp"
             android:textAlignment="viewStart"
             android:textSize="18sp"
