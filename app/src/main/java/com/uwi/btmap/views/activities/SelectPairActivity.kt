@@ -1,5 +1,6 @@
 package com.uwi.btmap.views.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mapbox.geojson.Point
+import com.uwi.btmap.MainActivity
 import com.uwi.btmap.R
 import com.uwi.btmap.models.CommuteOptions
 import com.uwi.btmap.viewmodels.SelectPairViewModel
@@ -34,6 +36,13 @@ class SelectPairActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.pair_select_fragment,fragment)
         transaction.commit()
+
+        viewModel.pairSuccess().observe(this,Observer{
+            if(it){
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+        })
     }
 
     override fun onBackPressed() {

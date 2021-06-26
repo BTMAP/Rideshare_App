@@ -52,6 +52,10 @@ class SelectPairViewModel: ViewModel() {
         return  currentFragment
     }
 
+    fun pairSuccess():LiveData<Boolean>{
+        return pairSuccess
+    }
+
 /* ---------------- Server Functions ---------------- */
     fun pair(commuteId:String, origin:Point, destination:Point, pickupPoint: IndexedCoord, dropoffPoint: IndexedCoord){
         val mAuth = FirebaseAuth.getInstance()
@@ -96,11 +100,13 @@ class SelectPairViewModel: ViewModel() {
         client.newCall(request).enqueue(object: okhttp3.Callback {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 Log.d(TAG, "onResponse: ${response.body?.string()} ")
-//                commuteSaveSuccess.postValue(true)
+                //navigate back to main page
+                pairSuccess.postValue(true)
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 //log error
+                pairSuccess.postValue(false)
             }
         })
     }
@@ -131,14 +137,12 @@ class SelectPairViewModel: ViewModel() {
                         PassengerCommuteEstimate::class.java
                     )
                 )
-                //navigate back to main page
-                pairSuccess.postValue(true)
 
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 Log.d(TAG, "onFailure: getEstimates failed - ${e.message}")
-                pairSuccess.postValue(false)
+
             }
         })
     }
