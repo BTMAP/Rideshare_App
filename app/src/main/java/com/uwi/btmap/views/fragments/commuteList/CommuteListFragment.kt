@@ -39,11 +39,18 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
             //TODO toast stating unable to retrieve
         }
 
+        val addCommuteButton = view.findViewById<Button>(R.id.add_commute_button)
         val recyclerView = view.findViewById<RecyclerView>(R.id.commute_recycler_view)
 
         val adapter = viewModel.commutes.value?.let { CommutesAdapter(it.commutes) }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        add_commute.setOnClickListener {
+            //switch to register commute activity
+            val intent: Intent = Intent(requireContext(), RegisterCommuteActivity::class.java)
+            startActivity(intent)
+        }
 
         viewModel.getCommutesSuccess.observe(requireActivity(),Observer{ it ->
             if (it){

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.GsonBuilder
+import com.uwi.btmap.models.BtmapApiError
 import com.uwi.btmap.models.Commute
 import com.uwi.btmap.models.CommuteOptions
 import com.uwi.btmap.models.UserCommutes
@@ -45,12 +46,21 @@ class MainViewModel: ViewModel() {
 
                 //handle error server error??
                 Log.d(TAG, "onResponse: ${ body }")
+                val apiError = GsonBuilder().create().fromJson(body,
+                    BtmapApiError::class.java
+                )
                 val commutesResponse = GsonBuilder().create().fromJson(body,
                     UserCommutes::class.java
                 )
+                Log.d(TAG, "onResponse: $apiError")
                 Log.d(TAG, "onResponse: ${commutesResponse}")
-                commutes.postValue(commutesResponse)
-                getCommutesSuccess.postValue(true)
+                if(!apiError.error){
+                    commutes.postValue(commutesResponse)
+                    getCommutesSuccess.postValue(true)
+                }else{
+                    //TODO log error
+                    getCommutesSuccess.postValue(false)
+                }
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {

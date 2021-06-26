@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
+import com.uwi.btmap.models.BtmapApiError
 import com.uwi.btmap.models.CommuteOptions
 import com.uwi.btmap.models.IndexedCoord
 import com.uwi.btmap.models.PassengerCommuteEstimate
@@ -38,6 +39,7 @@ class SelectPairViewModel: ViewModel() {
 
     var currentFragment = MutableLiveData<Int>()
 
+    var getPairEstimatesSuccess = MutableLiveData<Boolean>()
     var pairSuccess = MutableLiveData<Boolean>()
 
     init {
@@ -52,6 +54,10 @@ class SelectPairViewModel: ViewModel() {
 
     fun currentFragment(): LiveData<Int>{
         return  currentFragment
+    }
+
+    fun getPairEstimatesSuccess():LiveData<Boolean>{
+        return getPairEstimatesSuccess
     }
 
     fun pairSuccess():LiveData<Boolean>{
@@ -102,13 +108,23 @@ class SelectPairViewModel: ViewModel() {
         val client = OkHttpClient()
         client.newCall(request).enqueue(object: okhttp3.Callback {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                Log.d(TAG, "onResponse: ${response.body?.string()} ")
-                //navigate back to main page
-                pairSuccess.postValue(true)
+                val body = response.body?.string()
+                Log.d(TAG, "onResponse: $body")
+                val apiError = GsonBuilder().create().fromJson(body,
+                    BtmapApiError::class.java
+                )
+
+                if(!apiError.error){
+                    //trigger navigate back to main page
+                    pairSuccess.postValue(true)
+                }else{
+                    pairSuccess.postValue(false)
+                }
+
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
-                //log error
+                //TODO log error
                 pairSuccess.postValue(false)
             }
         })
@@ -134,18 +150,26 @@ class SelectPairViewModel: ViewModel() {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 val body = response.body?.string()
                 Log.d(TAG, "onResponse: $body")
+                val apiError = GsonBuilder().create().fromJson(body,
+                    BtmapApiError::class.java
+                )
+
                 commuteEstimates.postValue(
                     GsonBuilder().create().fromJson(
                         body,
                         PassengerCommuteEstimate::class.java
                     )
                 )
-
+                if(!apiError.error){
+                    getPairEstimatesSuccess.postValue(true)
+                }else{
+                    getPairEstimatesSuccess.postValue(false)
+                }
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 Log.d(TAG, "onFailure: getEstimates failed - ${e.message}")
-
+                getPairEstimatesSuccess.postValue(false)
             }
         })
     }

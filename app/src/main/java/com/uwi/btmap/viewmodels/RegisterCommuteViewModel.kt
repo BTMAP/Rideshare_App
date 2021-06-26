@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.GsonBuilder
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse
+import com.uwi.btmap.models.BtmapApiError
 import com.uwi.btmap.models.CommuteOptions
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -285,12 +286,20 @@ class RegisterCommuteViewModel : ViewModel() {
         val client = OkHttpClient()
         client.newCall(request).enqueue(object: okhttp3.Callback {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                Log.d(TAG, "onResponse: ${response.body?.string()} ")
-                commuteSaveSuccess.postValue(true)
+                val body = response.body?.string()
+                Log.d(TAG, "onResponse: ${body} ")
+                val apiError = GsonBuilder().create().fromJson(body,
+                    BtmapApiError::class.java
+                )
+                if(!apiError.error){
+                    commuteSaveSuccess.postValue(true)
+                }else{
+                    commuteSaveSuccess.postValue(false)
+                }
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
-                //log error
+                //TODO log error
                 commuteSaveSuccess.postValue(false)
             }
         })
