@@ -57,10 +57,12 @@ class RegisterCommuteActivity : AppCompatActivity() {
         viewModel.findPairSuccess().observe(this, Observer {
             if (it) {
                 //move this from the fragment ot the view model
-                val intent = Intent(this, SelectPairActivity::class.java)
-                    .putExtra("CommuteOptions", viewModel.commuteOptions)
-                    .putExtra("PassengerOrigin", viewModel.origin.value)
-                    .putExtra("PassengerDestination", viewModel.destination.value)
+                val intent = Intent(this,SelectPairActivity::class.java)
+                    .putExtra("CommuteOptions",viewModel.commuteOptions)
+                    .putExtra("PassengerOrigin",viewModel.origin.value)
+                    .putExtra("PassengerDestination",viewModel.destination.value)
+                    .putExtra("OriginAddress",viewModel.originAddress.value)
+                    .putExtra("DestinationAddress",viewModel.destinationAddress.value)
                 startActivity(intent)
             }
         })

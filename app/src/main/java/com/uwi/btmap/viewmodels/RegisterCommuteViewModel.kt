@@ -6,16 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
-import com.uwi.btmap.models.Commute
+import com.uwi.btmap.models.NavigationCommute
 import java.util.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.GsonBuilder
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse
+import com.uwi.btmap.models.BtmapApiError
 import com.uwi.btmap.models.CommuteOptions
-import com.uwi.btmap.models.PairableCommute
-import com.uwi.btmap.models.Trip
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -32,7 +31,7 @@ private const val TAG = "CommuteViewModel"
 class RegisterCommuteViewModel : ViewModel() {
 
     var token = ""
-    var commute = Commute()
+    var commute = NavigationCommute()
     var commuteType = MutableLiveData<Int>()
 
     /* ------------------------ Location Information ----------------------- */
@@ -117,7 +116,7 @@ class RegisterCommuteViewModel : ViewModel() {
 
     /* ------------------------ String Formatters ------------------------- */
 
-    private fun makeDateString(day:Int,month:Int,year:Int): String{
+    private fun makeDateString(day:Int, month:Int, year:Int): String{
         return formatMonth(month) + " " + day + " " + year
     }
 
@@ -196,29 +195,6 @@ class RegisterCommuteViewModel : ViewModel() {
         return isCommuteTypeValid() && isTimeDateValid() && isPointValid() && isRouteValid()
     }
 
-    /* --------------------------- DB Functions --------------------------- */
-
-    fun saveCommute(){
-        val mAuth = FirebaseAuth.getInstance()
-        //reference to Commutes collection in database
-        val database = FirebaseDatabase.getInstance().getReference("Commute Collection")
-
-        //create object to store commute(trip) info
-        val tripInfo = Trip(mAuth.currentUser?.uid, calendar.time, "origin", "destination",
-            origin().value?.latitude(),origin().value?.longitude(),
-            destination().value?.latitude(),destination().value?.longitude())
-
-        //set doc in collection
-        database.push().setValue(tripInfo)
-            .addOnSuccessListener {
-                commuteSaveSuccess.value = true
-                //Toast.makeText(this, "Successfully Saved", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
-            }
-    }
-
     /* -------------------------- Map Functions --------------------------- */
 
     fun geoCodeRequest(accessToken:String,point: Point,location:Int){
@@ -266,7 +242,7 @@ class RegisterCommuteViewModel : ViewModel() {
         val driverId = mAuth.currentUser?.uid
 
         val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
+        val month = calendar.get(Calendar.MONTH).plus(1)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
@@ -280,7 +256,7 @@ class RegisterCommuteViewModel : ViewModel() {
         Log.d(TAG, "registerDriverCommute: $duration")
 
         val etaYear = calendar.get(Calendar.YEAR)
-        val etaMonth = calendar.get(Calendar.MONTH)
+        val etaMonth = calendar.get(Calendar.MONTH).plus(1)
         val etaDay = calendar.get(Calendar.DAY_OF_MONTH)
         val etaHour = calendar.get(Calendar.HOUR_OF_DAY)
         val etaMinute = calendar.get(Calendar.MINUTE)
@@ -288,12 +264,14 @@ class RegisterCommuteViewModel : ViewModel() {
         val polyline = routePreview.value?.geometry()?.replace("\\","\\\\")
 
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
-        var url = "http://smallkins.pythonanywhere.com/add_commute"
+        var url = "http://smallkins.pythonanywhere.com/add_driver_commute"
         val json = "{\n" +
                 "    \"driverId\":\"$driverId\",\n" +
                 "    \"polyline\":\"${polyline}\",\n" +
                 "    \"time\":[$year,$month,$day,$hour,$minute],\n" +
-                "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute]\n" +
+                "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute],\n" +
+                "    \"originAddress\":\"${originAddress.value}\",\n" +
+                "    \"destinationAddress\":\"${destinationAddress.value}\"\n" +
                 "}"
 
         val rBody: RequestBody = json.toRequestBody(JSON)
@@ -310,19 +288,28 @@ class RegisterCommuteViewModel : ViewModel() {
         val client = OkHttpClient()
         client.newCall(request).enqueue(object: okhttp3.Callback {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                Log.d(TAG, "onResponse: ${response.body?.string()} ")
-                commuteSaveSuccess.postValue(true)
+                val body = response.body?.string()
+                Log.d(TAG, "onResponse: ${body} ")
+                val apiError = GsonBuilder().create().fromJson(body,
+                    BtmapApiError::class.java
+                )
+                if(!apiError.error){
+                    commuteSaveSuccess.postValue(true)
+                }else{
+                    commuteSaveSuccess.postValue(false)
+                }
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
-                //log error
+                //TODO log error
+                commuteSaveSuccess.postValue(false)
             }
         })
     }
 
     fun findSuitableCommutePairs(){
         val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
+        val month = calendar.get(Calendar.MONTH).plus(1)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
@@ -360,6 +347,7 @@ class RegisterCommuteViewModel : ViewModel() {
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 //log error
+                findPairSuccess.postValue(false)
             }
         })
     }

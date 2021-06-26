@@ -37,7 +37,7 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
-import com.uwi.btmap.models.Commute
+import com.uwi.btmap.models.NavigationCommute
 import com.uwi.btmap.R
 
 class MapActivity :
@@ -56,7 +56,7 @@ class MapActivity :
     private var permissionsManager: PermissionsManager = PermissionsManager(this)
 
     //Locations
-    private var commute: Commute = Commute()
+    private var commute: NavigationCommute = NavigationCommute()
     private var currentSelectedLocation = 0
 
     //Widgets
