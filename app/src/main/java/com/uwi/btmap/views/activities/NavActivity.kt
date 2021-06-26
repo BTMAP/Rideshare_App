@@ -50,7 +50,7 @@ import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.puck.PuckDrawableSupplier
 import com.mapbox.navigation.ui.summary.SummaryBottomSheet
 import com.uwi.btmap.R
-import com.uwi.btmap.models.Commute
+import com.uwi.btmap.models.NavigationCommute
 import com.uwi.btmap.bll.TTS
 import com.uwi.btmap.models.DriverLiveLocation
 import java.lang.ref.WeakReference
@@ -80,7 +80,7 @@ class NavActivity :
     private lateinit var mapCamera: NavigationCamera
 
     //custom commute object
-    private lateinit var commute: Commute
+    private lateinit var commute: NavigationCommute
 
     private lateinit var permissionsManager: PermissionsManager
     private lateinit var locationEngine: LocationEngine
@@ -358,7 +358,7 @@ class NavActivity :
 
         //get commute
         //TODO notify user and return to previous screen if no commute is passed
-        this.commute = intent.getSerializableExtra("commute")!! as Commute
+        this.commute = intent.getSerializableExtra("commute")!! as NavigationCommute
 
         //set access token
         this.accessToken = getString(R.string.mapbox_access_token)

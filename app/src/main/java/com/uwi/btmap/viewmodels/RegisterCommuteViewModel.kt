@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
-import com.uwi.btmap.models.Commute
+import com.uwi.btmap.models.NavigationCommute
 import java.util.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
@@ -14,8 +14,6 @@ import com.google.gson.GsonBuilder
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse
 import com.uwi.btmap.models.CommuteOptions
-import com.uwi.btmap.models.PairableCommute
-import com.uwi.btmap.models.Trip
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -32,7 +30,7 @@ private const val TAG = "CommuteViewModel"
 class RegisterCommuteViewModel : ViewModel() {
 
     var token = ""
-    var commute = Commute()
+    var commute = NavigationCommute()
     var commuteType = MutableLiveData<Int>()
 
     /* ------------------------ Location Information ----------------------- */
@@ -194,29 +192,6 @@ class RegisterCommuteViewModel : ViewModel() {
 
     fun isCommuteValid():Boolean{
         return isCommuteTypeValid() && isTimeDateValid() && isPointValid() && isRouteValid()
-    }
-
-    /* --------------------------- DB Functions --------------------------- */
-
-    fun saveCommute(){
-        val mAuth = FirebaseAuth.getInstance()
-        //reference to Commutes collection in database
-        val database = FirebaseDatabase.getInstance().getReference("Commute Collection")
-
-        //create object to store commute(trip) info
-        val tripInfo = Trip(mAuth.currentUser?.uid, calendar.time, "origin", "destination",
-            origin().value?.latitude(),origin().value?.longitude(),
-            destination().value?.latitude(),destination().value?.longitude())
-
-        //set doc in collection
-        database.push().setValue(tripInfo)
-            .addOnSuccessListener {
-                commuteSaveSuccess.value = true
-                //Toast.makeText(this, "Successfully Saved", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
-            }
     }
 
     /* -------------------------- Map Functions --------------------------- */

@@ -44,6 +44,8 @@ class SelectPairViewModel: ViewModel() {
         currentFragment.value = 0
     }
 
+    /* ---------------------- GET LiveDate Functions ----------------------- */
+
     fun commuteOptions(): LiveData<CommuteOptions>{
         return  commuteOptions
     }

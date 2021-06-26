@@ -9,12 +9,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.uwi.btmap.R
+import com.uwi.btmap.models.Commute
 import com.uwi.btmap.viewmodels.MainViewModel
 import com.uwi.btmap.viewmodels.SelectPairViewModel
 import com.uwi.btmap.views.activities.MapActivity
@@ -23,7 +25,6 @@ import kotlinx.android.synthetic.main.fragment_commute_list.*
 
 class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
 
-    private lateinit var commutes: List<String>
     private lateinit var viewModel:MainViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,23 +39,25 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
             //TODO toast stating unable to retrieve
         }
 
-        val addCommuteButton = view.findViewById<Button>(R.id.add_commute_button)
         val recyclerView = view.findViewById<RecyclerView>(R.id.commute_recycler_view)
-        commutes = listOf("Commute 1", "Commute 2", "Commute 3")
-        Log.d("TAG", "onViewCreated: ${commutes.size}")
-        val adapter = CommutesAdapter(commutes)
+
+        val adapter = viewModel.commutes.value?.let { CommutesAdapter(it.commutes) }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        viewModel.getCommutesSuccess.observe(requireActivity(),Observer{ it ->
+            if (it){
+                val adapter = viewModel.commutes.value?.let { CommutesAdapter(it.commutes) }
+                recyclerView.adapter = adapter
 
-        add_commute.setOnClickListener {
-            //switch to register commute activity
-            val intent: Intent = Intent(requireContext(), RegisterCommuteActivity::class.java)
-            startActivity(intent)
-        }
+            }else{
+                //TODO toast?
+            }
+        })
+
     }
 
-    class CommutesAdapter(private val commutes: List<String>) :
+    class CommutesAdapter(private val commutes: List<Commute>) :
         RecyclerView.Adapter<CommutesAdapter.ViewHolder>() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
@@ -69,7 +72,7 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
         override fun onBindViewHolder(holder: CommutesAdapter.ViewHolder, position: Int) {
             val commute = commutes[position]
             val textView = holder.textView
-            textView.text = commute
+            textView.text = commute.commuteId
 
         }
 
