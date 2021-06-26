@@ -31,6 +31,8 @@ class SelectPairActivity : AppCompatActivity() {
         viewModel.commuteOptions.value = intent.getSerializableExtra("CommuteOptions") as CommuteOptions
         viewModel.origin.value = intent.getSerializableExtra("PassengerOrigin") as Point
         viewModel.destination.value = intent.getSerializableExtra("PassengerDestination") as Point
+        viewModel.originAddress.value = intent.getSerializableExtra("OriginAddress") as String
+        viewModel.destinationAddress.value = intent.getSerializableExtra("DestinationAddress") as String
 
         val fragment = ListCommutePairFragment()
         val transaction = supportFragmentManager.beginTransaction()

@@ -31,6 +31,9 @@ class SelectPairViewModel: ViewModel() {
     var origin = MutableLiveData<Point>()
     var destination = MutableLiveData<Point>()
 
+    var originAddress = MutableLiveData<String>()
+    var destinationAddress = MutableLiveData<String>()
+
     var firstLegRoute = MutableLiveData<DirectionsRoute>()
     var drivingLegRoute = MutableLiveData<DirectionsRoute>()
     var lastLegRoute = MutableLiveData<DirectionsRoute>()
@@ -94,7 +97,9 @@ class SelectPairViewModel: ViewModel() {
                 "    \"pickup\":{\"lat\":${pickupPoint.lat},\"lng\":${pickupPoint.lng}},\n" +
                 "    \"dropoff\":{\"lat\":${dropoffPoint.lat},\"lng\":${dropoffPoint.lng}},\n" +
                 "    \"time\":[$year,$month,$day,$hour,$minute],\n" +
-                "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute]\n" +
+                "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute],\n" +
+                "    \"originAddress\":\"${originAddress.value}\",\n" +
+                "    \"destinationAddress\":\"${destinationAddress.value}\"\n" +
                 "}"
 
         Log.d(TAG, "pair: $json")

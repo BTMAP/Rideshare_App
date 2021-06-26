@@ -264,12 +264,14 @@ class RegisterCommuteViewModel : ViewModel() {
         val polyline = routePreview.value?.geometry()?.replace("\\","\\\\")
 
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
-        var url = "http://smallkins.pythonanywhere.com/add_commute"
+        var url = "http://smallkins.pythonanywhere.com/add_driver_commute"
         val json = "{\n" +
                 "    \"driverId\":\"$driverId\",\n" +
                 "    \"polyline\":\"${polyline}\",\n" +
                 "    \"time\":[$year,$month,$day,$hour,$minute],\n" +
-                "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute]\n" +
+                "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute],\n" +
+                "    \"originAddress\":\"${originAddress.value}\",\n" +
+                "    \"destinationAddress\":\"${destinationAddress.value}\"\n" +
                 "}"
 
         val rBody: RequestBody = json.toRequestBody(JSON)

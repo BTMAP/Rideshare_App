@@ -8,6 +8,8 @@ data class Commute(
     val destination:Coord,
     val pickupPoint:Coord?,
     val dropoffPoint:Coord?,
+    val originAddress:String,
+    val destinationAddress:String,
     val time:String,
     val eta:String,
     val isPaired:Boolean

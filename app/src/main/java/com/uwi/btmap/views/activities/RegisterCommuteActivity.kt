@@ -53,6 +53,8 @@ class RegisterCommuteActivity : AppCompatActivity() {
                     .putExtra("CommuteOptions",viewModel.commuteOptions)
                     .putExtra("PassengerOrigin",viewModel.origin.value)
                     .putExtra("PassengerDestination",viewModel.destination.value)
+                    .putExtra("OriginAddress",viewModel.originAddress.value)
+                    .putExtra("DestinationAddress",viewModel.destinationAddress.value)
                 startActivity(intent)
             }
         })
