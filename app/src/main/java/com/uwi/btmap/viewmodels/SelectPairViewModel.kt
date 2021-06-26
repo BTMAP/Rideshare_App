@@ -38,6 +38,8 @@ class SelectPairViewModel: ViewModel() {
 
     var currentFragment = MutableLiveData<Int>()
 
+    var pairSuccess = MutableLiveData<Boolean>()
+
     init {
         currentFragment.value = 0
     }
@@ -51,11 +53,10 @@ class SelectPairViewModel: ViewModel() {
     }
 
 /* ---------------- Server Functions ---------------- */
-    fun pair(){
+    fun pair(commuteId:String, origin:Point, destination:Point, pickupPoint: IndexedCoord, dropoffPoint: IndexedCoord){
         val mAuth = FirebaseAuth.getInstance()
         val userId = mAuth.currentUser?.uid
 
-        val pairableCommute = commuteOptions.value?.pairs?.get(currentCommuteIndex.value!!)
         val time = commuteEstimates.value?.getTimeCalendar()
         val eta = commuteEstimates.value?.getEtaCalendar()
 
@@ -75,11 +76,11 @@ class SelectPairViewModel: ViewModel() {
         var url = "http://smallkins.pythonanywhere.com/add_pair"
         val json = "{\n" +
                 "    \"passengerId\":\"$userId\",\n" +
-                "    \"commuteId\":\"${pairableCommute?.commuteId}\",\n" +
-                "    \"origin\":{\"lat\":0,\"lng\":0},\n" +
-                "    \"destination\":{\"lat\":0,\"lng\":0},\n" +
-                "    \"pickup\":{\"lat\":0,\"lng\":0},\n" +
-                "    \"dropoff\":{\"lat\":0,\"lng\":0},\n" +
+                "    \"commuteId\":\"${commuteId}\",\n" +
+                "    \"origin\":{\"lat\":${origin.latitude()},\"lng\":${origin.longitude()}},\n" +
+                "    \"destination\":{\"lat\":${destination.latitude()},\"lng\":${destination.longitude()}},\n" +
+                "    \"pickup\":{\"lat\":${pickupPoint.lat},\"lng\":${pickupPoint.lng}},\n" +
+                "    \"dropoff\":{\"lat\":${dropoffPoint.lat},\"lng\":${dropoffPoint.lng}},\n" +
                 "    \"time\":[$year,$month,$day,$hour,$minute],\n" +
                 "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute]\n" +
                 "}"
@@ -130,11 +131,14 @@ class SelectPairViewModel: ViewModel() {
                         PassengerCommuteEstimate::class.java
                     )
                 )
+                //navigate back to main page
+                pairSuccess.postValue(true)
 
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 Log.d(TAG, "onFailure: getEstimates failed - ${e.message}")
+                pairSuccess.postValue(false)
             }
         })
     }

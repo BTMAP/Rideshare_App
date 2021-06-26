@@ -316,6 +316,7 @@ class RegisterCommuteViewModel : ViewModel() {
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 //log error
+                commuteSaveSuccess.postValue(false)
             }
         })
     }
@@ -360,6 +361,7 @@ class RegisterCommuteViewModel : ViewModel() {
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 //log error
+                findPairSuccess.postValue(false)
             }
         })
     }

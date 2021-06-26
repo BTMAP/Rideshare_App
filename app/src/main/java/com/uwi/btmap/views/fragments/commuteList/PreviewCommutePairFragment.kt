@@ -98,7 +98,14 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
 
         pairButton = view.findViewById(R.id.pair_button)
         pairButton.setOnClickListener {
-            viewModel.pair()
+            val currentIndex = viewModel.currentCommuteIndex.value
+            val currentCommute = viewModel.commuteOptions.value?.pairs?.get(currentIndex!!)
+            viewModel.pair(currentCommute!!.commuteId,
+                viewModel.origin.value!!,
+                viewModel.destination.value!!,
+                currentCommute.pickupPoints[0],
+                currentCommute.dropoffPoints[0]
+            )
         }
     }
 
