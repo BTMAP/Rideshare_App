@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -20,6 +21,8 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.uwi.btmap.viewmodels.MainViewModel
+import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 import com.uwi.btmap.views.activities.*
 import kotlinx.android.synthetic.main.activity_update_profile.*
 
@@ -36,6 +39,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         mAuth = FirebaseAuth.getInstance()
 

@@ -9,9 +9,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.uwi.btmap.R
+import com.uwi.btmap.viewmodels.MainViewModel
+import com.uwi.btmap.viewmodels.SelectPairViewModel
 import com.uwi.btmap.views.activities.MapActivity
 import com.uwi.btmap.views.activities.RegisterCommuteActivity
 import kotlinx.android.synthetic.main.fragment_commute_list.*
@@ -19,9 +24,19 @@ import kotlinx.android.synthetic.main.fragment_commute_list.*
 class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
 
     private lateinit var commutes: List<String>
+    private lateinit var viewModel:MainViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        val mAuth = FirebaseAuth.getInstance()
+        val userId = mAuth.currentUser?.uid
+        if (userId != null) {
+            viewModel.getUserCommutes(userId)
+        }else{
+            //TODO toast stating unable to retrieve
+        }
 
         val addCommuteButton = view.findViewById<Button>(R.id.add_commute_button)
         val recyclerView = view.findViewById<RecyclerView>(R.id.commute_recycler_view)
