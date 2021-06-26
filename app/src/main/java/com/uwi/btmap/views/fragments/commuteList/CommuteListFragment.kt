@@ -20,6 +20,7 @@ import com.uwi.btmap.models.Commute
 import com.uwi.btmap.viewmodels.MainViewModel
 import com.uwi.btmap.viewmodels.SelectPairViewModel
 import com.uwi.btmap.views.activities.MapActivity
+import com.uwi.btmap.views.activities.PreviewCommuteActivity
 import com.uwi.btmap.views.activities.RegisterCommuteActivity
 import kotlinx.android.synthetic.main.fragment_commute_list.*
 
@@ -93,7 +94,10 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
             init {
                 listItemView.setOnClickListener {
                     //switch to map activity
-                    val intent: Intent = Intent(listItemView.context, MapActivity::class.java)
+                    val commute = commutes[adapterPosition]
+                    val intent: Intent = Intent(listItemView.context, PreviewCommuteActivity::class.java)
+                        .putExtra("Commute",commute)
+
                     listItemView.context.startActivity(intent)
                 }
             }

@@ -16,7 +16,7 @@ import com.uwi.btmap.viewmodels.SelectPairViewModel
 import com.uwi.btmap.views.fragments.commuteList.PreviewCommutePairFragment
 import com.uwi.btmap.views.fragments.selectPair.ListCommutePairFragment
 
-const val TAG = "ListCommutePairs"
+private const val TAG = "ListCommutePairs"
 
 class SelectPairActivity : AppCompatActivity() {
 

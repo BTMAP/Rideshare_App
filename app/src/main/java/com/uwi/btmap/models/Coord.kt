@@ -1,3 +1,5 @@
 package com.uwi.btmap.models
 
-data class Coord(val lat:Float,val lng:Float)
+import java.io.Serializable
+
+data class Coord(val lat:Double,val lng:Double): Serializable
