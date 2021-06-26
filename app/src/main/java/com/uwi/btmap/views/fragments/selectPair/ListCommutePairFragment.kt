@@ -34,7 +34,6 @@ class ListCommutePairFragment : Fragment(R.layout.fragment_list_commute_pair_fra
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(SelectPairViewModel::class.java)
-
         viewModel.currentFragment.value = 0
     }
 
@@ -80,9 +79,9 @@ class ListCommutePairFragment : Fragment(R.layout.fragment_list_commute_pair_fra
             val startTime = outFormat.format(start)
             val etaTime = outFormat.format(eta)
 
-            indexTextView.text = (position+1).toString()
-            startTextView.text = "Driver Start Time: $startTime"
-            etaTextView.text = "Driver ETA: $etaTime"
+            indexTextView.text = (position + 1).toString()
+            startTextView.text = "$startTime"
+            etaTextView.text = "$etaTime"
 
             holder.index = position
 
