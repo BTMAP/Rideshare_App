@@ -65,13 +65,13 @@ class SelectPairViewModel: ViewModel() {
         val eta = commuteEstimates.value?.getEtaCalendar()
 
         val year = time?.get(Calendar.YEAR)
-        val month = time?.get(Calendar.MONTH)
+        val month = time?.get(Calendar.MONTH)?.plus(1)
         val day = time?.get(Calendar.DAY_OF_MONTH)
         val hour = time?.get(Calendar.HOUR_OF_DAY)
         val minute = time?.get(Calendar.MINUTE)
 
         val etaYear = eta?.get(Calendar.YEAR)
-        val etaMonth = eta?.get(Calendar.MONTH)
+        val etaMonth = eta?.get(Calendar.MONTH)?.plus(1)
         val etaDay = eta?.get(Calendar.DAY_OF_MONTH)
         val etaHour = eta?.get(Calendar.HOUR_OF_DAY)
         val etaMinute = eta?.get(Calendar.MINUTE)
@@ -89,6 +89,7 @@ class SelectPairViewModel: ViewModel() {
                 "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute]\n" +
                 "}"
 
+        Log.d(TAG, "pair: $json")
         val rBody: RequestBody = json.toRequestBody(JSON)
 
         val request = Request.Builder()

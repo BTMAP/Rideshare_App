@@ -1,5 +1,6 @@
 package com.uwi.btmap.models
 
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,7 +31,12 @@ data class PassengerCommuteEstimate(val time:String,val eta:String,val walkingDi
     fun getTimeCalendar():Calendar{
         var timeCal = Calendar.getInstance()
         val date = parseIsoDateTime(time)
+        Log.d("estimate", "getTimeCalendar: $time")
+        Log.d("estimate", "getTimeCalendar: $date")
         timeCal.time = date
+        val timeZone = TimeZone.getTimeZone("GMT-4")
+        timeCal.timeZone = timeZone
+        Log.d("estimate", "getTimeCalendar: ${timeCal.get(Calendar.DAY_OF_MONTH)}")
         return timeCal
     }
 
@@ -38,6 +44,8 @@ data class PassengerCommuteEstimate(val time:String,val eta:String,val walkingDi
         var etaCal = Calendar.getInstance()
         val date = parseIsoDateTime(eta)
         etaCal.time = date
+        val timeZone = TimeZone.getTimeZone("GMT-4")
+        etaCal.timeZone = timeZone
         return etaCal
     }
 

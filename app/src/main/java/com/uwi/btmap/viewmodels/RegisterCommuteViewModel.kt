@@ -266,7 +266,7 @@ class RegisterCommuteViewModel : ViewModel() {
         val driverId = mAuth.currentUser?.uid
 
         val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
+        val month = calendar.get(Calendar.MONTH).plus(1)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
@@ -280,7 +280,7 @@ class RegisterCommuteViewModel : ViewModel() {
         Log.d(TAG, "registerDriverCommute: $duration")
 
         val etaYear = calendar.get(Calendar.YEAR)
-        val etaMonth = calendar.get(Calendar.MONTH)
+        val etaMonth = calendar.get(Calendar.MONTH).plus(1)
         val etaDay = calendar.get(Calendar.DAY_OF_MONTH)
         val etaHour = calendar.get(Calendar.HOUR_OF_DAY)
         val etaMinute = calendar.get(Calendar.MINUTE)
@@ -323,7 +323,7 @@ class RegisterCommuteViewModel : ViewModel() {
 
     fun findSuitableCommutePairs(){
         val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
+        val month = calendar.get(Calendar.MONTH).plus(1)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
