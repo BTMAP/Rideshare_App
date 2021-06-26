@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.mapbox.api.directions.v5.models.DirectionsRoute
@@ -11,10 +12,14 @@ import com.mapbox.geojson.Point
 import com.uwi.btmap.models.CommuteOptions
 import com.uwi.btmap.models.IndexedCoord
 import com.uwi.btmap.models.PassengerCommuteEstimate
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
+import java.util.*
 
 private const val TAG = "SelectPairViewModel"
 
@@ -47,11 +52,34 @@ class SelectPairViewModel: ViewModel() {
 
 /* ---------------- Server Functions ---------------- */
     fun pair(){
-        /*val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
-        var url = "http://smallkins.pythonanywhere.com/add_commute"
+        val mAuth = FirebaseAuth.getInstance()
+        val userId = mAuth.currentUser?.uid
+
+        val pairableCommute = commuteOptions.value?.pairs?.get(currentCommuteIndex.value!!)
+        val time = commuteEstimates.value?.getTimeCalendar()
+        val eta = commuteEstimates.value?.getEtaCalendar()
+
+        val year = time?.get(Calendar.YEAR)
+        val month = time?.get(Calendar.MONTH)
+        val day = time?.get(Calendar.DAY_OF_MONTH)
+        val hour = time?.get(Calendar.HOUR_OF_DAY)
+        val minute = time?.get(Calendar.MINUTE)
+
+        val etaYear = eta?.get(Calendar.YEAR)
+        val etaMonth = eta?.get(Calendar.MONTH)
+        val etaDay = eta?.get(Calendar.DAY_OF_MONTH)
+        val etaHour = eta?.get(Calendar.HOUR_OF_DAY)
+        val etaMinute = eta?.get(Calendar.MINUTE)
+
+        val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
+        var url = "http://smallkins.pythonanywhere.com/add_pair"
         val json = "{\n" +
-                "    \"driverId\":\"$driverId\",\n" +
-                "    \"polyline\":\"${polyline}\",\n" +
+                "    \"passengerId\":\"$userId\",\n" +
+                "    \"commuteId\":\"${pairableCommute?.commuteId}\",\n" +
+                "    \"origin\":{\"lat\":0,\"lng\":0},\n" +
+                "    \"destination\":{\"lat\":0,\"lng\":0},\n" +
+                "    \"pickup\":{\"lat\":0,\"lng\":0},\n" +
+                "    \"dropoff\":{\"lat\":0,\"lng\":0},\n" +
                 "    \"time\":[$year,$month,$day,$hour,$minute],\n" +
                 "    \"eta\":[$etaYear,$etaMonth,$etaDay,$etaHour,$etaMinute]\n" +
                 "}"
@@ -67,13 +95,13 @@ class SelectPairViewModel: ViewModel() {
         client.newCall(request).enqueue(object: okhttp3.Callback {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 Log.d(TAG, "onResponse: ${response.body?.string()} ")
-                commuteSaveSuccess.postValue(true)
+//                commuteSaveSuccess.postValue(true)
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 //log error
             }
-        })*/
+        })
     }
 
     fun getPairEstimates(commuteId:String, origin:Point, destination:Point, pickupPoint: IndexedCoord, dropoffPoint: IndexedCoord){
@@ -96,9 +124,12 @@ class SelectPairViewModel: ViewModel() {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 val body = response.body?.string()
                 Log.d(TAG, "onResponse: $body")
-                commuteEstimates.value = GsonBuilder().create().fromJson(
-                    body,
-                    PassengerCommuteEstimate::class.java)
+                commuteEstimates.postValue(
+                    GsonBuilder().create().fromJson(
+                        body,
+                        PassengerCommuteEstimate::class.java
+                    )
+                )
 
             }
 

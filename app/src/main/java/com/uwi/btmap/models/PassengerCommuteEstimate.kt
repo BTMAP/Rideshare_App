@@ -27,8 +27,22 @@ data class PassengerCommuteEstimate(val time:String,val eta:String,val walkingDi
         return String.format("%d",this.walkingDuration/60).toInt()
     }
 
+    fun getTimeCalendar():Calendar{
+        var timeCal = Calendar.getInstance()
+        val date = parseIsoDateTime(time)
+        timeCal.time = date
+        return timeCal
+    }
+
+    fun getEtaCalendar():Calendar{
+        var etaCal = Calendar.getInstance()
+        val date = parseIsoDateTime(eta)
+        etaCal.time = date
+        return etaCal
+    }
+
     private fun parseIsoDateTime(datetime: String): Date {
-        val inFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+        val inFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ")
         return inFormat.parse(datetime)
     }
 
