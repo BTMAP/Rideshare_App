@@ -8,7 +8,7 @@ data class PassengerCommuteEstimate(
     val time: String,
     val eta: String,
     val walkingDistance: Float,
-    val walkingDuration: Float
+    val walkingTime: Float
 ) {
     fun getDate(): String {
         val date = parseIsoDateTime(time)
@@ -29,12 +29,12 @@ data class PassengerCommuteEstimate(
         return String.format("%.1f", this.walkingDistance / 1000).toFloat()
     }
 
-    fun getDurationInMinutes(): Float {
-        return String.format("%.5f", this.walkingDuration / 60).toFloat()
+    fun getDurationInMinutes(): Int {
+        return (this.walkingTime / 60).toInt()
     }
 
     fun getTimeCalendar():Calendar{
-        var timeCal = Calendar.getInstance()
+        val timeCal = Calendar.getInstance()
         val date = parseIsoDateTime(time)
         Log.d("estimate", "getTimeCalendar: $time")
         Log.d("estimate", "getDateCalendar: $date")
@@ -46,7 +46,7 @@ data class PassengerCommuteEstimate(
     }
 
     fun getEtaCalendar():Calendar{
-        var etaCal = Calendar.getInstance()
+        val etaCal = Calendar.getInstance()
         val date = parseIsoDateTime(eta)
         etaCal.time = date
         val timeZone = TimeZone.getTimeZone("GMT-4")
@@ -54,8 +54,9 @@ data class PassengerCommuteEstimate(
         return etaCal
     }
 
+
     private fun parseIsoDateTime(datetime: String): Date {
-        val inFormat = SimpleDateFormat("yyyy-mm-dd'T'HH:mm:ss.SSSSSSZ")
+        val inFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
         return inFormat.parse(datetime)
     }
 
@@ -65,7 +66,7 @@ data class PassengerCommuteEstimate(
     }
 
     private fun formatDateToDateString(date: Date): String {
-        val outFormat = SimpleDateFormat("mm/dd/yyyy")
+        val outFormat = SimpleDateFormat("dd/MM/yyyy")
         return outFormat.format(date)
     }
 }
