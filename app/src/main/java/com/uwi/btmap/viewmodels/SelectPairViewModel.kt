@@ -67,7 +67,7 @@ class SelectPairViewModel: ViewModel() {
         return pairSuccess
     }
 
-/* ---------------- Server Functions ---------------- */
+/* -------------------------- Server Functions ------------------------------ */
     fun pair(commuteId:String, origin:Point, destination:Point, pickupPoint: IndexedCoord, dropoffPoint: IndexedCoord){
         val mAuth = FirebaseAuth.getInstance()
         val userId = mAuth.currentUser?.uid
@@ -86,6 +86,8 @@ class SelectPairViewModel: ViewModel() {
         val etaDay = eta?.get(Calendar.DAY_OF_MONTH)
         val etaHour = eta?.get(Calendar.HOUR_OF_DAY)
         val etaMinute = eta?.get(Calendar.MINUTE)
+
+        //TODO homogenize data retrieval method
 
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
         var url = "http://smallkins.pythonanywhere.com/add_pair"
