@@ -75,6 +75,9 @@ class SelectPairViewModel: ViewModel() {
         val time = commuteEstimates.value?.getTimeCalendar()
         val eta = commuteEstimates.value?.getEtaCalendar()
 
+        Log.d(TAG, "pair: $$time")
+        Log.d(TAG, "pair: $eta")
+
         val year = time?.get(Calendar.YEAR)
         val month = time?.get(Calendar.MONTH)?.plus(1)
         val day = time?.get(Calendar.DAY_OF_MONTH)
@@ -131,7 +134,7 @@ class SelectPairViewModel: ViewModel() {
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
-                //TODO log error
+                Log.d(TAG, "onFailure: ${e.message}")
                 pairSuccess.postValue(false)
             }
         })

@@ -302,6 +302,7 @@ class RegisterCommuteViewModel : ViewModel() {
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 //TODO log error
+                Log.d(TAG, "onFailure: ${e.message}")
                 commuteSaveSuccess.postValue(false)
             }
         })

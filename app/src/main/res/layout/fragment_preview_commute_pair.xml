@@ -18,7 +18,7 @@
         android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:background="@color/Blue"
+        android:background="#212A39"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -37,7 +37,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="400dp"
             android:layout_height="170dp"
-            app:cardBackgroundColor="@color/DeepSkyBlue"
+            app:cardBackgroundColor="#46A6C6"
             app:cardCornerRadius="8dp"
             app:cardElevation="8dp">
 
@@ -191,11 +191,11 @@
         android:id="@+id/pair_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#46A6C6"
         android:text="Pair Now"
-        android:backgroundTint="@color/DeepPink"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
