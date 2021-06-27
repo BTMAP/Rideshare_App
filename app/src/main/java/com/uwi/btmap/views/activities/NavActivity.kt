@@ -186,7 +186,7 @@ class NavActivity :
             summaryBottomSheet.update(routeProgress)
 
             routeProgress.currentState.let { currentState ->
-                
+
             }
         }
     }

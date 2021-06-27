@@ -10,6 +10,14 @@ class PreviewCommuteViewModel:ViewModel() {
     var commute = MutableLiveData<Commute>()
 
     var drivingDirectionsRoute = MutableLiveData<DirectionsRoute>()
+    var firstLegDirectionsRoute = MutableLiveData<DirectionsRoute>()
+    var lastLegDirectionsRoute = MutableLiveData<DirectionsRoute>()
 
     fun commute():LiveData<Commute>{ return commute }
+
+    fun drivingDirectionsRoute():LiveData<DirectionsRoute>{ return drivingDirectionsRoute }
+
+    fun firstLegDirectionsRoute():LiveData<DirectionsRoute>{ return firstLegDirectionsRoute }
+
+    fun lastLegDirectionsRoute():LiveData<DirectionsRoute>{ return lastLegDirectionsRoute }
 }

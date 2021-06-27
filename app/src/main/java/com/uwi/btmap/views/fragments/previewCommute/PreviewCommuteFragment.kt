@@ -43,6 +43,7 @@ import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.PreviewCommuteViewModel
 import com.uwi.btmap.views.activities.NavActivity
+import com.uwi.btmap.views.activities.PassengerNavActivity
 
 
 private const val TAG = "PreviewCommuteFragment"
@@ -51,7 +52,7 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
     OnMapReadyCallback, PermissionsListener {
 
     private var permissionsManager: PermissionsManager = PermissionsManager(this)
-    lateinit var viewModel:PreviewCommuteViewModel
+    private lateinit var viewModel:PreviewCommuteViewModel
 
     private val drivingRouteSourceID = "DRIVING_ROUTE_SOURCE_ID"
     private val pickupRouteSourceID = "PICKUP_ROUTE_SOURCE_ID"
@@ -91,7 +92,8 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
         initMapNavigation()
         startButton = view.findViewById(R.id.start_button)
         startButton.setOnClickListener{
-            //TODO switch to appropriate navigation activity
+
+            //switch to appropriate navigation activity
             if(viewModel.commute.value?.commuteType == 0){
                 //switch to nav activity and pass driver directions as extra
                 val intent = Intent(requireContext(), NavActivity::class.java)
@@ -99,6 +101,13 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
                 requireActivity().startActivity(intent)
             }else{
                 //switch to passenger nav activity
+                val intent = Intent(requireContext(), PassengerNavActivity::class.java)
+                    .putExtra("DrivingRoute",viewModel.drivingDirectionsRoute.value)
+                    .putExtra("FirstLeg",viewModel.firstLegDirectionsRoute.value)
+                    .putExtra("LastLeg", viewModel.lastLegDirectionsRoute.value)
+                    .putExtra("Commute",viewModel.commute.value)
+
+                requireActivity().startActivity(intent)
             }
         }
     }
@@ -259,6 +268,9 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
             if (routes.isNotEmpty()){
                 val routeLineString = LineString.fromPolyline(
                     routes[0].geometry()!!,6)
+
+                viewModel.firstLegDirectionsRoute.postValue(routes[0])
+
                 mapboxMap.getStyle {
                     val routeSource = it.getSourceAs<GeoJsonSource>(pickupRouteSourceID)
                     routeSource?.setGeoJson(routeLineString)
@@ -282,6 +294,9 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
             if (routes.isNotEmpty()){
                 val routeLineString = LineString.fromPolyline(
                     routes[0].geometry()!!,6)
+
+                viewModel.lastLegDirectionsRoute.postValue(routes[0])
+
                 mapboxMap.getStyle {
                     val routeSource = it.getSourceAs<GeoJsonSource>(dropoffRouteSourceID)
                     routeSource?.setGeoJson(routeLineString)
