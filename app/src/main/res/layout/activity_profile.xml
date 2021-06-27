@@ -15,6 +15,22 @@
         android:padding="20dp">
 
         <ImageButton
+            android:id="@+id/register_vehicle_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="260dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="157dp"
+            android:background="@drawable/circular_image_button"
+            android:src="@drawable/ic_car"/>
+
+
+        <ImageButton
             android:id="@+id/updateProfile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -62,101 +78,171 @@
             android:textColor="@color/Wheat"
             android:textSize="16sp" />
 
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/register_vehicle_btn"
+            android:layout_alignTop="@+id/register_vehicle_btn"
+            android:layout_alignEnd="@+id/register_vehicle_btn"
+            android:layout_alignBottom="@+id/register_vehicle_btn"
+            android:layout_marginStart="27dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="27dp"
+            app:srcCompat="@drawable/ic_add" />
+
     </RelativeLayout>
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="-100dp"-->
+    <!--        android:padding="20dp">-->
+
+    <!--        <com.google.android.material.card.MaterialCardView-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="125dp"-->
+    <!--            android:layout_margin="20dp"-->
+    <!--            android:layout_weight="1"-->
+    <!--            app:cardBackgroundColor="@color/NavajoWhite"-->
+    <!--            app:cardElevation="10dp">-->
+
+    <!--            <RelativeLayout-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="match_parent"-->
+    <!--                android:padding="5dp">-->
+
+    <!--                <ImageView-->
+    <!--                    android:layout_width="45dp"-->
+    <!--                    android:layout_height="45dp"-->
+    <!--                    android:layout_centerHorizontal="true"-->
+    <!--                    android:src="@drawable/car" />-->
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/user_label"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_centerInParent="true"-->
+    <!--                    android:includeFontPadding="false"-->
+    <!--                    android:text="User"-->
+    <!--                    android:textColor="@color/Blue"-->
+    <!--                    android:textSize="30sp" />-->
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/user_desc"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_below="@id/user_label"-->
+    <!--                    android:layout_centerInParent="true"-->
+    <!--                    android:includeFontPadding="false"-->
+    <!--                    android:text="User Type"-->
+    <!--                    android:textColor="@color/Gray"-->
+    <!--                    android:textSize="20sp" />-->
+
+    <!--            </RelativeLayout>-->
+
+    <!--        </com.google.android.material.card.MaterialCardView>-->
+
+    <!--        <com.google.android.material.card.MaterialCardView-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="125dp"-->
+    <!--            android:layout_margin="20dp"-->
+    <!--            android:layout_weight="1"-->
+    <!--            app:cardBackgroundColor="@color/NavajoWhite"-->
+    <!--            app:cardElevation="10dp">-->
+
+    <!--            <RelativeLayout-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="match_parent"-->
+    <!--                android:padding="5dp">-->
+
+    <!--                <ImageView-->
+    <!--                    android:layout_width="45dp"-->
+    <!--                    android:layout_height="45dp"-->
+    <!--                    android:layout_centerHorizontal="true"-->
+    <!--                    android:src="@drawable/dollar" />-->
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/payment_label"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_centerInParent="true"-->
+    <!--                    android:includeFontPadding="false"-->
+    <!--                    android:text="$123"-->
+    <!--                    android:textColor="@color/Blue"-->
+    <!--                    android:textSize="30sp" />-->
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/payment_desc"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_below="@id/payment_label"-->
+    <!--                    android:layout_centerHorizontal="true"-->
+    <!--                    android:includeFontPadding="false"-->
+    <!--                    android:text="Balance"-->
+    <!--                    android:textColor="@color/Gray"-->
+    <!--                    android:textSize="20sp" />-->
+
+    <!--            </RelativeLayout>-->
+
+    <!--        </com.google.android.material.card.MaterialCardView>-->
+
+    <!--    </LinearLayout>-->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-100dp"
-        android:padding="20dp">
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
-            android:layout_height="125dp"
-            android:layout_margin="20dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@color/NavajoWhite"
-            app:cardElevation="10dp">
+        <TextView
+            android:id="@+id/userEmail"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@drawable/input"
+            android:backgroundTint="@color/AliceBlue"
+            android:drawableLeft="@drawable/ic_email"
+            android:gravity="center"
+            android:hint="Email Address"
+            android:padding="10dp"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"
+            tools:ignore="RtlCompat" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="5dp">
+        <TextView
+            android:id="@+id/userAddress"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@drawable/input"
+            android:backgroundTint="@color/AliceBlue"
+            android:drawableLeft="@drawable/address"
+            android:gravity="center"
+            android:hint="Home Address"
+            android:padding="10dp"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"
+            tools:ignore="RtlCompat" />
 
-                <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/car" />
-
-                <TextView
-                    android:id="@+id/user_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:includeFontPadding="false"
-                    android:text="User"
-                    android:textColor="@color/Blue"
-                    android:textSize="30sp" />
-
-                <TextView
-                    android:id="@+id/user_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/user_label"
-                    android:layout_centerInParent="true"
-                    android:includeFontPadding="false"
-                    android:text="User Type"
-                    android:textColor="@color/Gray"
-                    android:textSize="20sp" />
-
-            </RelativeLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
-            android:layout_height="125dp"
-            android:layout_margin="20dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@color/NavajoWhite"
-            app:cardElevation="10dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="5dp">
-
-                <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/dollar" />
-
-                <TextView
-                    android:id="@+id/payment_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:includeFontPadding="false"
-                    android:text="$123"
-                    android:textColor="@color/Blue"
-                    android:textSize="30sp" />
-
-                <TextView
-                    android:id="@+id/payment_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/payment_label"
-                    android:layout_centerHorizontal="true"
-                    android:includeFontPadding="false"
-                    android:text="Balance"
-                    android:textColor="@color/Gray"
-                    android:textSize="20sp" />
-
-            </RelativeLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+        <TextView
+            android:id="@+id/userOccupation"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@drawable/input"
+            android:backgroundTint="@color/AliceBlue"
+            android:drawableLeft="@drawable/person"
+            android:gravity="center"
+            android:hint="Occupation"
+            android:padding="10dp"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"
+            tools:ignore="RtlCompat" />
 
     </LinearLayout>
 
@@ -166,53 +252,12 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-                <TextView
-                    android:id="@+id/userEmail"
-                    android:layout_width="400dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textAlignment="viewStart"
-                    android:hint="Email Address"
-                    android:textSize="18sp"
-                    android:background="@drawable/input"
-                    android:backgroundTint="@color/AliceBlue"
-                    android:drawableLeft="@drawable/ic_email"
-                    android:padding="10dp"
-                    android:layout_margin="5dp"
-                    tools:ignore="RtlCompat" />
-
-                <TextView
-                    android:id="@+id/userAddress"
-                    android:layout_width="400dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textAlignment="viewStart"
-                    android:hint="Home Address"
-                    android:textSize="18sp"
-                    android:drawableLeft="@drawable/address"
-                    android:background="@drawable/input"
-                    android:backgroundTint="@color/AliceBlue"
-                    android:padding="10dp"
-                    android:layout_margin="5dp"
-                    tools:ignore="RtlCompat" />
-
-                <TextView
-                    android:id="@+id/userBio"
-                    android:layout_width="400dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textAlignment="viewStart"
-                    android:hint="Bio"
-                    android:textSize="18sp"
-                    android:drawableLeft="@drawable/person"
-                    android:background="@drawable/input"
-                    android:backgroundTint="@color/AliceBlue"
-                    android:padding="10dp"
-                    android:layout_margin="5dp"
-                    tools:ignore="RtlCompat" />
+<!--        <Button-->
+<!--            android:id="@+id/register_vehicle_btn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Register Vehicle"-->
+<!--            android:layout_gravity="center"/>-->
 
     </LinearLayout>
 

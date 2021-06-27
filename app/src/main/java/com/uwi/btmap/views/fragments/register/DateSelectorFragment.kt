@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
+import com.uwi.btmap.views.activities.RegisterCommuteActivity
 import java.util.*
 
 private const val TAG = "DateSelectorFragment"
@@ -21,6 +22,8 @@ class DateSelectorFragment : Fragment() {
     private lateinit var viewModel : RegisterCommuteViewModel
 
     private lateinit var dateButton: Button
+    private lateinit var nextButton:Button
+    private lateinit var prevButton: Button
 
     private lateinit var datePickerDialog: DatePickerDialog
 
@@ -44,6 +47,17 @@ class DateSelectorFragment : Fragment() {
         dateButton = view.findViewById(R.id.date_picker_button)
         dateButton.setOnClickListener {
             datePickerDialog.show()
+        }
+
+        nextButton = view.findViewById(R.id.date_next_btn)
+        prevButton = view.findViewById(R.id.date_prev_btn)
+
+        nextButton.setOnClickListener{
+            (activity as RegisterCommuteActivity?)?.setNextPage()
+        }
+
+        prevButton.setOnClickListener{
+            (activity as RegisterCommuteActivity?)?.setPrevPage()
         }
 
         viewModel.dateString().observe(requireActivity(),Observer{

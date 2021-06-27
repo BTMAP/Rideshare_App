@@ -49,20 +49,12 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         val headerView: View = navView.getHeaderView(0)
         val profileNumber: TextView = headerView.findViewById(R.id.nav_view_number)
-        val userType: TextView = headerView.findViewById(R.id.nav_view_user_type)
         val profileName: TextView = headerView.findViewById(R.id.nav_view_name)
         val profileImage: ImageView = headerView.findViewById(R.id.nav_view_image)
 
         if (mAuth?.currentUser != null) {
             profileNumber.text = mAuth?.currentUser?.phoneNumber.toString()
 
-            database = FirebaseDatabase.getInstance().getReference("UserCommuteType")
-            database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
-                if (it.exists()) {
-                    val user = it.child("userType").value
-                    userType.text = user.toString()
-                }
-            }
 
             database = FirebaseDatabase.getInstance().getReference("Users")
             database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
@@ -107,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_commute, R.id.nav_about
+                R.id.nav_commute, R.id.nav_about
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

@@ -18,17 +18,184 @@
         android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="250dp"
+        android:background="@color/Blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/pair_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/view2"
+        app:layout_constraintTop_toBottomOf="@+id/route_preview_map_view">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="400dp"
+            android:layout_height="170dp"
+            app:cardBackgroundColor="@color/DeepSkyBlue"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text=" Commute Date: "
+                        android:textSize="18dp"
+                        android:textColor="@color/Snow"
+                        app:drawableStartCompat="@drawable/ic_baseline_calendar_today_24" />
+
+                    <TextView
+                        android:id="@+id/preview_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="xx-xx-xxxx "
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/AntiqueWhite" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text=" Departure Time: "
+                        android:textSize="18dp"
+                        android:textColor="@color/Snow"
+                        app:drawableStartCompat="@drawable/ic_baseline_departure_board_24"/>
+
+                    <TextView
+                        android:id="@+id/preview_destTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5 mins : 30 secs "
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/AntiqueWhite" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text=" Estimated Arrival Time: "
+                        android:textSize="18dp"
+                        android:textColor="@color/Snow"
+                        app:drawableStartCompat="@drawable/ic_baseline_pin_drop_24"/>
+
+                    <TextView
+                        android:id="@+id/preview_destETA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5 mins : 30 secs "
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/AntiqueWhite"  />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text=" Walk Time to Pickup Point: "
+                        android:textSize="18dp"
+                        android:textColor="@color/Snow"
+                        app:drawableStartCompat="@drawable/ic_baseline_timer_24" />
+
+                    <TextView
+                        android:id="@+id/preview_walkingTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="x.x "
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/AntiqueWhite"  />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" mins"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/AntiqueWhite"  />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text=" Walk Distance to Pickup Point: "
+                        android:textSize="18dp"
+                        android:textColor="@color/Snow"
+                        app:drawableStartCompat="@drawable/ic_baseline_directions_walk_24"/>
+
+                    <TextView
+                        android:id="@+id/preview_walkingDistance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="x.x "
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/AntiqueWhite"  />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" km"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/AntiqueWhite"  />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/pair_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Confirm"
+        android:text="Pair Now"
+        android:backgroundTint="@color/DeepPink"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

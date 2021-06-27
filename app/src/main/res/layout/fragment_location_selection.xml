@@ -4,41 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    tools:context=".views.fragments.LocationSelectionFragment"
-    android:background="#ffff88">
+    tools:context="fragments.LocationSelectionFragment"
+    android:orientation="vertical"
+    android:background="@color/Gold">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/commute_location_frag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Input your origin and destination:"
+            android:textColor="@color/DarkViolet"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/loc_next_btn" />
+
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/commute_location_frag">
 
             <TextView
                 android:id="@+id/origin_edit_text"
                 android:layout_width="350dp"
                 android:layout_height="50dp"
-                android:background="#ffffff"
+                android:background="@color/Fuchsia"
                 android:gravity="center_vertical"
                 android:paddingStart="10dp"
                 android:text="Origin"
-                android:textColor="@color/purple_200" />
+                android:textSize="20dp"
+                android:textColor="@color/white" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/origin_selection_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="5dp"
-                android:background="@drawable/ic_add_location"/>
+                android:background="@drawable/ic_add_location"
+                android:backgroundTint="@color/button_background_color"/>
         </LinearLayout>
 
         <LinearLayout
@@ -55,19 +72,38 @@
                 android:id="@+id/destination_edit_text"
                 android:layout_width="350dp"
                 android:layout_height="50dp"
-                android:background="#ffffff"
+                android:background="@color/Fuchsia"
                 android:gravity="center_vertical"
                 android:paddingStart="10dp"
                 android:text="Destination"
-                android:textColor="@color/purple_200" />
+                android:textSize="20dp"
+                android:textColor="@color/white"  />
 
-            <Button
+            <ImageButton
                 android:id="@+id/destination_selection_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_marginStart="5dp"
                 android:background="@drawable/ic_add_location"
-                android:layout_marginStart="5dp"/>
+                android:backgroundTint="@color/button_background_color"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/loc_prev_btn"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_prev"
+            android:backgroundTint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/loc_next_btn"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_forward"
+            android:backgroundTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

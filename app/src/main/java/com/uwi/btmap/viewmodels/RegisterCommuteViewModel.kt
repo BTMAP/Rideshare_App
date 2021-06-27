@@ -116,7 +116,7 @@ class RegisterCommuteViewModel : ViewModel() {
 
     /* ------------------------ String Formatters ------------------------- */
 
-    private fun makeDateString(day:Int,month:Int,year:Int): String{
+    private fun makeDateString(day:Int, month:Int, year:Int): String{
         return formatMonth(month) + " " + day + " " + year
     }
 

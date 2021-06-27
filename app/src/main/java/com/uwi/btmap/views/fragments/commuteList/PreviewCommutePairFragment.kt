@@ -5,7 +5,11 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import com.mapbox.api.directions.v5.DirectionsCriteria
 import com.mapbox.api.directions.v5.models.DirectionsRoute
@@ -31,7 +35,13 @@ import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.R
+import com.uwi.btmap.models.PassengerCommuteEstimate
 import com.uwi.btmap.viewmodels.SelectPairViewModel
+import com.uwi.btmap.views.activities.RegisterCommuteActivity
+import com.uwi.btmap.views.fragments.selectPair.ListCommutePairFragment
+import kotlinx.android.synthetic.main.commute_pair_list_item.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 const val TAG = "RoutePreview"
@@ -96,7 +106,10 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
         initMapView(view,savedInstanceState)
         initMapNavigation()
 
+        getPassengerCommuteEstimate()
+
         pairButton = view.findViewById(R.id.pair_button)
+
         pairButton.setOnClickListener {
             val currentIndex = viewModel.currentCommuteIndex.value
             val currentCommute = viewModel.commuteOptions.value?.pairs?.get(currentIndex!!)
@@ -107,6 +120,36 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
                 currentCommute.dropoffPoints[0]
             )
         }
+    }
+
+    fun getPassengerCommuteEstimate(){
+        val eta = view?.findViewById<TextView>(R.id.preview_destETA)
+        val time = view?.findViewById<TextView>(R.id.preview_destTime)
+        val mDate = view?.findViewById<TextView>(R.id.preview_date)
+        val walkingDistance = view?.findViewById<TextView>(R.id.preview_walkingDistance)
+        val walkingDuration = view?.findViewById<TextView>(R.id.preview_walkingTime)
+
+//        val etaData = (activity as PassengerCommuteEstimate?)?.getETA()
+//        val timeData = (activity as PassengerCommuteEstimate?)?.getDate()
+//        val walkingDistanceData = (activity as PassengerCommuteEstimate?)?.getDistanceInKm()
+//        val walkingDurationData = (activity as PassengerCommuteEstimate?)?.getDurationInMinutes()
+
+
+        viewModel.getPairEstimatesSuccess().observe(requireActivity(), androidx.lifecycle.Observer {
+            if (it) {
+                val estimates = viewModel.commuteEstimates.value
+                Log.d(TAG, "Estimates: $estimates")
+
+                mDate?.text = estimates?.getDate()
+                eta?.text = estimates?.getETA()
+                time?.text = estimates?.getStartTime()
+                walkingDistance?.text = estimates?.getDistanceInKm().toString()
+                walkingDuration?.text = estimates?.getDurationInMinutes().toString()
+
+            }else{
+                Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     //----------------------- mapbox functions -------------------------

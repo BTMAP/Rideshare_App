@@ -3,19 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_commute">
 
-    <fragment
-        android:id="@+id/nav_home"
-        android:name="com.uwi.btmap.ui.Home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/nav_commute"
         android:name="com.uwi.btmap.views.fragments.commuteList.CommuteListFragment"
         android:label="@string/menu_commute"
-        tools:layout="@layout/fragment_commute_list" >
-    </fragment>
+        tools:layout="@layout/fragment_commute_list"  />
 
     <fragment
         android:id="@+id/nav_about"
@@ -23,7 +17,5 @@
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about_us" >
     </fragment>
-
-
 
 </navigation>

@@ -1,10 +1,11 @@
 package com.uwi.btmap.views.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mapbox.api.directions.v5.DirectionsCriteria
@@ -16,6 +17,7 @@ import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.location.LocationComponentOptions
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
@@ -31,9 +33,9 @@ import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
-
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
+
 
 private const val TAG = "MapboxPreviewFragment"
 
@@ -49,6 +51,8 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     private val destinationLayerID = "DESTINATION_LAYER_ID"
 
     private val locationMarkerID = "LOCATION_MARKER_ID"
+    private val originMarkerID = "ORIGIN_MARKER_ID"
+    private val destinationMarkerID = "DESTINATION_MARKER_ID"
 
     private lateinit var mapView: MapView
     private lateinit var mapboxMap: MapboxMap
@@ -58,14 +62,14 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Mapbox.getInstance(requireContext(),getString(R.string.mapbox_access_token))
+        Mapbox.getInstance(requireContext(), getString(R.string.mapbox_access_token))
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(RegisterCommuteViewModel::class.java)
-        initMapView(view,savedInstanceState)
+        initMapView(view, savedInstanceState)
         initMapNavigation()
     }
 
@@ -86,9 +90,16 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         //add observer for origin and destination
         viewModel.origin().observe(requireActivity(), Observer {
             //add/update source
-            if (it != null){
+            if (it != null) {
                 val source = mapboxMap.style?.getSourceAs<GeoJsonSource>(originSourceID)
                 source?.setGeoJson(it)
+
+//                val customLocationComponentOptions = LocationComponentOptions.builder(this)
+//                    .elevation(5f)
+//                    .accuracyAlpha(.6f)
+//                    .accuracyColor(Color.RED)
+//                    .foregroundDrawable(R.drawable.purple_marker)
+//                    .build()
             }
             //reset selection mode
             viewModel.locationSelectionMode = 0
@@ -99,7 +110,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
 
         viewModel.destination().observe(requireActivity(), Observer {
             //add/update source
-            if (it != null){
+            if (it != null) {
                 val source = mapboxMap.style?.getSourceAs<GeoJsonSource>(destinationSourceID)
                 source?.setGeoJson(it)
             }
@@ -112,13 +123,14 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         })
 
         viewModel.routePreview().observe(requireActivity(), Observer {
-            if (it != null){
+            if (it != null) {
                 //draw route to map
-               val style =  mapboxMap.style
+                val style = mapboxMap.style
 
                 val routeSource = style?.getSourceAs<GeoJsonSource>(routeSourceID)
                 val routeLineString = LineString.fromPolyline(
-                    it.geometry()!!,6)
+                    it.geometry()!!, 6
+                )
 
                 routeSource?.setGeoJson(routeLineString)
             }
@@ -131,7 +143,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         val position = CameraPosition.Builder()
             .zoom(10.0)
             .tilt(0.0)
-            .target(LatLng(13.1939,-59.5432))
+            .target(LatLng(13.1939, -59.5432))
             .build()
 
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position))
@@ -146,15 +158,25 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
             Log.d(TAG, "onMapClick: Add origin location: $point")
             //reverse geocode point
             //add returned feature to point and text
-            viewModel.origin.value = Point.fromLngLat(point.longitude,point.latitude)
-            viewModel.geoCodeRequest(getString(R.string.mapbox_access_token),Point.fromLngLat(point.longitude,point.latitude),1)
+            viewModel.origin.value = Point.fromLngLat(point.longitude, point.latitude)
+            viewModel.geoCodeRequest(
+                getString(R.string.mapbox_access_token), Point.fromLngLat(
+                    point.longitude,
+                    point.latitude
+                ), 1
+            )
         }
         if(viewModel.locationSelectionMode == 2){
             Log.d(TAG, "onMapClick: Add destination location: $point")
             //reverse geocode point
             //add returned feature to point and text
-            viewModel.destination.value = Point.fromLngLat(point.longitude,point.latitude)
-            viewModel.geoCodeRequest(getString(R.string.mapbox_access_token),Point.fromLngLat(point.longitude,point.latitude),2)
+            viewModel.destination.value = Point.fromLngLat(point.longitude, point.latitude)
+            viewModel.geoCodeRequest(
+                getString(R.string.mapbox_access_token), Point.fromLngLat(
+                    point.longitude,
+                    point.latitude
+                ), 2
+            )
         }
 
         return true
@@ -175,18 +197,18 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     }
 
     //route functions
-    private fun getRoute(origin:Point,destination:Point){
+    private fun getRoute(origin: Point, destination: Point){
         val routeOptions = RouteOptions.builder()
             .applyDefaultParams()
             .accessToken(viewModel.token)
-            .coordinates(listOf(origin,destination))
+            .coordinates(listOf(origin, destination))
             .alternatives(false)
             .profile(DirectionsCriteria.PROFILE_DRIVING)
             .voiceInstructions(false)
             .steps(false)
             .build()
 
-        mapboxNavigation.requestRoutes(routeOptions,routesReqCallback)
+        mapboxNavigation.requestRoutes(routeOptions, routesReqCallback)
     }
 
     private val routesReqCallback = object: RoutesRequestCallback{
@@ -199,7 +221,8 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
                 Log.d(TAG, "onRoutesReady: Index: ${routes[0].routeIndex()}")
                 Log.d(TAG, "onRoutesReady: Geometry: ${routes[0].geometry()}")
                 val routeLineString = LineString.fromPolyline(
-                    routes[0].geometry()!!,6)
+                    routes[0].geometry()!!, 6
+                )
                 routeLineString.coordinates()
                 Log.d(TAG, "onRoutesReady: LineString: ${routeLineString}")
                 Log.d(TAG, "onRoutesReady: LineStringCoords: ${routeLineString.coordinates()}")
@@ -222,10 +245,12 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     private fun initMapLayers(style: Style){
 
         //route layer
-        style.addSource(GeoJsonSource(
-            routeSourceID,
-            GeoJsonOptions().withLineMetrics(true)
-        ))
+        style.addSource(
+            GeoJsonSource(
+                routeSourceID,
+                GeoJsonOptions().withLineMetrics(true)
+            )
+        )
         style.addLayerBelow(
             LineLayer(routeLayerID, routeSourceID)
                 .withProperties(
@@ -240,18 +265,23 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
 
         //origin layer
         style.addSource(GeoJsonSource(originSourceID))
-        style.addLayerAbove(SymbolLayer(originLayerID,originSourceID)
-            .withProperties(iconImage(locationMarkerID)),routeLayerID)
+        style.addLayerAbove(
+            SymbolLayer(originLayerID, originSourceID)
+                .withProperties(iconImage(locationMarkerID)), routeLayerID
+        )
 
         //destination layer
         style.addSource(GeoJsonSource(destinationSourceID))
-        style.addLayerBelow(SymbolLayer(destinationLayerID,destinationSourceID)
-            .withProperties(iconImage(locationMarkerID)),originLayerID)
+        style.addLayerBelow(
+            SymbolLayer(destinationLayerID, destinationSourceID)
+                .withProperties(iconImage(locationMarkerID)), originLayerID
+        )
     }
 
 
     private fun initLocationIcons(style: Style){
-        style.addImage(locationMarkerID,
+        style.addImage(
+            locationMarkerID,
             BitmapUtils.getBitmapFromDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -259,7 +289,29 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
                 )
             )!!
         )
+        style.addImage(
+            originMarkerID,
+            BitmapUtils.getBitmapFromDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.yellow_marker
+                )
+            )!!
+        )
+
+        style.addImage(
+            destinationMarkerID,
+            BitmapUtils.getBitmapFromDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.purple_marker
+                )
+            )!!
+        )
     }
+
+
+
 
     //---------------------- mapbox lifecycle functions -----------------------
     override fun onStart() {

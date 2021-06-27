@@ -12,9 +12,9 @@ import android.widget.TextView
 import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
+import com.uwi.btmap.views.activities.RegisterCommuteActivity
 import java.util.*
 
 private const val TAG = "TimeSelectorFragment"
@@ -26,6 +26,8 @@ class TimeSelectorFragment : Fragment() {
     private lateinit var typeDisplay: TextView
 
     private lateinit var timeButton: Button
+    private lateinit var nextButton:Button
+    private lateinit var prevButton: Button
 
     private lateinit var timePickerDialog: TimePickerDialog
 
@@ -43,13 +45,24 @@ class TimeSelectorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var view = inflater.inflate(R.layout.fragment_time_selector, container, false)
-        typeDisplay = view.findViewById(R.id.type_display)
+        typeDisplay = view.findViewById(R.id.commute_time_frag)
 
         initTimePicker()
 
         timeButton = view.findViewById(R.id.time_picker_button)
         timeButton.setOnClickListener {
             timePickerDialog.show()
+        }
+
+        nextButton = view.findViewById(R.id.time_next_btn)
+        prevButton = view.findViewById(R.id.time_prev_btn)
+
+        nextButton.setOnClickListener{
+            (activity as RegisterCommuteActivity?)?.setNextPage()
+        }
+
+        prevButton.setOnClickListener{
+            (activity as RegisterCommuteActivity?)?.setPrevPage()
         }
 
         viewModel.timeString().observe(requireActivity(),Observer{

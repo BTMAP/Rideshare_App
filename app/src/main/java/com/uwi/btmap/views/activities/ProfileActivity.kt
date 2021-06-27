@@ -40,13 +40,13 @@ class ProfileActivity : AppCompatActivity() {
         database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
             if (it.exists()) {
                 val name = it.child("name").value
-                val bio = it.child("bio").value
+                val occupation = it.child("occupation").value
                 val address = it.child("address").value
                 val email = it.child("email").value
 
 
                 binding.userName.text = name.toString()
-                binding.userBio.text = bio.toString()
+                binding.userOccupation.text = occupation.toString()
                 binding.userAddress.text = address.toString()
                 binding.userEmail.text = email.toString()
             }
@@ -75,6 +75,11 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.updateProfile.setOnClickListener {
             val intent = Intent(this, UpdateProfileActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.registerVehicleBtn.setOnClickListener {
+            val intent = Intent(this, RegisterVehicleActivity::class.java)
             startActivity(intent)
         }
 

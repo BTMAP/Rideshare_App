@@ -2,6 +2,7 @@ package com.uwi.btmap.views.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Trace.isEnabled
 import android.view.MenuItem
 import android.widget.CheckBox
 import android.widget.FrameLayout
@@ -35,7 +36,7 @@ class TestActivity : AppCompatActivity() {
 
         val driverCheckBox = findViewById<CheckBox>(R.id.driverCheckBox)
         driverCheckBox?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked){
+            if (isChecked) {
                 passengerCheckBox.setChecked(false)
 
                 val value = UserType(driver = true, passenger = false)
@@ -46,7 +47,7 @@ class TestActivity : AppCompatActivity() {
 
         val passengerCheckBox = findViewById<CheckBox>(R.id.passengerCheckBox)
         passengerCheckBox?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked){
+            if (isChecked) {
                 driverCheckBox.setChecked(false)
 
                 val value = UserType(driver = false, passenger = true)
@@ -55,7 +56,18 @@ class TestActivity : AppCompatActivity() {
             }
         }
 
+        button_color.setOnClickListener {
+            // if button is already in selected state and now it is pressed
+            // again,then it will reach in not selected state and vice versa
+            if(!button_color.isSelected){
+                button_color.isSelected = true
+            }else{
+                button_color.isSelected = false
+            }
+            button_color.isEnabled
+        }
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

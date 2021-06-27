@@ -6,10 +6,6 @@
     <item android:title="Menu">
         <menu>
             <item
-                android:id="@+id/nav_home"
-                android:icon="@drawable/ic_home"
-                android:title="@string/menu_home" />
-            <item
                 android:id="@+id/nav_commute"
                 android:icon="@drawable/ic_commute"
                 android:title="@string/menu_commute" />

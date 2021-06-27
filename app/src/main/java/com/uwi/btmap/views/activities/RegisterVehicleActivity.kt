@@ -6,12 +6,10 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -19,31 +17,31 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.uwi.btmap.MainActivity
 import com.uwi.btmap.R
-import com.uwi.btmap.databinding.ActivityUpdateProfileBinding
-import com.uwi.btmap.models.User
+import com.uwi.btmap.databinding.ActivityRegisterVehicleBinding
+import com.uwi.btmap.models.UserVehicle
+import kotlinx.android.synthetic.main.activity_register_vehicle.*
 import kotlinx.android.synthetic.main.activity_update_profile.*
+import kotlinx.android.synthetic.main.activity_update_profile.profile_image
+import kotlinx.android.synthetic.main.activity_update_profile.selectProfilePhoto_btn
 import java.util.*
 
-class UpdateProfileActivity : AppCompatActivity() {
+class RegisterVehicleActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityUpdateProfileBinding
+    private lateinit var binding: ActivityRegisterVehicleBinding
     private lateinit var database: DatabaseReference
-
 
     var mAuth: FirebaseAuth? = null
 
-
     companion object {
-        val TAG = "UpdateProfileActivity"
+        val TAG = "RegisterVehicleActivity"
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar!!.setTitle("Update Profile")
+        supportActionBar!!.setTitle("Register Vehicle")
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        binding = ActivityUpdateProfileBinding.inflate(layoutInflater)
+        binding = ActivityRegisterVehicleBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         //Profile Photo
@@ -53,7 +51,6 @@ class UpdateProfileActivity : AppCompatActivity() {
             startActivityForResult(intent, 0)
         }
 
-
         //Display Phone Number
         mAuth = FirebaseAuth.getInstance()
 
@@ -62,28 +59,36 @@ class UpdateProfileActivity : AppCompatActivity() {
             phoneNumber.text = mAuth?.currentUser?.phoneNumber.toString()
         }
 
-        //Update user information
         database = FirebaseDatabase.getInstance().getReference("Users")
         database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
             if (it.exists()) {
-                val profilePhoto = it.child("profileImageUrl").value
+                val name = it.child("name").value
+                binding.vehicleUserName.text = name.toString()
+            }
+        }
+
+        //Update vehicle information
+        database = FirebaseDatabase.getInstance().getReference("VehicleData")
+        database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
+            if (it.exists()) {
+                val vehicleImage = it.child("vehicleImageUrl").value
 
                 Glide.with(this)
-                    .load(profilePhoto)
+                    .load(vehicleImage)
                     .into(profile_image)
 
-                val name = it.child("name").value
-                val occupation = it.child("occupation").value
-                val address = it.child("address").value
-                val email = it.child("email").value
+                val vehicleModel = it.child("vehicleModel").value
+                val vehicleLicensePlate = it.child("vehicleLicensePlate").value
+                val vehicleColor = it.child("vehicleColor").value
+                val vehicleMake = it.child("vehicleMake").value
 
-                binding.userName.text = name.toString()
-                editText_name.setText(name.toString())
-                editText_address.setText(address.toString())
-                editText_occupation.setText(occupation.toString())
-                editText_email.setText(email.toString())
+                editText_vehicleModel.setText(vehicleModel.toString())
+                editText_vehicleColor.setText(vehicleColor.toString())
+                editText_vehicleLicensePlateNumber.setText(vehicleLicensePlate.toString())
+                editText_vehicleMake.setText(vehicleMake.toString())
+
             } else {
-                Toast.makeText(this, "User Doesn't Exist", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Vehicle Doesn't Exist", Toast.LENGTH_SHORT).show()
             }
         }.addOnFailureListener {
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
@@ -91,10 +96,10 @@ class UpdateProfileActivity : AppCompatActivity() {
 
         binding.saveBtn.setOnClickListener {
             showProgressBar()
-            database = FirebaseDatabase.getInstance().getReference("Users")
+            database = FirebaseDatabase.getInstance().getReference("VehicleData")
             database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
                 if (it.exists()) {
-                    saveUserToFirebaseDatabaseWIthExistingPhoto()
+                    saveVehicleToFirebaseDatabaseWIthExistingPhoto()
                 } else {
                     uploadImageToFirebaseStorage()
                 }
@@ -128,30 +133,31 @@ class UpdateProfileActivity : AppCompatActivity() {
 
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {
-
-//                Log.d(TAG, "Successfully uploaded image: ${it.metadata?.path}")
-
                 ref.downloadUrl.addOnSuccessListener {
-                    saveUserToFirebaseDatabase(it.toString())
+                    saveVehicleToFirebaseDatabase(it.toString())
                 }
             }
             .addOnFailureListener {
-                //hideProgressBar()
-                Log.d(TAG, "Failed to upload image to storage: ${it.message}")
             }
     }
 
 
-    private fun saveUserToFirebaseDatabase(profileImageUrl: String) {
+    private fun saveVehicleToFirebaseDatabase(vehicleImageUrl: String) {
+        val vehicleModel = binding.editTextVehicleModel.text.toString()
+        val vehicleColor = binding.editTextVehicleColor.text.toString()
+        val vehicleLicensePlate = binding.editTextVehicleLicensePlateNumber.text.toString()
+        val vehicleMake = binding.editTextVehicleMake.text.toString()
 
-        val name = binding.editTextName.text.toString()
-        val occupation = binding.editTextOccupation.text.toString()
-        val address = binding.editTextAddress.text.toString()
-        val email = binding.editTextEmail.text.toString()
-
-        database = FirebaseDatabase.getInstance().getReference("Users")
-        val userInfo = User(name, occupation, address, email, profileImageUrl)
-        database.child(mAuth?.currentUser?.uid!!).setValue(userInfo).addOnSuccessListener {
+        database = FirebaseDatabase.getInstance().getReference("VehicleData")
+        val vehicleInfo =
+            UserVehicle(
+                vehicleModel,
+                vehicleLicensePlate,
+                vehicleImageUrl,
+                vehicleColor,
+                vehicleMake
+            )
+        database.child(mAuth?.currentUser?.uid!!).setValue(vehicleInfo).addOnSuccessListener {
 
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -165,19 +171,26 @@ class UpdateProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveUserToFirebaseDatabaseWIthExistingPhoto() {
+    private fun saveVehicleToFirebaseDatabaseWIthExistingPhoto() {
 
-        val name = binding.editTextName.text.toString()
-        val occupation = binding.editTextOccupation.text.toString()
-        val address = binding.editTextAddress.text.toString()
-        val email = binding.editTextEmail.text.toString()
+        val vehicleModel = binding.editTextVehicleModel.text.toString()
+        val vehicleColor = binding.editTextVehicleColor.text.toString()
+        val vehicleLicensePlate = binding.editTextVehicleLicensePlateNumber.text.toString()
+        val vehicleMake = binding.editTextVehicleMake.text.toString()
 
-        database = FirebaseDatabase.getInstance().getReference("Users")
+        database = FirebaseDatabase.getInstance().getReference("VehicleData")
         database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
             if (it.exists()) {
-                val profilePhoto = it.child("profileImageUrl").value.toString()
-                val userInfo = User(name, occupation, address, email, profilePhoto)
-                database.child(mAuth?.currentUser?.uid!!).setValue(userInfo).addOnSuccessListener {
+                val vehicleImage = it.child("vehicleImageUrl").value.toString()
+                val vehicleInfo =
+                    UserVehicle(
+                        vehicleModel,
+                        vehicleLicensePlate,
+                        vehicleImage,
+                        vehicleColor,
+                        vehicleMake
+                    )
+                database.child(mAuth?.currentUser?.uid!!).setValue(vehicleInfo).addOnSuccessListener {
 
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
@@ -194,27 +207,13 @@ class UpdateProfileActivity : AppCompatActivity() {
     }
 
     private fun showProgressBar() {
-        mProgressBar1.visibility = View.VISIBLE
-        mProgressBar2.visibility = View.VISIBLE
+        regProgressBar1.visibility = View.VISIBLE
+        regProgressBar2.visibility = View.VISIBLE
     }
 
     private fun hideProgressBar() {
-        mProgressBar1.visibility = View.GONE
-        mProgressBar2.visibility = View.GONE
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        if (profile_image == null) {
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Required")
-            builder.setMessage("A profile photo is required. For more information, visit the about page.")
-
-            builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-            }
-            builder.show()
-        }
+        regProgressBar1.visibility = View.GONE
+        regProgressBar2.visibility = View.GONE
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

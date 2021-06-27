@@ -326,10 +326,32 @@ class NavActivity :
             BitmapUtils.getBitmapFromDrawable(
                 ContextCompat.getDrawable(
                     this,
-                    R.drawable.mapbox_marker_icon_default
+                    R.drawable.passenger_location
                 )
             )!!
         )
+
+        style.addImage(
+            "ICON_PASSENGER_ORIGIN",
+            BitmapUtils.getBitmapFromDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.yellow_marker
+                )
+            )!!
+        )
+
+        style.addImage(
+            "ICON_PASSENGER_DESTINATION",
+            BitmapUtils.getBitmapFromDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.purple_marker
+                )
+            )!!
+        )
+
+
     }
 
     private fun setupIconLayerBelow(
@@ -353,7 +375,6 @@ class NavActivity :
             "mapbox-location-shadow-layer"
         )
     }
-
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------------------- OnCreate --------------------------------------------*/
     @SuppressLint("LogNotTimber")
