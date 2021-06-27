@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    tools:context=".SubmitCommuteFragment"
+    tools:context="views.fragments.register.SubmitCommuteFragment"
     android:orientation="vertical"
-    android:background="@color/Gold">
+    android:background="#212A39">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Submit changes:"
-            android:textColor="@color/DarkViolet"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,7 @@
             android:id="@+id/submit_commute_button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/DeepPink"
+            android:backgroundTint="@color/DeepSkyBlue"
             android:text="Submit"
             android:textColor="@color/white"
             android:textSize="25sp"
