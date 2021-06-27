@@ -1,15 +1,13 @@
 package com.uwi.btmap.views.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.uwi.btmap.R
 import com.uwi.btmap.models.Commute
 import com.uwi.btmap.viewmodels.PreviewCommuteViewModel
-import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 import com.uwi.btmap.views.fragments.previewCommute.PreviewCommuteFragment
-import com.uwi.btmap.views.fragments.selectPair.ListCommutePairFragment
 
 private const val TAG = "PreviewCommuteActivity"
 
@@ -27,7 +25,7 @@ class PreviewCommuteActivity : AppCompatActivity() {
         //set default fragment
         val fragment = PreviewCommuteFragment()
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.preview_commute_frame,fragment)
+        transaction.replace(R.id.preview_commute_frame, fragment)
         transaction.commit()
     }
 }

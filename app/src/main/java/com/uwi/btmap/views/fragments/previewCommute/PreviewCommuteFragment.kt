@@ -1,12 +1,16 @@
 package com.uwi.btmap.views.fragments.previewCommute
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.View.VISIBLE
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -40,7 +44,8 @@ import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.PreviewCommuteViewModel
-
+import com.uwi.btmap.views.activities.NavActivity
+import com.uwi.btmap.views.activities.PassengerNavActivity
 
 
 private const val TAG = "PreviewCommuteFragment"
@@ -49,7 +54,7 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
     OnMapReadyCallback, PermissionsListener {
 
     private var permissionsManager: PermissionsManager = PermissionsManager(this)
-    lateinit var viewModel:PreviewCommuteViewModel
+    private lateinit var viewModel: PreviewCommuteViewModel
 
     private val drivingRouteSourceID = "DRIVING_ROUTE_SOURCE_ID"
     private val pickupRouteSourceID = "PICKUP_ROUTE_SOURCE_ID"
@@ -74,21 +79,86 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
     private lateinit var mapboxMap: MapboxMap
     private lateinit var mapboxNavigation: MapboxNavigation
 
+    private lateinit var startButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Mapbox.getInstance(requireContext(),getString(R.string.mapbox_access_token))
+        Mapbox.getInstance(requireContext(), getString(R.string.mapbox_access_token))
         viewModel = ViewModelProvider(requireActivity()).get(PreviewCommuteViewModel::class.java)
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initMapView(view,savedInstanceState)
+        initMapView(view, savedInstanceState)
         initMapNavigation()
+        getSelectedCommuteData()
+        startButton = view.findViewById(R.id.start_button)
+        startButton.setOnClickListener {
+
+            //switch to appropriate navigation activity
+            if (viewModel.commute.value?.commuteType == 0) {
+                //switch to nav activity and pass driver directions as extra
+                val intent = Intent(requireContext(), NavActivity::class.java)
+                    .putExtra("DirectionsRoute", viewModel.drivingDirectionsRoute.value)
+                requireActivity().startActivity(intent)
+            } else {
+                //switch to passenger nav activity
+                val intent = Intent(requireContext(), PassengerNavActivity::class.java)
+                    .putExtra("DrivingRoute", viewModel.drivingDirectionsRoute.value)
+                    .putExtra("FirstLeg", viewModel.firstLegDirectionsRoute.value)
+                    .putExtra("LastLeg", viewModel.lastLegDirectionsRoute.value)
+                    .putExtra("Commute", viewModel.commute.value)
+
+                requireActivity().startActivity(intent)
+            }
+        }
+    }
+
+    private fun getSelectedCommuteData() {
+        val commuteEta = view?.findViewById<TextView>(R.id.commute_eta)
+        val commuteTime = view?.findViewById<TextView>(R.id.commute_time)
+        val commuteDate = view?.findViewById<TextView>(R.id.commute_date)
+        val commuteType = view?.findViewById<TextView>(R.id.commute_type)
+        val commutePaired = view?.findViewById<TextView>(R.id.commute_pair)
+        val commutePairedText = view?.findViewById<TextView>(R.id.commute_pair_text)
+        val commuteOrigin = view?.findViewById<TextView>(R.id.commute_origin)
+        val commuteDestination = view?.findViewById<TextView>(R.id.commute_destination)
+
+        viewModel.commute().observe(requireActivity(), Observer {
+            if (it != null) {
+                val commuteInfo = viewModel.commute.value
+
+                commuteTime?.text = commuteInfo?.getCommuteTime()
+                commuteDate?.text = commuteInfo?.getCommuteDate()
+                commuteEta?.text = commuteInfo?.getETA()
+                commuteOrigin?.text = commuteInfo?.getOriginAddress()
+                commuteDestination?.text = commuteInfo?.getDestinationAddress()
+
+                val type = commuteInfo?.getCommuteType()
+                if (type == 0) {
+                    commuteType?.text = "Driver"
+                    commutePairedText?.visibility = View.VISIBLE
+
+                    val paired = commuteInfo.getIsPaired()
+                    if (paired){
+                        commutePaired?.text = "Yes"
+                    }else{
+                        commutePaired?.text = "No"
+                    }
+                } else {
+                    commuteType?.text = "Passenger"
+                    commutePairedText?.visibility = View.GONE
+                }
+
+            } else {
+                Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
-        mapboxMap.setStyle(Style.MAPBOX_STREETS){ style ->
+        mapboxMap.setStyle(Style.MAPBOX_STREETS) { style ->
             this.mapboxMap = mapboxMap
 
             initLocationIcons(style)
@@ -103,13 +173,13 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
             val lastLocation = mapboxMap?.locationComponent?.lastKnownLocation
             val origin = lastLocation?.let { Point.fromLngLat(it.longitude, it.latitude) }
 
-            if(commute != null){
+            if (commute != null) {
                 val originSource = style?.getSourceAs<GeoJsonSource>(originSourceID)
                 originSource?.setGeoJson(origin)
                 val destinationSource = style?.getSourceAs<GeoJsonSource>(destinationSourceID)
                 destinationSource?.setGeoJson(commute.getDestinationPoint())
 
-                if (commute.isPaired && commute.getPickupPoint() != null && commute.getDropoffPoint() != null){
+                if (commute.isPaired && commute.getPickupPoint() != null && commute.getDropoffPoint() != null) {
                     val pickupSource = style?.getSourceAs<GeoJsonSource>(pickupPointSourceID)
                     pickupSource?.setGeoJson(commute.getPickupPoint())
                     val dropoffSource = style?.getSourceAs<GeoJsonSource>(dropoffPointSourceID)
@@ -148,38 +218,47 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
         }
     }
 
-    private fun centerMapCamera(mapboxMap: MapboxMap){
+    private fun centerMapCamera(mapboxMap: MapboxMap) {
         //bim coordinates: 13.1939° N, 59.5432° W
         // lat: 13.1939, long: -59.5432
         val position = CameraPosition.Builder()
             .zoom(10.0)
             .tilt(0.0)
-            .target(LatLng(13.1939,-59.5432))
+            .target(LatLng(13.1939, -59.5432))
             .build()
 
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position))
     }
 
     //mapbox object setup functions
-    private fun initMapView(view: View, savedInstanceState: Bundle?){
+    private fun initMapView(view: View, savedInstanceState: Bundle?) {
         this.mapView = view.findViewById(R.id.route_preview_map_view)
         this.mapView.onCreate(savedInstanceState)
         this.mapView.getMapAsync(this)
     }
 
-    private fun initMapNavigation(){
+    private fun initMapNavigation() {
         val mapboxNavigationOptions = MapboxNavigation
-            .defaultNavigationOptionsBuilder(requireContext(), getString(R.string.mapbox_access_token))
+            .defaultNavigationOptionsBuilder(
+                requireContext(),
+                getString(R.string.mapbox_access_token)
+            )
             .build()
         this.mapboxNavigation = MapboxNavigation(mapboxNavigationOptions)
     }
 
     //route functions
-    private fun getDrivingRoute(origin:Point,destination:Point,pickup:Point?,dropoff:Point?,isPaired:Boolean){
-        var waypoints = listOf<Point>(origin,destination)
-        if(isPaired){
-            if (pickup != null && dropoff != null){
-                waypoints = listOf(origin,pickup!!,dropoff!!,destination)
+    private fun getDrivingRoute(
+        origin: Point,
+        destination: Point,
+        pickup: Point?,
+        dropoff: Point?,
+        isPaired: Boolean
+    ) {
+        var waypoints = listOf<Point>(origin, destination)
+        if (isPaired) {
+            if (pickup != null && dropoff != null) {
+                waypoints = listOf(origin, pickup!!, dropoff!!, destination)
             }
         }
 
@@ -189,24 +268,28 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
             .coordinates(waypoints)
             .alternatives(false)
             .profile(DirectionsCriteria.PROFILE_DRIVING)
-            .voiceInstructions(false)
-            .steps(false)
+            .voiceInstructions(true)
+            .steps(true)
             .build()
 
-        mapboxNavigation.requestRoutes(routeOptions,drivingRoutesReqCallback)
+        mapboxNavigation.requestRoutes(routeOptions, drivingRoutesReqCallback)
     }
 
-    private val drivingRoutesReqCallback = object: RoutesRequestCallback {
+    private val drivingRoutesReqCallback = object : RoutesRequestCallback {
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
-            if (routes.isNotEmpty()){
+            if (routes.isNotEmpty()) {
 
                 val routeLineString = LineString.fromPolyline(
-                    routes[0].geometry()!!,6)
+                    routes[0].geometry()!!, 6
+                )
+
+                viewModel.drivingDirectionsRoute.postValue(routes[0])
+
                 mapboxMap.getStyle {
                     val routeSource = it.getSourceAs<GeoJsonSource>(drivingRouteSourceID)
                     routeSource?.setGeoJson(routeLineString)
                 }
-            }else{
+            } else {
                 Log.d(TAG, "onRoutesReady: No routes found.")
             }
         }
@@ -221,59 +304,80 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
 
     }
 
-    private fun getWalkingRoute(origin: Point, destination: Point,callback:RoutesRequestCallback){
+    private fun getWalkingRoute(
+        origin: Point,
+        destination: Point,
+        callback: RoutesRequestCallback
+    ) {
         val routeOptions = RouteOptions.builder()
             .applyDefaultParams()
             .accessToken(getString(R.string.mapbox_access_token))
-            .coordinates(listOf(origin,destination))
+            .coordinates(listOf(origin, destination))
             .alternatives(false)
             .profile(DirectionsCriteria.PROFILE_WALKING)
             .voiceInstructions(false)
             .steps(false)
             .build()
 
-        mapboxNavigation.requestRoutes(routeOptions,callback)
+        mapboxNavigation.requestRoutes(routeOptions, callback)
     }
 
-    private val firstLegRouteCallback = object: RoutesRequestCallback{
+    private val firstLegRouteCallback = object : RoutesRequestCallback {
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
-            if (routes.isNotEmpty()){
+            if (routes.isNotEmpty()) {
                 val routeLineString = LineString.fromPolyline(
-                    routes[0].geometry()!!,6)
+                    routes[0].geometry()!!, 6
+                )
+
+                viewModel.firstLegDirectionsRoute.postValue(routes[0])
+
                 mapboxMap.getStyle {
                     val routeSource = it.getSourceAs<GeoJsonSource>(pickupRouteSourceID)
                     routeSource?.setGeoJson(routeLineString)
                 }
-            }else{
+            } else {
                 Log.d(TAG, "onRoutesReady: No routes found.")
             }
         }
 
         override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
-            Log.d(com.uwi.btmap.views.fragments.commuteList.TAG, "onRoutesRequestCanceled: Route request cancelled.")
+            Log.d(
+                com.uwi.btmap.views.fragments.commuteList.TAG,
+                "onRoutesRequestCanceled: Route request cancelled."
+            )
         }
 
         override fun onRoutesRequestFailure(throwable: Throwable, routeOptions: RouteOptions) {
-            Log.d(com.uwi.btmap.views.fragments.commuteList.TAG, "onRoutesRequestFailure: Route request failed.")
+            Log.d(
+                com.uwi.btmap.views.fragments.commuteList.TAG,
+                "onRoutesRequestFailure: Route request failed."
+            )
         }
     }
 
-    private val lastLegRouteCallback = object: RoutesRequestCallback{
+    private val lastLegRouteCallback = object : RoutesRequestCallback {
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
-            if (routes.isNotEmpty()){
+            if (routes.isNotEmpty()) {
                 val routeLineString = LineString.fromPolyline(
-                    routes[0].geometry()!!,6)
+                    routes[0].geometry()!!, 6
+                )
+
+                viewModel.lastLegDirectionsRoute.postValue(routes[0])
+
                 mapboxMap.getStyle {
                     val routeSource = it.getSourceAs<GeoJsonSource>(dropoffRouteSourceID)
                     routeSource?.setGeoJson(routeLineString)
                 }
-            }else{
+            } else {
                 Log.d(TAG, "onRoutesReady: No routes found.")
             }
         }
 
         override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
-            Log.d(com.uwi.btmap.views.fragments.commuteList.TAG, "onRoutesRequestCanceled: Route request cancelled.")
+            Log.d(
+                com.uwi.btmap.views.fragments.commuteList.TAG,
+                "onRoutesRequestCanceled: Route request cancelled."
+            )
         }
 
         override fun onRoutesRequestFailure(throwable: Throwable, routeOptions: RouteOptions) {
@@ -282,26 +386,69 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
     }
 
     //functions to setup sources
-    private fun initRouteLayers(style: Style){
-        setupRouteLayer(style,drivingRouteSourceID,drivingRouteLayerID,"mapbox-location-shadow-layer","#2E4FC9")
-        setupRouteLayer(style,pickupRouteSourceID,pickupRouteLayerID,drivingRouteLayerID,"#25BE7A")
-        setupRouteLayer(style,dropoffRouteSourceID,dropoffRouteLayerID,pickupRouteLayerID,"#25BE7A")
+    private fun initRouteLayers(style: Style) {
+        setupRouteLayer(
+            style,
+            drivingRouteSourceID,
+            drivingRouteLayerID,
+            "mapbox-location-shadow-layer",
+            "#2E4FC9"
+        )
+        setupRouteLayer(
+            style,
+            pickupRouteSourceID,
+            pickupRouteLayerID,
+            drivingRouteLayerID,
+            "#25BE7A"
+        )
+        setupRouteLayer(
+            style,
+            dropoffRouteSourceID,
+            dropoffRouteLayerID,
+            pickupRouteLayerID,
+            "#25BE7A"
+        )
     }
 
-    private fun initIconLayers(style:Style){
-        setupIconLayer(style,pickupPointSourceID,pickupPointLayerID,drivingRouteLayerID,locationMarkerID)
-        setupIconLayer(style,dropoffPointSourceID,dropoffPointLayerID,pickupPointLayerID,locationMarkerID)
-        setupIconLayer(style,originSourceID,originLayerID,dropoffPointLayerID,locationMarkerID)
-        setupIconLayer(style,destinationSourceID,destinationLayerID,originLayerID,locationMarkerID)
+    private fun initIconLayers(style: Style) {
+        setupIconLayer(
+            style,
+            pickupPointSourceID,
+            pickupPointLayerID,
+            drivingRouteLayerID,
+            locationMarkerID
+        )
+        setupIconLayer(
+            style,
+            dropoffPointSourceID,
+            dropoffPointLayerID,
+            pickupPointLayerID,
+            locationMarkerID
+        )
+        setupIconLayer(style, originSourceID, originLayerID, dropoffPointLayerID, locationMarkerID)
+        setupIconLayer(
+            style,
+            destinationSourceID,
+            destinationLayerID,
+            originLayerID,
+            locationMarkerID
+        )
     }
 
-    private fun setupRouteLayer(style:Style,routeSourceID:String,routeLayerID:String,belowLayer:String,color:String){
+    private fun setupRouteLayer(
+        style: Style,
+        routeSourceID: String,
+        routeLayerID: String,
+        belowLayer: String,
+        color: String
+    ) {
         //route layer
         style.addSource(
             GeoJsonSource(
                 routeSourceID,
                 GeoJsonOptions().withLineMetrics(true)
-            ))
+            )
+        )
         style.addLayerBelow(
             LineLayer(routeLayerID, routeSourceID)
                 .withProperties(
@@ -315,16 +462,24 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
         )
     }
 
-    private fun setupIconLayer(style:Style,pointSourceID:String,pointLayerID:String,aboveLayer:String,iconID:String){
+    private fun setupIconLayer(
+        style: Style,
+        pointSourceID: String,
+        pointLayerID: String,
+        aboveLayer: String,
+        iconID: String
+    ) {
         //origin layer
         style.addSource(GeoJsonSource(pointSourceID))
         style.addLayerAbove(
-            SymbolLayer(pointLayerID,pointSourceID)
-                .withProperties(PropertyFactory.iconImage(locationMarkerID)),aboveLayer)
+            SymbolLayer(pointLayerID, pointSourceID)
+                .withProperties(PropertyFactory.iconImage(locationMarkerID)), aboveLayer
+        )
     }
 
-    private fun initLocationIcons(style: Style){
-        style.addImage(locationMarkerID,
+    private fun initLocationIcons(style: Style) {
+        style.addImage(
+            locationMarkerID,
             BitmapUtils.getBitmapFromDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -338,10 +493,16 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
     private fun enableLocationComponent(loadedMapStyle: Style) {
         mapboxMap.getStyle {
             if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
-                val customLocationComponentOptions = LocationComponentOptions.builder(requireContext())
-                    .trackingGesturesManagement(true)
-                    .accuracyColor(ContextCompat.getColor(requireContext(), R.color.mapbox_blue))
-                    .build()
+                val customLocationComponentOptions =
+                    LocationComponentOptions.builder(requireContext())
+                        .trackingGesturesManagement(true)
+                        .accuracyColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.mapbox_blue
+                            )
+                        )
+                        .build()
 
                 val locationComponentActivationOptions =
                     LocationComponentActivationOptions.builder(requireContext(), loadedMapStyle)
@@ -420,7 +581,11 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
     }
 
     override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-        Toast.makeText(requireContext(), "This app requires location services in order to provide navigation to requested destination.", Toast.LENGTH_LONG).show()
+        Toast.makeText(
+            requireContext(),
+            "This app requires location services in order to provide navigation to requested destination.",
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     override fun onPermissionResult(granted: Boolean) {

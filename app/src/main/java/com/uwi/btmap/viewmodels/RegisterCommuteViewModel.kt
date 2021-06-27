@@ -55,6 +55,8 @@ class RegisterCommuteViewModel : ViewModel() {
     var commuteSaveSuccess = MutableLiveData<Boolean>()
     var findPairSuccess = MutableLiveData<Boolean>()
 
+    var isLoading = MutableLiveData<Boolean>()
+
     var commuteOptions = CommuteOptions()
 
     init {
@@ -92,6 +94,8 @@ class RegisterCommuteViewModel : ViewModel() {
     fun commuteSaveSuccess():LiveData<Boolean>{return commuteSaveSuccess}
 
     fun findPairSuccess():LiveData<Boolean>{return findPairSuccess}
+
+    fun isLoading():LiveData<Boolean>{return isLoading}
 
     /* -------------------------- SET Functions --------------------------- */
 
@@ -298,11 +302,15 @@ class RegisterCommuteViewModel : ViewModel() {
                 }else{
                     commuteSaveSuccess.postValue(false)
                 }
+
+                isLoading.postValue(true)
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 //TODO log error
+                Log.d(TAG, "onFailure: ${e.message}")
                 commuteSaveSuccess.postValue(false)
+                isLoading.postValue(false)
             }
         })
     }
@@ -343,13 +351,17 @@ class RegisterCommuteViewModel : ViewModel() {
                 
                 //trigger switch activity to select pair activity
                 findPairSuccess.postValue(true)
+                isLoading.postValue(true)
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
                 //log error
                 findPairSuccess.postValue(false)
+                isLoading.postValue(false)
             }
         })
     }
+
+
 
 }

@@ -57,7 +57,6 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
             }
         }
 
-
         destinationButton.setOnClickListener {
             if (viewModel.locationSelectionMode == 2) {
                 viewModel.locationSelectionMode = 0

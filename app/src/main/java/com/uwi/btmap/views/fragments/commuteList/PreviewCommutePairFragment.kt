@@ -36,6 +36,7 @@ import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.R
 import com.uwi.btmap.models.PassengerCommuteEstimate
+import com.uwi.btmap.viewmodels.MainViewModel
 import com.uwi.btmap.viewmodels.SelectPairViewModel
 import com.uwi.btmap.views.activities.RegisterCommuteActivity
 import com.uwi.btmap.views.fragments.selectPair.ListCommutePairFragment
@@ -80,9 +81,11 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
 
     private lateinit var viewModel: SelectPairViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(SelectPairViewModel::class.java)
+
         val currentIndex = arguments?.getInt("CommuteIndex")
         viewModel.currentCommuteIndex.value = currentIndex
 
@@ -122,18 +125,12 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
         }
     }
 
-    fun getPassengerCommuteEstimate(){
+    private fun getPassengerCommuteEstimate(){
         val eta = view?.findViewById<TextView>(R.id.preview_destETA)
         val time = view?.findViewById<TextView>(R.id.preview_destTime)
         val mDate = view?.findViewById<TextView>(R.id.preview_date)
         val walkingDistance = view?.findViewById<TextView>(R.id.preview_walkingDistance)
         val walkingDuration = view?.findViewById<TextView>(R.id.preview_walkingTime)
-
-//        val etaData = (activity as PassengerCommuteEstimate?)?.getETA()
-//        val timeData = (activity as PassengerCommuteEstimate?)?.getDate()
-//        val walkingDistanceData = (activity as PassengerCommuteEstimate?)?.getDistanceInKm()
-//        val walkingDurationData = (activity as PassengerCommuteEstimate?)?.getDurationInMinutes()
-
 
         viewModel.getPairEstimatesSuccess().observe(requireActivity(), androidx.lifecycle.Observer {
             if (it) {
@@ -151,6 +148,8 @@ class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pa
             }
         })
     }
+
+
 
     //----------------------- mapbox functions -------------------------
 

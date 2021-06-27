@@ -2,15 +2,14 @@ package com.uwi.btmap.views.fragments.commuteList
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,15 +17,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uwi.btmap.R
 import com.uwi.btmap.models.Commute
 import com.uwi.btmap.viewmodels.MainViewModel
-import com.uwi.btmap.viewmodels.SelectPairViewModel
-import com.uwi.btmap.views.activities.MapActivity
 import com.uwi.btmap.views.activities.PreviewCommuteActivity
 import com.uwi.btmap.views.activities.RegisterCommuteActivity
 import kotlinx.android.synthetic.main.fragment_commute_list.*
 
 class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
 
-    private lateinit var viewModel:MainViewModel
+    private lateinit var viewModel: MainViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,11 +33,11 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
         val userId = mAuth.currentUser?.uid
         if (userId != null) {
             viewModel.getUserCommutes(userId)
-        }else{
-            //TODO toast stating unable to retrieve
+        } else {
+            Toast.makeText(requireContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show()
         }
 
-        val addCommuteButton = view.findViewById<Button>(R.id.add_commute_button)
+//        val addCommuteButton = view.findViewById<Button>(R.id.add_commute_button)
         val recyclerView = view.findViewById<RecyclerView>(R.id.commute_recycler_view)
 
         val adapter = viewModel.commutes.value?.let { CommutesAdapter(it.commutes) }
@@ -53,12 +50,12 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
             startActivity(intent)
         }
 
-        viewModel.getCommutesSuccess.observe(requireActivity(),Observer{ it ->
-            if (it){
+        viewModel.getCommutesSuccess.observe(requireActivity(), Observer { it ->
+            if (it) {
                 val adapter = viewModel.commutes.value?.let { CommutesAdapter(it.commutes) }
                 recyclerView.adapter = adapter
 
-            }else{
+            } else {
                 //TODO toast?
             }
         })
@@ -79,8 +76,21 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
 
         override fun onBindViewHolder(holder: CommutesAdapter.ViewHolder, position: Int) {
             val commute = commutes[position]
-            val textView = holder.textView
-            textView.text = commute.commuteId
+            val commuteType = holder.commuteType
+            val commuteOrigin = holder.commuteOrigin
+            val commuteDestination = holder.commuteDestination
+            val commuteTime = holder.commuteTime
+            commuteOrigin.text = commute.originAddress
+            commuteDestination.text = commute.destinationAddress
+            commuteTime.text = commute.time
+
+            val type = commute.commuteType
+
+            if (type == 0){
+                commuteType.text = "Driver"
+            }else{
+                commuteType.text = "Passenger"
+            }
 
         }
 
@@ -89,14 +99,18 @@ class CommuteListFragment : Fragment(R.layout.fragment_commute_list) {
         }
 
         inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
-            val textView: TextView = itemView.findViewById<TextView>(R.id.commute_item_text)
+            val commuteType: TextView = itemView.findViewById<TextView>(R.id.commute_type)
+            val commuteOrigin: TextView = itemView.findViewById<TextView>(R.id.commute_origin)
+            val commuteDestination: TextView = itemView.findViewById<TextView>(R.id.commute_destination)
+            val commuteTime: TextView = itemView.findViewById<TextView>(R.id.commute_time)
 
             init {
                 listItemView.setOnClickListener {
                     //switch to map activity
                     val commute = commutes[adapterPosition]
-                    val intent: Intent = Intent(listItemView.context, PreviewCommuteActivity::class.java)
-                        .putExtra("Commute",commute)
+                    val intent: Intent =
+                        Intent(listItemView.context, PreviewCommuteActivity::class.java)
+                            .putExtra("Commute", commute)
 
                     listItemView.context.startActivity(intent)
                 }

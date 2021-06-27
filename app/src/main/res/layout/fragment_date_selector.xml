@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".DateSelectorFragment"
-    android:background="@color/Gold">
+    tools:context="views.fragments.register.DateSelectorFragment"
+    android:background="#212A39">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select your commute date:"
-            android:textColor="@color/DarkViolet"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +30,7 @@
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:text="JAN-01-2020"
-            android:textColor="@color/DeepPink"
+            android:textColor="@color/white"
             android:textSize="45sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,16 +43,16 @@
             android:id="@+id/date_prev_btn"
             android:layout_width="45dp"
             android:layout_height="40dp"
-            android:background="@drawable/ic_prev"
-            android:backgroundTint="@color/white"
+            android:background="@drawable/arrow_left"
+            app:backgroundTint="@null"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         <Button
             android:id="@+id/date_next_btn"
             android:layout_width="45dp"
             android:layout_height="40dp"
-            android:background="@drawable/ic_forward"
-            android:backgroundTint="@color/white"
+            android:background="@drawable/ic_arrow_right"
+            app:backgroundTint="@null"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

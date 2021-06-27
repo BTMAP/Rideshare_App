@@ -9,10 +9,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
-import com.uwi.btmap.models.BtmapApiError
-import com.uwi.btmap.models.CommuteOptions
-import com.uwi.btmap.models.IndexedCoord
-import com.uwi.btmap.models.PassengerCommuteEstimate
+import com.uwi.btmap.models.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -39,6 +36,7 @@ class SelectPairViewModel: ViewModel() {
     var lastLegRoute = MutableLiveData<DirectionsRoute>()
 
     var commuteEstimates = MutableLiveData<PassengerCommuteEstimate>()
+    var commuteData = MutableLiveData<Commute>()
 
     var currentFragment = MutableLiveData<Int>()
 
@@ -67,6 +65,7 @@ class SelectPairViewModel: ViewModel() {
         return pairSuccess
     }
 
+
 /* -------------------------- Server Functions ------------------------------ */
     fun pair(commuteId:String, origin:Point, destination:Point, pickupPoint: IndexedCoord, dropoffPoint: IndexedCoord){
         val mAuth = FirebaseAuth.getInstance()
@@ -74,6 +73,9 @@ class SelectPairViewModel: ViewModel() {
 
         val time = commuteEstimates.value?.getTimeCalendar()
         val eta = commuteEstimates.value?.getEtaCalendar()
+
+        Log.d(TAG, "pair: $$time")
+        Log.d(TAG, "pair: $eta")
 
         val year = time?.get(Calendar.YEAR)
         val month = time?.get(Calendar.MONTH)?.plus(1)
@@ -131,7 +133,7 @@ class SelectPairViewModel: ViewModel() {
             }
 
             override fun onFailure(call: okhttp3.Call, e: IOException) {
-                //TODO log error
+                Log.d(TAG, "onFailure: ${e.message}")
                 pairSuccess.postValue(false)
             }
         })

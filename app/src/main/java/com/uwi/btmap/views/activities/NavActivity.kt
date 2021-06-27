@@ -18,6 +18,7 @@ import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.api.directions.v5.models.BannerInstructions
+import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.VoiceInstructions
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.camera.CameraPosition
@@ -50,17 +51,17 @@ import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.puck.PuckDrawableSupplier
 import com.mapbox.navigation.ui.summary.SummaryBottomSheet
 import com.uwi.btmap.R
-import com.uwi.btmap.models.NavigationCommute
 import com.uwi.btmap.bll.TTS
 import com.uwi.btmap.models.DriverLiveLocation
 import java.lang.ref.WeakReference
 
+private const val TAG = "NAV_ACTIVITY"
 
+@Suppress("DEPRECATION")
 class NavActivity :
     AppCompatActivity(), PermissionsListener,
     OnMapReadyCallback {
 
-    private val TAG = "NAV_ACTIVITY"
     private lateinit var accessToken: String
 
     //mapbox views
@@ -80,7 +81,7 @@ class NavActivity :
     private lateinit var mapCamera: NavigationCamera
 
     //custom commute object
-    private lateinit var commute: NavigationCommute
+    private lateinit var commute: DirectionsRoute
 
     private lateinit var permissionsManager: PermissionsManager
     private lateinit var locationEngine: LocationEngine
@@ -92,7 +93,7 @@ class NavActivity :
 
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------- Location and route progress observer ---------------------------*/
-
+    @SuppressLint("LogNotTimber")
     private val locationObserver = object : LocationObserver {
         override fun onEnhancedLocationChanged(
             enhancedLocation: Location,
@@ -112,6 +113,7 @@ class NavActivity :
 
     }
 
+    @SuppressLint("LogNotTimber")
     private fun updateLocation(location: Location) {
         mAuth = FirebaseAuth.getInstance()
 
@@ -168,6 +170,7 @@ class NavActivity :
         source?.setGeoJson(point)
     }
 
+    @SuppressLint("LogNotTimber")
     internal fun updateLocation(locations: List<Location>) {
         Log.d(TAG, "updateLocation: List of locations Called: $locations")
 
@@ -183,12 +186,12 @@ class NavActivity :
             summaryBottomSheet.update(routeProgress)
 
             routeProgress.currentState.let { currentState ->
-                val state = currentState
+
             }
         }
     }
 
-
+    @SuppressLint("LogNotTimber")
     private val arrivalObserver = object : ArrivalObserver {
         override fun onFinalDestinationArrival(routeProgress: RouteProgress) {
             TODO("Not yet implemented")
@@ -206,6 +209,7 @@ class NavActivity :
         }
     }
 
+    @SuppressLint("LogNotTimber")
     fun onAlertDialog() {
         //Instantiate builder variable
         val builder = AlertDialog.Builder(this)
@@ -245,7 +249,7 @@ class NavActivity :
             //use the route in the nav component to update the map
             val currentRoutes = mapboxNavigation.getRoutes()
 
-            if (currentRoutes != null && currentRoutes.count() > 0) {
+            if (currentRoutes.count() > 0) {
                 navigationMap.drawRoute(currentRoutes[0])
             }
         }
@@ -373,13 +377,14 @@ class NavActivity :
     }
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------------------- OnCreate --------------------------------------------*/
+    @SuppressLint("LogNotTimber")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nav)
 
         //get commute
         //TODO notify user and return to previous screen if no commute is passed
-        this.commute = intent.getSerializableExtra("commute")!! as NavigationCommute
+        this.commute = intent.getSerializableExtra("DirectionsRoute")!! as DirectionsRoute
 
         //set access token
         this.accessToken = getString(R.string.mapbox_access_token)
@@ -389,8 +394,8 @@ class NavActivity :
 
         //initialize mapView
         this.mapView = findViewById(R.id.nav_mapView)
-        this.mapView?.onCreate(savedInstanceState)
-        this.mapView?.getMapAsync(this)
+        this.mapView.onCreate(savedInstanceState)
+        this.mapView.getMapAsync(this)
 
         this.instructionView = findViewById(R.id.nav_instructionView)
         this.summaryBottomSheet = findViewById(R.id.nav_summary_sheet)
@@ -446,18 +451,19 @@ class NavActivity :
             )
 
             //add route to map
-            this.navigationMap?.drawRoute(commute.driverRoute!!)
-            this.navigationMap?.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
+            Log.d(TAG, "onMapReady: $commute")
+            this.navigationMap.drawRoute(commute)
+            this.navigationMap.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
 
-            this.navigationMap?.setPuckDrawableSupplier(MyPuckDrawableSupplier())
+            this.navigationMap.setPuckDrawableSupplier(MyPuckDrawableSupplier())
 
             //add route to navigation object
-            this.mapboxNavigation.setRoutes(listOf(commute.driverRoute!!))
+            this.mapboxNavigation.setRoutes(listOf(commute))
 
             //start trip
             //camera start route
             mapCamera.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
-            mapCamera.start(commute.driverRoute)
+            mapCamera.start(commute)
 
             //set location puck render mode
             mapboxMap.locationComponent.renderMode = RenderMode.GPS
@@ -472,30 +478,13 @@ class NavActivity :
 
     }
 
-    @SuppressLint("MissingPermission")
-    private fun initializeLocationComponent(
-        mapboxMap: MapboxMap,
-        style: Style
-    ) {
-        val activationOptions =
-            LocationComponentActivationOptions.builder(this, style)
-                .useDefaultLocationEngine(false)
-                .build()
-
-        mapboxMap.locationComponent.apply {
-            this.activateLocationComponent(activationOptions)
-            isLocationComponentEnabled = true
-            cameraMode = CameraMode.TRACKING
-            renderMode = RenderMode.GPS
-        }
-    }
 
     /*--------------------------------------------------------------------------------------------*/
     /*-------------------------------------- Life Cycle ------------------------------------------*/
 
     override fun onStart() {
         super.onStart()
-        mapView?.onStart()
+        mapView.onStart()
 
         if (this::mapboxNavigation.isInitialized) {
 //            Log.d(TAG, "onStart: register locationObserver")
@@ -511,12 +500,12 @@ class NavActivity :
 
     override fun onResume() {
         super.onResume()
-        mapView?.onResume()
+        mapView.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView?.onPause()
+        mapView.onPause()
     }
 
     override fun onStop() {
@@ -528,17 +517,17 @@ class NavActivity :
         mapboxNavigation.unregisterBannerInstructionsObserver(bannerInstructionsObserver)
         mapboxNavigation.unregisterTripSessionStateObserver(tripSessionStateObserver)
         mapboxNavigation.unregisterVoiceInstructionsObserver(voiceInstructionsObserver)
-        mapView?.onStop()
+        mapView.onStop()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        mapView?.onSaveInstanceState(outState)
+        mapView.onSaveInstanceState(outState)
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView?.onLowMemory()
+        mapView.onLowMemory()
     }
 
     override fun onDestroy() {
@@ -546,7 +535,7 @@ class NavActivity :
         mapboxNavigation.unregisterRouteProgressObserver(routeProgressObserver)
         mapboxNavigation.stopTripSession()
         mapboxNavigation.onDestroy()
-        mapView?.onDestroy()
+        mapView.onDestroy()
     }
 
 
@@ -600,7 +589,7 @@ class NavActivity :
 
         override fun onSuccess(result: LocationEngineResult?) {
             result?.lastLocation
-                ?: return //BECAREFULL HERE, IF NAME LOCATION UPDATE DONT USER -> val resLoc = result.lastLocation ?: return
+                ?: return //BE CAREFULL HERE, IF NAME LOCATION UPDATE DON'T USER -> val resLoc = result.lastLocation ?: return
             if (result.lastLocation != null) {
                 val lat = result.lastLocation?.latitude!!
                 val lng = result.lastLocation?.longitude!!
@@ -660,12 +649,12 @@ class NavActivity :
 
 class LocationEngineCallback(activity: NavActivity) : LocationEngineCallback<LocationEngineResult> {
     private var activityRef: WeakReference<NavActivity>? = null
-    private val TAG = "LocationEngineCallback"
 
     init {
         this.activityRef = WeakReference(activity)
     }
 
+    @SuppressLint("LogNotTimber")
     override fun onSuccess(result: LocationEngineResult?) {
         if (result != null) {
             //initialize location puck position
@@ -675,7 +664,7 @@ class LocationEngineCallback(activity: NavActivity) : LocationEngineCallback<Loc
             Log.e(TAG, "onSuccess: Failed to update location (result == null)")
         }
     }
-
+    @SuppressLint("LogNotTimber")
     override fun onFailure(exception: Exception) {
         Log.e(TAG, "onFailure: Failed to update location", exception)
     }

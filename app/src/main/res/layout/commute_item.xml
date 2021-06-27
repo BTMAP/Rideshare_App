@@ -9,112 +9,177 @@
     android:layout_margin="16dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginVertical="6dp"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/start_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/info_background_view"
+        app:layout_constraintTop_toBottomOf="@+id/route_preview_map_view">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+        <androidx.cardview.widget.CardView
+            android:layout_width="400dp"
+            android:layout_height="170dp"
+            app:cardBackgroundColor="#46A6C6"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Origin: "
-                android:textColor="@color/purple_500"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-            <TextView
-                android:id="@+id/originName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="The Night King"
-                android:textColor="@color/WhiteSmoke"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text=" Commute ID: "
+                        android:textColor="@color/Snow"
+                        android:textSize="18dp"
+                        app:drawableStartCompat="@drawable/ic_baseline_calendar_today_24" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Destination: "
-                android:textColor="@color/purple_500"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/commuteID"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="xxxxx "
+                        android:textColor="@color/AntiqueWhite"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-            <TextView
-                android:id="@+id/destinationName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="The Night King"
-                android:textColor="@color/WhiteSmoke"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text=" Commuter: "
+                        android:textColor="@color/Snow"
+                        android:textSize="18dp"
+                        app:drawableStartCompat="@drawable/ic_baseline_calendar_today_24" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Date: "
-                android:textColor="@color/purple_500"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/commute_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="xxxxx "
+                        android:textColor="@color/AntiqueWhite"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-            <TextView
-                android:id="@+id/commuteDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="04-13-2021"
-                android:textColor="@color/WhiteSmoke"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text=" Origin Address: "
+                        android:textColor="@color/Snow"
+                        android:textSize="18dp"
+                        app:drawableStartCompat="@drawable/ic_baseline_departure_board_24" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time: "
-                android:textColor="@color/purple_500"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/commute_origin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="xxxxx"
+                        android:textColor="@color/AntiqueWhite"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-            <TextView
-                android:id="@+id/commuteTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="12:45 PM"
-                android:textColor="@color/WhiteSmoke"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text=" Destination Address: "
+                        android:textColor="@color/Snow"
+                        android:textSize="18dp"
+                        app:drawableStartCompat="@drawable/ic_baseline_pin_drop_24" />
+
+                    <TextView
+                        android:id="@+id/commute_destination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="xxxxx"
+                        android:textColor="@color/AntiqueWhite"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="5dp"-->
+<!--                        android:layout_marginTop="5dp"-->
+<!--                        android:text=" Estimated Time of Arrival: "-->
+<!--                        android:textColor="@color/Snow"-->
+<!--                        android:textSize="18dp"-->
+<!--                        app:drawableStartCompat="@drawable/ic_baseline_directions_walk_24" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/commute_eta"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="xxxx"-->
+<!--                        android:layout_marginTop="5dp"-->
+<!--                        android:textColor="@color/AntiqueWhite"-->
+<!--                        android:textSize="20dp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </LinearLayout>-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text=" Scheduled Commute Time: "
+                        android:textColor="@color/Snow"
+                        android:textSize="18dp"
+                        app:drawableStartCompat="@drawable/ic_baseline_timer_24" />
+
+                    <TextView
+                        android:id="@+id/commute_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="xxxxx "
+                        android:textColor="@color/AntiqueWhite"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

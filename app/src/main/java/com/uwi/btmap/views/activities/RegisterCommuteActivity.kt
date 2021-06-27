@@ -1,9 +1,12 @@
 package com.uwi.btmap.views.activities
 
+import android.app.Dialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -67,6 +70,19 @@ class RegisterCommuteActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.isLoading().observe(this, Observer {
+            if (it == true){
+                loadingDialog()
+            }
+        })
+
+    }
+
+    private fun loadingDialog(){
+        val loading = Dialog(this)
+
+        loading.setContentView(R.layout.loading_view)
+        loading.show()
     }
 
     override fun onBackPressed() {

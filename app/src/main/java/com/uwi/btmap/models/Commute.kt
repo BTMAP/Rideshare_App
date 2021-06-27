@@ -3,6 +3,9 @@ package com.uwi.btmap.models
 
 import com.mapbox.geojson.Point
 import java.io.Serializable
+import android.util.Log
+import java.text.SimpleDateFormat
+import java.util.*
 
 data class Commute(
     val userId:String,
@@ -41,6 +44,55 @@ data class Commute(
         }else{
             return null
         }
+    }
+
+    fun getETA(): String {
+        val date = parseIsoDateTime(eta)
+        return formatDateToTimeString(date)
+    }
+
+    fun getCommuteTime(): String {
+        val date = parseIsoDateTime(time)
+        return formatDateToTimeString(date)
+    }
+
+    fun getCommuteDate(): String {
+        val date = parseIsoDateTime(time)
+        return formatDateToDateString(date)
+    }
+
+    @JvmName("getOriginAddress1")
+    fun getOriginAddress(): String {
+        return originAddress
+    }
+
+    @JvmName("getDestinationAddress1")
+    fun getDestinationAddress(): String {
+        return destinationAddress
+    }
+
+    @JvmName("getCommuteType1")
+    fun getCommuteType(): Int {
+        return commuteType
+    }
+
+    fun getIsPaired(): Boolean{
+        return isPaired
+    }
+
+    private fun parseIsoDateTime(datetime: String): Date {
+        val inFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        return inFormat.parse(datetime)
+    }
+
+    private fun formatDateToTimeString(date: Date): String {
+        val outFormat = SimpleDateFormat("hh:mm a")
+        return outFormat.format(date)
+    }
+
+    private fun formatDateToDateString(date: Date): String {
+        val outFormat = SimpleDateFormat("dd/MM/yyyy")
+        return outFormat.format(date)
     }
 
 }
