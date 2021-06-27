@@ -4,16 +4,19 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.uwi.btmap.MainActivity
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 import com.uwi.btmap.views.activities.RegisterCommuteActivity
+import kotlinx.android.synthetic.main.activity_update_profile.*
 import kotlinx.android.synthetic.main.fragment_submit_commute.*
 
 
@@ -33,8 +36,18 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
 
         submitButton = view.findViewById(R.id.submit_commute_button)
 
+        if(submitButton.isEnabled){
+            submitButton.isEnabled = false
+            submitButton.setBackgroundColor(Color.LTGRAY)
+        }
+
         submitButton.setOnClickListener {
+            //showProgressBar()
+
+
             if (viewModel.isCommuteValid()) {
+                Log.d(TAG, "onViewCreated: Is Valid: true")
+
                 if (viewModel.commuteType.value == 0) {
 //                if driver register commute
                     viewModel.registerDriverCommute()
@@ -44,7 +57,9 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
                     viewModel.findSuitableCommutePairs()
                 }
             } else {
+
                 Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
+
             }
         }
 
@@ -53,16 +68,11 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
             (activity as RegisterCommuteActivity?)?.setPrevPage()
         }
 
-        viewModel.isLoading().observe(requireActivity(), Observer {
-            if (it == true) {
-                submitButton.isEnabled = false
-                submitButton.setBackgroundColor(Color.LTGRAY)
-            }
-        })
-
         viewModel.commuteSaveSuccess().observe(requireActivity(), Observer {
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            startActivity(intent)
+            if (it) {
+                val intent = Intent(requireContext(), MainActivity::class.java)
+                startActivity(intent)
+            }
         })
     }
 

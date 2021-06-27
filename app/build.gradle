@@ -100,5 +100,4 @@ dependencies {
     //gson
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    implementation 'com.github.cdflynn:checkview:v1.1'
 }
