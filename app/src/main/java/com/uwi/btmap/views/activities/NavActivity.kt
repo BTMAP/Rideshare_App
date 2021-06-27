@@ -18,6 +18,7 @@ import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.api.directions.v5.models.BannerInstructions
+import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.VoiceInstructions
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.camera.CameraPosition
@@ -80,7 +81,7 @@ class NavActivity :
     private lateinit var mapCamera: NavigationCamera
 
     //custom commute object
-    private lateinit var commute: NavigationCommute
+    private lateinit var commute: DirectionsRoute
 
     private lateinit var permissionsManager: PermissionsManager
     private lateinit var locationEngine: LocationEngine
@@ -358,7 +359,7 @@ class NavActivity :
 
         //get commute
         //TODO notify user and return to previous screen if no commute is passed
-        this.commute = intent.getSerializableExtra("commute")!! as NavigationCommute
+        this.commute = intent.getSerializableExtra("DirectionsRoute")!! as DirectionsRoute
 
         //set access token
         this.accessToken = getString(R.string.mapbox_access_token)
@@ -425,18 +426,19 @@ class NavActivity :
             )
 
             //add route to map
-            this.navigationMap?.drawRoute(commute.driverRoute!!)
+            Log.d(TAG, "onMapReady: $commute")
+            this.navigationMap?.drawRoute(commute)
             this.navigationMap?.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
 
             this.navigationMap?.setPuckDrawableSupplier(MyPuckDrawableSupplier())
 
             //add route to navigation object
-            this.mapboxNavigation.setRoutes(listOf(commute.driverRoute!!))
+            this.mapboxNavigation.setRoutes(listOf(commute))
 
             //start trip
             //camera start route
             mapCamera.updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_GPS)
-            mapCamera.start(commute.driverRoute)
+            mapCamera.start(commute)
 
             //set location puck render mode
             mapboxMap.locationComponent.renderMode = RenderMode.GPS

@@ -1,10 +1,12 @@
 package com.uwi.btmap.views.fragments.previewCommute
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -40,7 +42,7 @@ import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.PreviewCommuteViewModel
-
+import com.uwi.btmap.views.activities.NavActivity
 
 
 private const val TAG = "PreviewCommuteFragment"
@@ -74,6 +76,8 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
     private lateinit var mapboxMap: MapboxMap
     private lateinit var mapboxNavigation: MapboxNavigation
 
+    private lateinit var startButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mapbox.getInstance(requireContext(),getString(R.string.mapbox_access_token))
@@ -85,6 +89,18 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
         super.onViewCreated(view, savedInstanceState)
         initMapView(view,savedInstanceState)
         initMapNavigation()
+        startButton = view.findViewById(R.id.start_button)
+        startButton.setOnClickListener{
+            //TODO switch to appropriate navigation activity
+            if(viewModel.commute.value?.commuteType == 0){
+                //switch to nav activity and pass driver directions as extra
+                val intent = Intent(requireContext(), NavActivity::class.java)
+                    .putExtra("DirectionsRoute",viewModel.drivingDirectionsRoute.value)
+                requireActivity().startActivity(intent)
+            }else{
+                //switch to passenger nav activity
+            }
+        }
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -189,8 +205,8 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
             .coordinates(waypoints)
             .alternatives(false)
             .profile(DirectionsCriteria.PROFILE_DRIVING)
-            .voiceInstructions(false)
-            .steps(false)
+            .voiceInstructions(true)
+            .steps(true)
             .build()
 
         mapboxNavigation.requestRoutes(routeOptions,drivingRoutesReqCallback)
@@ -202,6 +218,9 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
 
                 val routeLineString = LineString.fromPolyline(
                     routes[0].geometry()!!,6)
+
+                viewModel.drivingDirectionsRoute.postValue(routes[0])
+
                 mapboxMap.getStyle {
                     val routeSource = it.getSourceAs<GeoJsonSource>(drivingRouteSourceID)
                     routeSource?.setGeoJson(routeLineString)
