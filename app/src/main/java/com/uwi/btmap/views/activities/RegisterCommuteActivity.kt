@@ -3,6 +3,7 @@ package com.uwi.btmap.views.activities
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -52,7 +53,10 @@ class RegisterCommuteActivity : AppCompatActivity() {
 
         viewModel.commuteSaveSuccess().observe(this, Observer {
 
-            if (it == true) {
+            val mDriver = viewModel.commuteType.value
+            val mPassenger = viewModel.commuteType.value
+
+            if (it == true && mDriver == 0) {
                 cont.setContentView(R.layout.redirect_view)
                 cont.setCancelable(false)
                 loading.dismiss()
@@ -63,6 +67,30 @@ class RegisterCommuteActivity : AppCompatActivity() {
                 redirect.setOnClickListener {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
+                }
+            }
+
+            if (it == true && mPassenger == 1){
+                cont.setContentView(R.layout.redirect_view)
+                cont.setCancelable(false)
+                loading.dismiss()
+                cont.show()
+
+                val redirect = cont.findViewById(R.id.dialog_continue) as Button
+
+                redirect.setOnClickListener {
+                    viewModel.findPairSuccess().observe(this, Observer { it1 ->
+                        if (it1) {
+                            //move this from the fragment ot the view model
+                            val intent = Intent(this, SelectPairActivity::class.java)
+                                .putExtra("CommuteOptions", viewModel.commuteOptions)
+                                .putExtra("PassengerOrigin", viewModel.origin.value)
+                                .putExtra("PassengerDestination", viewModel.destination.value)
+                                .putExtra("OriginAddress", viewModel.originAddress.value)
+                                .putExtra("DestinationAddress", viewModel.destinationAddress.value)
+                            startActivity(intent)
+                        }
+                    })
                 }
             }
 
@@ -79,18 +107,18 @@ class RegisterCommuteActivity : AppCompatActivity() {
 
         //add pair commute success livedata observer
         //switch activity
-        viewModel.findPairSuccess().observe(this, Observer {
-            if (it) {
-                //move this from the fragment ot the view model
-                val intent = Intent(this, SelectPairActivity::class.java)
-                    .putExtra("CommuteOptions", viewModel.commuteOptions)
-                    .putExtra("PassengerOrigin", viewModel.origin.value)
-                    .putExtra("PassengerDestination", viewModel.destination.value)
-                    .putExtra("OriginAddress", viewModel.originAddress.value)
-                    .putExtra("DestinationAddress", viewModel.destinationAddress.value)
-                startActivity(intent)
-            }
-        })
+//        viewModel.findPairSuccess().observe(this, Observer {
+//            if (it) {
+//                //move this from the fragment ot the view model
+//                val intent = Intent(this, SelectPairActivity::class.java)
+//                    .putExtra("CommuteOptions", viewModel.commuteOptions)
+//                    .putExtra("PassengerOrigin", viewModel.origin.value)
+//                    .putExtra("PassengerDestination", viewModel.destination.value)
+//                    .putExtra("OriginAddress", viewModel.originAddress.value)
+//                    .putExtra("DestinationAddress", viewModel.destinationAddress.value)
+//                startActivity(intent)
+//            }
+//        })
 
 
     }
