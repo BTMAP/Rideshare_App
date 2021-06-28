@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#212A39"
+    android:alpha="0.9"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="275dp"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_check" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/AliceBlue"
+            android:text="Saved Successfully"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/dialog_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/DeepSkyBlue"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="5dp"
+            android:layout_gravity="center"
+            android:text="Continue"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

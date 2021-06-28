@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/DeepSkyBlue"
+    android:background="#212A39"
+    android:alpha="0.9"
     android:gravity="center">
 
     <LinearLayout
@@ -21,7 +22,7 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:elevation="1dp"
-                android:indeterminateTint="@color/DeepPink"
+                android:indeterminateTint="@color/white"
                 android:rotation="180"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +35,7 @@
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:elevation="1dp"
-                android:indeterminateTint="@color/DeepPink"
+                android:indeterminateTint="@color/white"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/progressDialog1"
                 app:layout_constraintEnd_toEndOf="@+id/progressDialog1"

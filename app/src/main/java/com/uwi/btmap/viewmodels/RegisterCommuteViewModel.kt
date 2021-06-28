@@ -97,6 +97,7 @@ class RegisterCommuteViewModel : ViewModel() {
 
     fun isLoading():LiveData<Boolean>{return isLoading}
 
+
     /* -------------------------- SET Functions --------------------------- */
 
     fun setCommuteType(i:Int){

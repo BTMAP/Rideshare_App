@@ -2,11 +2,10 @@ package com.uwi.btmap.views.activities
 
 import android.app.Dialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.view.MenuItem
-import androidx.appcompat.app.AlertDialog
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -14,10 +13,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.afollestad.viewpagerdots.DotsIndicator
-import com.uwi.btmap.*
+import com.uwi.btmap.MainActivity
+import com.uwi.btmap.R
 import com.uwi.btmap.activities.ZoomOutPageTransformer
 import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
-
 import com.uwi.btmap.views.fragments.register.*
 
 private const val NUM_PAGES = 5
@@ -47,11 +46,34 @@ class RegisterCommuteActivity : AppCompatActivity() {
 
         //add submit commute success livedata observer
         //switch activity
+        val loading = Dialog(this)
+        val cont = Dialog(this)
+
+
         viewModel.commuteSaveSuccess().observe(this, Observer {
-            if (it) {
-                //move this from the fragment ot the view model
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+
+            if (it == true) {
+                cont.setContentView(R.layout.redirect_view)
+                cont.setCancelable(false)
+                loading.dismiss()
+                cont.show()
+
+                val redirect = cont.findViewById(R.id.dialog_continue) as Button
+
+                redirect.setOnClickListener {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+        })
+
+        viewModel.isLoading().observe(this, Observer { currLoading ->
+            if (currLoading == true) {
+                //loadingDialog()
+                loading.setCancelable(false)
+                loading.setContentView(R.layout.loading_view)
+                loading.show()
             }
         })
 
@@ -60,27 +82,22 @@ class RegisterCommuteActivity : AppCompatActivity() {
         viewModel.findPairSuccess().observe(this, Observer {
             if (it) {
                 //move this from the fragment ot the view model
-                val intent = Intent(this,SelectPairActivity::class.java)
-                    .putExtra("CommuteOptions",viewModel.commuteOptions)
-                    .putExtra("PassengerOrigin",viewModel.origin.value)
-                    .putExtra("PassengerDestination",viewModel.destination.value)
-                    .putExtra("OriginAddress",viewModel.originAddress.value)
-                    .putExtra("DestinationAddress",viewModel.destinationAddress.value)
+                val intent = Intent(this, SelectPairActivity::class.java)
+                    .putExtra("CommuteOptions", viewModel.commuteOptions)
+                    .putExtra("PassengerOrigin", viewModel.origin.value)
+                    .putExtra("PassengerDestination", viewModel.destination.value)
+                    .putExtra("OriginAddress", viewModel.originAddress.value)
+                    .putExtra("DestinationAddress", viewModel.destinationAddress.value)
                 startActivity(intent)
             }
         })
 
-        viewModel.isLoading().observe(this, Observer {
-            if (it == true){
-                loadingDialog()
-            }
-        })
 
     }
 
-    private fun loadingDialog(){
-        val loading = Dialog(this)
 
+    private fun loadingDialog() {
+        val loading = Dialog(this)
         loading.setContentView(R.layout.loading_view)
         loading.show()
     }
