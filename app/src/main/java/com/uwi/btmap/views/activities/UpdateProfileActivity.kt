@@ -1,6 +1,7 @@
 package com.uwi.btmap.views.activities
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -47,7 +48,7 @@ class UpdateProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //Profile Photo
-        selectProfilePhoto_btn.setOnClickListener {
+        selectVehiclePhoto_btn.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 0)
@@ -115,7 +116,7 @@ class UpdateProfileActivity : AppCompatActivity() {
 
             profile_image.setImageBitmap(bitmap)
 
-            selectProfilePhoto_btn.alpha = 0f
+            selectVehiclePhoto_btn.alpha = 0f
         }
     }
 
@@ -194,8 +195,12 @@ class UpdateProfileActivity : AppCompatActivity() {
     }
 
     private fun showProgressBar() {
-        mProgressBar1.visibility = View.VISIBLE
-        mProgressBar2.visibility = View.VISIBLE
+        val loading = Dialog(this)
+        loading.setCancelable(false)
+        loading.setContentView(R.layout.loading_view)
+        loading.show()
+//        mProgressBar1.visibility = View.VISIBLE
+//        mProgressBar2.visibility = View.VISIBLE
     }
 
     private fun hideProgressBar() {

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -24,7 +25,11 @@ class SelectPairActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar!!.setTitle("Pair Select")
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         setContentView(R.layout.activity_select_pair)
+
+        noCommutes()
 
         viewModel = ViewModelProvider(this).get(SelectPairViewModel::class.java)
 
@@ -45,6 +50,29 @@ class SelectPairActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
+    }
+
+    private fun noCommutes(){
+        val commuteNo = viewModel.commuteOptions.value
+        if (commuteNo == null){
+            val builder = AlertDialog.Builder(this)
+            builder.setCancelable(false)
+            builder.setTitle("No Commutes")
+            builder.setMessage("There are no current pairable commutes. Do you wish to change your commute details?")
+
+            builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                val intent = Intent(this@SelectPairActivity, RegisterCommuteActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
+            builder.setNegativeButton(android.R.string.no) { dialog, which ->
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+
+            builder.show()
+        }
     }
 
     override fun onBackPressed() {

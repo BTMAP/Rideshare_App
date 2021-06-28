@@ -117,31 +117,31 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        navView.menu.findItem(R.id.nav_map).setCheckable(false)
-        navView.menu.findItem(R.id.nav_map).setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.nav_map -> {
-                    drawerLayout.close()
-                    val intent = Intent(this, MapActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
+//        navView.menu.findItem(R.id.nav_map).setCheckable(false)
+//        navView.menu.findItem(R.id.nav_map).setOnMenuItemClickListener { item ->
+//            when (item.itemId) {
+//                R.id.nav_map -> {
+//                    drawerLayout.close()
+//                    val intent = Intent(this, MapActivity::class.java)
+//                    startActivity(intent)
+//                    true
+//                }
+//                else -> false
+//            }
+//        }
 
-        navView.menu.findItem(R.id.nav_test).setCheckable(false)
-        navView.menu.findItem(R.id.nav_test).setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.nav_test -> {
-                    drawerLayout.close()
-                    val intent = Intent(this, TestActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
+//        navView.menu.findItem(R.id.nav_test).setCheckable(false)
+//        navView.menu.findItem(R.id.nav_test).setOnMenuItemClickListener { item ->
+//            when (item.itemId) {
+//                R.id.nav_test -> {
+//                    drawerLayout.close()
+//                    val intent = Intent(this, TestActivity::class.java)
+//                    startActivity(intent)
+//                    true
+//                }
+//                else -> false
+//            }
+//        }
 
         navView.menu.findItem(R.id.nav_logout).setCheckable(false)
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener { item ->

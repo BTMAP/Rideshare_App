@@ -36,7 +36,6 @@ class SelectPairViewModel: ViewModel() {
     var lastLegRoute = MutableLiveData<DirectionsRoute>()
 
     var commuteEstimates = MutableLiveData<PassengerCommuteEstimate>()
-    var commuteData = MutableLiveData<Commute>()
 
     var currentFragment = MutableLiveData<Int>()
 

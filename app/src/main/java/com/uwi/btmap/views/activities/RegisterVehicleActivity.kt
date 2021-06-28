@@ -20,9 +20,8 @@ import com.uwi.btmap.R
 import com.uwi.btmap.databinding.ActivityRegisterVehicleBinding
 import com.uwi.btmap.models.UserVehicle
 import kotlinx.android.synthetic.main.activity_register_vehicle.*
-import kotlinx.android.synthetic.main.activity_update_profile.*
 import kotlinx.android.synthetic.main.activity_update_profile.profile_image
-import kotlinx.android.synthetic.main.activity_update_profile.selectProfilePhoto_btn
+import kotlinx.android.synthetic.main.activity_update_profile.selectVehiclePhoto_btn
 import java.util.*
 
 class RegisterVehicleActivity : AppCompatActivity() {
@@ -45,7 +44,7 @@ class RegisterVehicleActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //Profile Photo
-        selectProfilePhoto_btn.setOnClickListener {
+        selectVehiclePhoto_btn.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 0)
@@ -120,7 +119,7 @@ class RegisterVehicleActivity : AppCompatActivity() {
 
             profile_image.setImageBitmap(bitmap)
 
-            selectProfilePhoto_btn.alpha = 0f
+            selectVehiclePhoto_btn.alpha = 0f
         }
     }
 

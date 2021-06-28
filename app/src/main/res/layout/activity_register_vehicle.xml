@@ -10,14 +10,14 @@
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:background="@color/DeepSkyBlue"
+        android:background="#212A39"
         android:padding="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/selectProfilePhoto_btn"
+            android:id="@+id/selectVehiclePhoto_btn"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginStart="8dp"
@@ -37,19 +37,19 @@
             android:id="@+id/profile_image"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_alignStart="@+id/selectProfilePhoto_btn"
-            android:layout_alignTop="@+id/selectProfilePhoto_btn"
-            android:layout_alignEnd="@+id/selectProfilePhoto_btn"
-            android:layout_alignBottom="@+id/selectProfilePhoto_btn"
+            android:layout_alignStart="@+id/selectVehiclePhoto_btn"
+            android:layout_alignTop="@+id/selectVehiclePhoto_btn"
+            android:layout_alignEnd="@+id/selectVehiclePhoto_btn"
+            android:layout_alignBottom="@+id/selectVehiclePhoto_btn"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="0dp"
             app:civ_border_width="1dp"
-            app:layout_constraintBottom_toBottomOf="@+id/selectProfilePhoto_btn"
-            app:layout_constraintEnd_toEndOf="@+id/selectProfilePhoto_btn"
-            app:layout_constraintStart_toStartOf="@+id/selectProfilePhoto_btn"
-            app:layout_constraintTop_toTopOf="@+id/selectProfilePhoto_btn" />
+            app:layout_constraintBottom_toBottomOf="@+id/selectVehiclePhoto_btn"
+            app:layout_constraintEnd_toEndOf="@+id/selectVehiclePhoto_btn"
+            app:layout_constraintStart_toStartOf="@+id/selectVehiclePhoto_btn"
+            app:layout_constraintTop_toTopOf="@+id/selectVehiclePhoto_btn" />
 
         <TextView
             android:id="@+id/vehicleUserName"
@@ -105,138 +105,157 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:layout_marginTop="20dp"
-        android:orientation="vertical"
+        app:cardBackgroundColor="@color/c"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toTopOf="@id/saveBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="365dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="18dp"
+                android:text="Vehicle Make"
+                android:textAllCaps="true"
+                android:textColor="@color/purple_500"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_vehicleMake"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/input"
+                android:backgroundTint="@color/AliceBlue"
+                android:paddingLeft="20dp"
+                android:textColor="@color/DeepSkyBlue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.05"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText_name"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="18dp"
+                android:text="Vehicle Model"
+                android:textAllCaps="true"
+                android:textColor="@color/purple_500"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_vehicleModel"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/input"
+                android:backgroundTint="@color/AliceBlue"
+                android:paddingLeft="20dp"
+                android:textColor="@color/DeepSkyBlue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/updateHeader"
+                app:layout_constraintVertical_bias="0.111" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="18dp"
+                android:text="Vehicle Color"
+                android:textAllCaps="true"
+                android:textColor="@color/purple_500"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_vehicleColor"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/input"
+                android:backgroundTint="@color/AliceBlue"
+                android:paddingLeft="20dp"
+                android:textColor="@color/DeepSkyBlue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText_address"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="18dp"
+                android:text="License Plate Number"
+                android:textAllCaps="true"
+                android:textColor="@color/purple_500"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_vehicleLicensePlateNumber"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/input"
+                android:backgroundTint="@color/AliceBlue"
+                android:paddingLeft="20dp"
+                android:textColor="@color/DeepSkyBlue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.05"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText_name"
+                app:layout_constraintVertical_bias="0.0" />
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/DeepSkyBlue"
+        android:text="Save"
+        android:textColor="@color/white"
+        android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="18dp"
-            android:text="Vehicle Make"
-            android:textAllCaps="true"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText_vehicleMake"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/input"
-            android:backgroundTint="@color/AliceBlue"
-            android:paddingLeft="20dp"
-            android:textColor="@color/DeepSkyBlue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText_name"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="18dp"
-            android:text="Vehicle Model"
-            android:textAllCaps="true"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText_vehicleModel"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/input"
-            android:backgroundTint="@color/AliceBlue"
-            android:paddingLeft="20dp"
-            android:textColor="@color/DeepSkyBlue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/updateHeader"
-            app:layout_constraintVertical_bias="0.111" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="18dp"
-            android:text="Vehicle Color"
-            android:textAllCaps="true"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText_vehicleColor"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/input"
-            android:backgroundTint="@color/AliceBlue"
-            android:paddingLeft="20dp"
-            android:textColor="@color/DeepSkyBlue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText_address"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="18dp"
-            android:text="License Plate Number"
-            android:textAllCaps="true"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText_vehicleLicensePlateNumber"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/input"
-            android:backgroundTint="@color/AliceBlue"
-            android:paddingLeft="20dp"
-            android:textColor="@color/DeepSkyBlue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText_name"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <Button
-            android:id="@+id/saveBtn"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/purple_500"
-            android:text="Save"
-            android:layout_marginTop="50dp"
-            android:textColor="@color/white"
-            android:textSize="18dp" />
-
-    </LinearLayout>
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

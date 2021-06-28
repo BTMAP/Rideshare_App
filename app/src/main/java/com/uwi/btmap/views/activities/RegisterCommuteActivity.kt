@@ -91,6 +91,7 @@ class RegisterCommuteActivity : AppCompatActivity() {
                             startActivity(intent)
                         }
                     })
+                    cont.dismiss()
                 }
             }
 
