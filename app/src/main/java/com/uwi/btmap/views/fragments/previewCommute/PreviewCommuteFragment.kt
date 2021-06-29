@@ -149,6 +149,7 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
                 } else {
                     commuteType?.text = "Passenger"
                     commutePairedText?.visibility = View.GONE
+                    commutePaired?.visibility = View.GONE
                 }
 
             } else {

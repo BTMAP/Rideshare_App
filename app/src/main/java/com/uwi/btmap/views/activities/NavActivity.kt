@@ -1,6 +1,7 @@
 package com.uwi.btmap.views.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -50,6 +51,7 @@ import com.mapbox.navigation.ui.instruction.InstructionView
 import com.mapbox.navigation.ui.map.NavigationMapboxMap
 import com.mapbox.navigation.ui.puck.PuckDrawableSupplier
 import com.mapbox.navigation.ui.summary.SummaryBottomSheet
+import com.uwi.btmap.MainActivity
 import com.uwi.btmap.R
 import com.uwi.btmap.bll.TTS
 import com.uwi.btmap.models.DriverLiveLocation
@@ -143,24 +145,19 @@ class NavActivity :
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
-                    val currentLatitude = p0.child("driverLatitude").getValue(String::class.java)
-                    val currentLongitude = p0.child("driverLongitude").getValue(String::class.java)
-
-                    val selectedPoint: Point = Point.fromLngLat(
-                        currentLongitude!!.toDouble(),
-                        currentLatitude!!.toDouble()
-                    )
-//                    val selectedPoint = LatLng(currentLatitude!!.toDouble(), currentLongitude!!.toDouble())
-
-
-//                Log.d(TAG, "Driver Current Latitude " + selectedPoint)
-//                Log.d(TAG, "Driver Current Longitude " + currentLongitude)
-
-                    val sourceId = "PASSENGER_LOCATION"
-
-                    mapboxMap.getStyle {
-                        updateSource(it, sourceId, selectedPoint)
-                    }
+//                    val currentLatitude = p0.child("driverLatitude").getValue(String::class.java)
+//                    val currentLongitude = p0.child("driverLongitude").getValue(String::class.java)
+//
+//                    val selectedPoint: Point = Point.fromLngLat(
+//                        currentLongitude!!.toDouble(),
+//                        currentLatitude!!.toDouble()
+//                    )
+//
+//                    val sourceId = "PASSENGER_LOCATION"
+//
+//                    mapboxMap.getStyle {
+//                        updateSource(it, sourceId, selectedPoint)
+//                    }
                 }
             })
     }
@@ -194,42 +191,91 @@ class NavActivity :
     @SuppressLint("LogNotTimber")
     private val arrivalObserver = object : ArrivalObserver {
         override fun onFinalDestinationArrival(routeProgress: RouteProgress) {
-            TODO("Not yet implemented")
+            finalDestinationAlertDialog()
         }
 
         override fun onNextRouteLegStart(routeLegProgress: RouteLegProgress) {
             if (routeLegProgress.legIndex == 1){
                 Log.d(TAG, "Pickup Point")
-                onAlertDialog()
+                pickUpAlertDialog()
             }
             if (routeLegProgress.legIndex == 2){
                 Log.d(TAG, "Drop-off Point")
-                onAlertDialog()
+                dropOffAlertDialog()
             }
         }
     }
 
     @SuppressLint("LogNotTimber")
-    fun onAlertDialog() {
+    fun pickUpAlertDialog() {
         //Instantiate builder variable
         val builder = AlertDialog.Builder(this)
-        // set title
-        builder.setTitle("Continue Onwards")
-        //set content area
-        builder.setMessage("Continue on to the next leg?")
-        //set negative button
+        builder.setCancelable(false)
+        builder.setTitle("Pickup Point")
+        builder.setMessage("Please wait for the passenger.")
+
         builder.setPositiveButton(
             "Continue"
         ) { dialog, id ->
             // User clicked Update Now button
-            Log.d(TAG, "Continue!")
+            Log.d(TAG, "Collected")
+            dialog.dismiss()
         }
-        //set positive button
+
         builder.setNegativeButton(
-            "Cancel????"
+            "Cancel"
         ) { dialog, id ->
             // User cancelled the dialog
-            Log.d(TAG, "I don't know what to do!!!!")
+            Log.d(TAG, "Cancel")
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
+    @SuppressLint("LogNotTimber")
+    fun dropOffAlertDialog() {
+        //Instantiate builder variable
+        val builder = AlertDialog.Builder(this)
+        builder.setCancelable(false)
+        builder.setTitle("Drop-off Point")
+        builder.setMessage("Fare = $5.30")
+
+        builder.setPositiveButton(
+            "Continue"
+        ) { dialog, id ->
+            // User clicked Update Now button
+            Log.d(TAG, "Confirm")
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(
+            "Cancel"
+        ) { dialog, id ->
+            // User cancelled the dialog
+            Log.d(TAG, "Cancel")
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
+    @SuppressLint("LogNotTimber")
+    fun finalDestinationAlertDialog() {
+        val builder = AlertDialog.Builder(this)
+
+        builder.setCancelable(false)
+        builder.setTitle("Final Destination")
+        builder.setMessage("Rating")
+
+
+        builder.setPositiveButton(
+            "Continue"
+        ) { dialog, id ->
+            // User clicked Update Now button
+            Log.d(TAG, "Confirm")
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+
+            dialog.dismiss()
         }
         builder.show()
     }
@@ -397,6 +443,7 @@ class NavActivity :
 
             //Register Observers
             this.mapboxNavigation.registerLocationObserver(locationObserver)
+            this.mapboxNavigation.registerArrivalObserver(arrivalObserver)
             this.mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
             this.mapboxNavigation.registerBannerInstructionsObserver(bannerInstructionsObserver)
             this.mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver)
@@ -407,15 +454,14 @@ class NavActivity :
             mapCamera.addProgressChangeListener(mapboxNavigation)
             //init camera zoom level
             mapboxMap.moveCamera(CameraUpdateFactory.zoomTo(25.0))
-//
+
             this.recenterButton.setOnClickListener {
                 //recenter camera position and re-enable tracking
                 mapCamera.resetCameraPositionWith(NAVIGATION_TRACKING_MODE_GPS)
             }
 
             this.muteButton.setOnClickListener {
-//                isVoiceMuted = !isVoiceMuted
-                onAlertDialog()
+                Toast.makeText(this, "Pressed", Toast.LENGTH_SHORT).show()
             }
 
             //get last location with custom location engine callback

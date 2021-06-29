@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
             }.addOnFailureListener {
-                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Update Profile", Toast.LENGTH_SHORT).show()
             }
         }
 
