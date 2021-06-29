@@ -213,13 +213,10 @@ class NavActivity :
     fun onAlertDialog() {
         //Instantiate builder variable
         val builder = AlertDialog.Builder(this)
-
         // set title
         builder.setTitle("Continue Onwards")
-
         //set content area
         builder.setMessage("Continue on to the next leg?")
-
         //set negative button
         builder.setPositiveButton(
             "Continue"
@@ -227,7 +224,6 @@ class NavActivity :
             // User clicked Update Now button
             Log.d(TAG, "Continue!")
         }
-
         //set positive button
         builder.setNegativeButton(
             "Cancel????"

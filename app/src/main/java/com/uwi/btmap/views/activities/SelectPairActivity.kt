@@ -29,7 +29,7 @@ class SelectPairActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         setContentView(R.layout.activity_select_pair)
 
-        noCommutes()
+        //noCommutes()
 
         viewModel = ViewModelProvider(this).get(SelectPairViewModel::class.java)
 
@@ -52,28 +52,28 @@ class SelectPairActivity : AppCompatActivity() {
         })
     }
 
-    private fun noCommutes(){
-        val commuteNo = viewModel.commuteOptions.value
-        if (commuteNo == null){
-            val builder = AlertDialog.Builder(this)
-            builder.setCancelable(false)
-            builder.setTitle("No Commutes")
-            builder.setMessage("There are no current pairable commutes. Do you wish to change your commute details?")
-
-            builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-                val intent = Intent(this@SelectPairActivity, RegisterCommuteActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-
-            builder.setNegativeButton(android.R.string.no) { dialog, which ->
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            }
-
-            builder.show()
-        }
-    }
+//    private fun noCommutes(){
+//        val commuteNo = viewModel.commuteOptions.value
+//        if (commuteNo == null){
+//            val builder = AlertDialog.Builder(this)
+//            builder.setCancelable(false)
+//            builder.setTitle("No Commutes")
+//            builder.setMessage("There are no current pairable commutes. Do you wish to change your commute details?")
+//
+//            builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+//                val intent = Intent(this@SelectPairActivity, RegisterCommuteActivity::class.java)
+//                startActivity(intent)
+//                finish()
+//            }
+//
+//            builder.setNegativeButton(android.R.string.no) { dialog, which ->
+//                startActivity(Intent(this, MainActivity::class.java))
+//                finish()
+//            }
+//
+//            builder.show()
+//        }
+//    }
 
     override fun onBackPressed() {
         if (viewModel.currentFragment.value == 0) {

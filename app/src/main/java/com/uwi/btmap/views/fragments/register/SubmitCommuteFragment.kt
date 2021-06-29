@@ -72,6 +72,10 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
             }
         })
 
+//        viewModel.findPairSuccess().observe(requireActivity(), Observer {
+//            if ()
+//        })
+
 //        viewModel.commuteSaveSuccess().observe(requireActivity(), Observer {
 //            if (it == true) {
 //                viewModel.commuteSaveSuccess()
