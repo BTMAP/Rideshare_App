@@ -3,7 +3,6 @@ package com.uwi.btmap.views.activities
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -70,7 +69,7 @@ class RegisterCommuteActivity : AppCompatActivity() {
                 }
             }
 
-            if (it == true && mPassenger == 1){
+            if (it == true && mPassenger == 1) {
                 cont.setContentView(R.layout.redirect_view)
                 cont.setCancelable(false)
                 loading.dismiss()
@@ -79,6 +78,7 @@ class RegisterCommuteActivity : AppCompatActivity() {
                 val redirect = cont.findViewById(R.id.dialog_continue) as Button
 
                 redirect.setOnClickListener {
+                    cont.dismiss()
                     viewModel.findPairSuccess().observe(this, Observer { it1 ->
                         if (it1) {
                             //move this from the fragment ot the view model
@@ -91,7 +91,6 @@ class RegisterCommuteActivity : AppCompatActivity() {
                             startActivity(intent)
                         }
                     })
-                    cont.dismiss()
                 }
             }
 
@@ -105,38 +104,14 @@ class RegisterCommuteActivity : AppCompatActivity() {
                 loading.show()
             }
         })
-
-        //add pair commute success livedata observer
-        //switch activity
-//        viewModel.findPairSuccess().observe(this, Observer {
-//            if (it) {
-//                //move this from the fragment ot the view model
-//                val intent = Intent(this, SelectPairActivity::class.java)
-//                    .putExtra("CommuteOptions", viewModel.commuteOptions)
-//                    .putExtra("PassengerOrigin", viewModel.origin.value)
-//                    .putExtra("PassengerDestination", viewModel.destination.value)
-//                    .putExtra("OriginAddress", viewModel.originAddress.value)
-//                    .putExtra("DestinationAddress", viewModel.destinationAddress.value)
-//                startActivity(intent)
-//            }
-//        })
-
-
     }
 
-
-    private fun loadingDialog() {
-        val loading = Dialog(this)
-        loading.setContentView(R.layout.loading_view)
-        loading.show()
-    }
 
     override fun onBackPressed() {
-        if (pager.currentItem == 0) {
-            super.onBackPressed()
-        } else {
-            pager.currentItem = pager.currentItem - 1
-        }
+
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
