@@ -1,6 +1,6 @@
 package com.uwi.btmap.views.fragments
 
-import android.graphics.Color
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,7 +17,6 @@ import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.location.LocationComponentOptions
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
@@ -39,6 +38,7 @@ import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 
 private const val TAG = "MapboxPreviewFragment"
 
+@SuppressLint("LogNotTimber")
 class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     OnMapReadyCallback{
 
@@ -149,6 +149,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position))
     }
 
+
     private fun onMapClick(point: LatLng): Boolean {
 
         if(viewModel.locationSelectionMode == 0){
@@ -191,7 +192,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
 
     private fun initMapNavigation(){
         val mapboxNavigationOptions = MapboxNavigation
-            .defaultNavigationOptionsBuilder(requireContext(), viewModel.token)
+            .defaultNavigationOptionsBuilder(requireContext(), getString(R.string.mapbox_access_token))
             .build()
         this.mapboxNavigation = MapboxNavigation(mapboxNavigationOptions)
     }
@@ -200,7 +201,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     private fun getRoute(origin: Point, destination: Point){
         val routeOptions = RouteOptions.builder()
             .applyDefaultParams()
-            .accessToken(viewModel.token)
+            .accessToken(getString(R.string.mapbox_access_token))
             .coordinates(listOf(origin, destination))
             .alternatives(false)
             .profile(DirectionsCriteria.PROFILE_DRIVING)

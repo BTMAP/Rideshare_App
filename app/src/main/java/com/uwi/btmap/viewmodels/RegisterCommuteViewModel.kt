@@ -28,7 +28,6 @@ private const val TAG = "CommuteViewModel"
 
 class RegisterCommuteViewModel : ViewModel() {
 
-    var token = ""
     var commuteType = MutableLiveData<Int>()
 
     /* ------------------------ Location Information ----------------------- */

@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
-import com.afollestad.viewpagerdots.DotsIndicator
 import com.uwi.btmap.MainActivity
 import com.uwi.btmap.R
 import com.uwi.btmap.activities.ZoomOutPageTransformer
@@ -24,7 +23,6 @@ private const val NUM_PAGES = 5
 class RegisterCommuteActivity : AppCompatActivity() {
 
     private lateinit var pager: ViewPager
-    private lateinit var dots: DotsIndicator
 
     private var commuteType = 0
 
@@ -42,7 +40,6 @@ class RegisterCommuteActivity : AppCompatActivity() {
         pager.adapter = pagerAdapter
 
         val viewModel = ViewModelProvider(this).get(RegisterCommuteViewModel::class.java)
-        viewModel.token = getString(R.string.mapbox_access_token)
 
         //add submit commute success livedata observer
         //switch activity
