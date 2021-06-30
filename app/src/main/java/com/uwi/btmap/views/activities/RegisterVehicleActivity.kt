@@ -38,13 +38,10 @@ class RegisterVehicleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = "Register Vehicle"
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
         binding = ActivityRegisterVehicleBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar!!.title = "Register Vehicle"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         //Profile Photo
         selectVehiclePhoto_btn.setOnClickListener {
