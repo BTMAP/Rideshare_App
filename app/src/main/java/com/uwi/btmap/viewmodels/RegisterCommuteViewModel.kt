@@ -6,9 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Point
-import com.uwi.btmap.models.NavigationCommute
 import java.util.*
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.GsonBuilder
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
@@ -31,7 +29,6 @@ private const val TAG = "CommuteViewModel"
 class RegisterCommuteViewModel : ViewModel() {
 
     var token = ""
-    var commute = NavigationCommute()
     var commuteType = MutableLiveData<Int>()
 
     /* ------------------------ Location Information ----------------------- */
