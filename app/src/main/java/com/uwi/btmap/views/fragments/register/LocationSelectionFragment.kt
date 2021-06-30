@@ -124,8 +124,6 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
             val feature = PlaceAutocomplete.getPlace(data)
             viewModel.origin.value = feature.center()
             //set text using placeName
-            //feature.text is shorter (could use instead)
-            //could use address if it is not null
             viewModel.originAddress.value = feature.placeName()
         }
 
@@ -133,8 +131,6 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
             val feature = PlaceAutocomplete.getPlace(data)
             viewModel.destination.value = feature.center()
             //set text using placeName
-            //feature.text is shorter (could use instead)
-            //could use address if it is not null
             viewModel.destinationAddress.value = feature.placeName()
         }
     }

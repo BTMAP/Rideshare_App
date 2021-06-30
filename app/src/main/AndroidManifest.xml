@@ -22,7 +22,6 @@
         <activity
             android:name=".views.activities.NavActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />
-        <activity android:name=".views.activities.MapActivity" />
         <activity android:name=".views.activities.UpdateProfileActivity" />
         <activity android:name=".views.activities.ProfileActivity" />
         <activity android:name=".views.activities.RegisterCommuteActivity" />
