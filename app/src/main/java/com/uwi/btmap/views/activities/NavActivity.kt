@@ -183,7 +183,7 @@ class NavActivity :
             summaryBottomSheet.update(routeProgress)
 
             routeProgress.currentState.let { currentState ->
-
+                //TODO add voice instruction notifying driver that they are approaching waypoints
             }
         }
     }
@@ -192,6 +192,7 @@ class NavActivity :
     private val arrivalObserver = object : ArrivalObserver {
         override fun onFinalDestinationArrival(routeProgress: RouteProgress) {
             finalDestinationAlertDialog()
+            //TODO update database
         }
 
         override fun onNextRouteLegStart(routeLegProgress: RouteLegProgress) {
@@ -286,7 +287,6 @@ class NavActivity :
 
     private val offRouteObserver = object : OffRouteObserver {
         override fun onOffRouteStateChanged(offRoute: Boolean) {
-//            Log.d(TAG, "onOffRouteStateChanged: Called")
             //nav component automatically creates new route when user goes off route
             //use the route in the nav component to update the map
             val currentRoutes = mapboxNavigation.getRoutes()
@@ -332,7 +332,6 @@ class NavActivity :
 
     private val voiceInstructionsObserver = object : VoiceInstructionsObserver {
         override fun onNewVoiceInstructions(voiceInstructions: VoiceInstructions) {
-//            Log.d(TAG, "onNewVoiceInstructions: ${voiceInstructions.announcement()}")
             if (voiceInstructions.announcement() != null && !isVoiceMuted) {
                 ttsPlayer.play(voiceInstructions.announcement()!!)
             }
@@ -403,7 +402,6 @@ class NavActivity :
         setContentView(R.layout.activity_nav)
 
         //get commute
-        //TODO notify user and return to previous screen if no commute is passed
         this.commute = intent.getSerializableExtra("DirectionsRoute")!! as DirectionsRoute
 
         //set access token
@@ -423,7 +421,6 @@ class NavActivity :
         this.muteButton = findViewById(R.id.mute_button)
     }
 
-    //TODO address missing permissions checks
     @SuppressLint("MissingPermission")
     override fun onMapReady(mapboxMap: MapboxMap) {
         //initialize mapboxMap
@@ -507,8 +504,7 @@ class NavActivity :
         mapView.onStart()
 
         if (this::mapboxNavigation.isInitialized) {
-//            Log.d(TAG, "onStart: register locationObserver")
-//            mapboxNavigation.registerLocationObserver(locationObserver)
+            mapboxNavigation.registerLocationObserver(locationObserver)
             mapboxNavigation.registerTripSessionStateObserver(tripSessionStateObserver)
             mapboxNavigation.registerOffRouteObserver(offRouteObserver)
             mapboxNavigation.registerArrivalObserver(arrivalObserver)
@@ -629,6 +625,7 @@ class NavActivity :
                         Toast.LENGTH_SHORT
                     ).show()
 
+                    //TODO drivers location in database for driver live location updates
 //                    database = FirebaseDatabase.getInstance().getReference("CurrentLocation")
 //                    val coordinates = Coords(latLng)
 //                    Log.d(TAG, "Coordinates: $latLng")
@@ -639,11 +636,13 @@ class NavActivity :
 
         }
 
-        override fun onFailure(exception: Exception) {}
+        override fun onFailure(exception: Exception) {
+            //not handled
+        }
     }
 
     override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-        Toast.makeText(this, "Permission not granted!!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "This app requires location services to provide directions while navigating.", Toast.LENGTH_SHORT).show()
     }
 
     override fun onPermissionResult(granted: Boolean) {
@@ -679,7 +678,6 @@ class LocationEngineCallback(activity: NavActivity) : LocationEngineCallback<Loc
         if (result != null) {
             //initialize location puck position
             activityRef?.get()?.updateLocation(result.locations)
-            Log.d(TAG, "onSuccess: $result.locations")
         } else {
             Log.e(TAG, "onSuccess: Failed to update location (result == null)")
         }
@@ -695,5 +693,4 @@ class MyPuckDrawableSupplier : PuckDrawableSupplier {
     override fun getPuckDrawable(routeProgressState: RouteProgressState): Int {
         return R.drawable.mapbox_ic_user_puck
     }
-
 }
