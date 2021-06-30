@@ -17,8 +17,6 @@
         <activity android:name=".views.activities.PassengerNavActivity"/>
         <activity android:name=".views.activities.PreviewCommuteActivity" />
         <activity android:name=".views.activities.SelectPairActivity" />
-        <activity android:name=".views.activities.TestActivity" />
-
         <activity
             android:name=".views.activities.NavActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />

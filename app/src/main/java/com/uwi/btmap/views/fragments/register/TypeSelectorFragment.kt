@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 import com.uwi.btmap.views.activities.RegisterCommuteActivity
-import kotlinx.android.synthetic.main.activity_test.*
+//import kotlinx.android.synthetic.main.activity_test.*
 
 private const val TAG = "TypeSelectorFragment"
 
@@ -56,6 +56,8 @@ class TypeSelectorFragment : Fragment() {
 //        }
 
         val driverCheckBox = view.findViewById<CheckBox>(R.id.driverCheckBox)
+        val passengerCheckBox = view.findViewById<CheckBox>(R.id.passengerCheckBox)
+
         driverCheckBox?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
                 passengerCheckBox.setChecked(false)
@@ -67,7 +69,7 @@ class TypeSelectorFragment : Fragment() {
             }
         }
 
-        val passengerCheckBox = view.findViewById<CheckBox>(R.id.passengerCheckBox)
+
         passengerCheckBox?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
                 driverCheckBox.setChecked(false)
