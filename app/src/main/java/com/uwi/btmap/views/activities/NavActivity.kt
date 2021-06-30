@@ -53,7 +53,7 @@ import com.mapbox.navigation.ui.puck.PuckDrawableSupplier
 import com.mapbox.navigation.ui.summary.SummaryBottomSheet
 import com.uwi.btmap.MainActivity
 import com.uwi.btmap.R
-import com.uwi.btmap.bll.TTS
+import com.uwi.btmap.utils.TTS
 import com.uwi.btmap.models.DriverLiveLocation
 import java.lang.ref.WeakReference
 

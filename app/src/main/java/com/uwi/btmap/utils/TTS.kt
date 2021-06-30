@@ -1,4 +1,4 @@
-package com.uwi.btmap.bll
+package com.uwi.btmap.utils
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
