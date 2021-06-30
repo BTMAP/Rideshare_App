@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -37,7 +38,9 @@ class RegisterVehicleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar!!.setTitle("Register Vehicle")
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = "Register Vehicle"
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         binding = ActivityRegisterVehicleBinding.inflate(layoutInflater)

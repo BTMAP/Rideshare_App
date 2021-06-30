@@ -40,7 +40,7 @@
             android:name=".views.activities.PhoneAuthActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />
         <activity
-            android:name=".views.activities.CommuteListActivity"
+            android:name=".views.activities.RegisterVehicleActivity"
             android:theme="@style/Theme.BTMAP.NoActionBar" />
     </application>
 
