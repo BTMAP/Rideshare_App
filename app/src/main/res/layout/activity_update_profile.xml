@@ -76,36 +76,7 @@
             android:text="Your Phone Number"
             android:textColor="@color/Wheat"
             android:textSize="16sp" />
-
     </RelativeLayout>
-
-
-    <ProgressBar
-        android:id="@+id/mProgressBar1"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:elevation="1dp"
-        android:indeterminateTint="@color/DeepPink"
-        android:rotation="180"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/mProgressBar2"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:elevation="1dp"
-        android:indeterminateTint="@color/DeepSkyBlue"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
@@ -128,7 +99,7 @@
             android:layout_height="400dp"
             android:layout_marginTop="20dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/saveBtn"
+            app:layout_constraintBottom_toTopOf="@+id/updateProfileSaveBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
@@ -246,7 +217,7 @@
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/saveBtn"
+        android:id="@+id/updateProfileSaveBtn"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_gravity="center"

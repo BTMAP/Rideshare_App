@@ -90,7 +90,7 @@ class UpdateProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
         }
 
-        binding.saveBtn.setOnClickListener {
+        binding.updateProfileSaveBtn.setOnClickListener {
             showProgressBar()
             database = FirebaseDatabase.getInstance().getReference("Users")
             database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
@@ -199,14 +199,8 @@ class UpdateProfileActivity : AppCompatActivity() {
         loading.setCancelable(false)
         loading.setContentView(R.layout.loading_view)
         loading.show()
-//        mProgressBar1.visibility = View.VISIBLE
-//        mProgressBar2.visibility = View.VISIBLE
     }
 
-    private fun hideProgressBar() {
-        mProgressBar1.visibility = View.GONE
-        mProgressBar2.visibility = View.GONE
-    }
 
 
     override fun onStart() {

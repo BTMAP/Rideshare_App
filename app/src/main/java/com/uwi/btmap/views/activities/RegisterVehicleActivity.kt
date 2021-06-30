@@ -1,6 +1,7 @@
 package com.uwi.btmap.views.activities
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -93,7 +94,7 @@ class RegisterVehicleActivity : AppCompatActivity() {
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
         }
 
-        binding.saveBtn.setOnClickListener {
+        binding.registerVehicleSaveBtn.setOnClickListener {
             showProgressBar()
             database = FirebaseDatabase.getInstance().getReference("VehicleData")
             database.child(mAuth?.currentUser?.uid!!).get().addOnSuccessListener {
@@ -105,6 +106,13 @@ class RegisterVehicleActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun showProgressBar() {
+        val loading = Dialog(this)
+        loading.setCancelable(false)
+        loading.setContentView(R.layout.loading_view)
+        loading.show()
     }
 
     var selectedPhotoUri: Uri? = null
@@ -205,15 +213,7 @@ class RegisterVehicleActivity : AppCompatActivity() {
         }
     }
 
-    private fun showProgressBar() {
-        regProgressBar1.visibility = View.VISIBLE
-        regProgressBar2.visibility = View.VISIBLE
-    }
 
-    private fun hideProgressBar() {
-        regProgressBar1.visibility = View.GONE
-        regProgressBar2.visibility = View.GONE
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

@@ -461,7 +461,8 @@ class NavActivity :
             }
 
             this.muteButton.setOnClickListener {
-                Toast.makeText(this, "Pressed", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "Pressed", Toast.LENGTH_SHORT).show()
+                dropOffAlertDialog()
             }
 
             //get last location with custom location engine callback
