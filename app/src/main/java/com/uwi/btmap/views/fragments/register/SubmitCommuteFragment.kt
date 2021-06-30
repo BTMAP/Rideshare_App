@@ -35,8 +35,7 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
         submitButton = view.findViewById(R.id.submit_commute_button)
         submitButton.setOnClickListener {
             //showProgressBar()
-
-
+            
             if (viewModel.isCommuteValid()) {
                 Log.d(TAG, "onViewCreated: Is Valid: true")
 

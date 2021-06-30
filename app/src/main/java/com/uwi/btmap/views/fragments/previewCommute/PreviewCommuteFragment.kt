@@ -95,22 +95,28 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
         getSelectedCommuteData()
         startButton = view.findViewById(R.id.start_button)
         startButton.setOnClickListener {
-
             //switch to appropriate navigation activity
             if (viewModel.commute.value?.commuteType == 0) {
-                //switch to nav activity and pass driver directions as extra
-                val intent = Intent(requireContext(), NavActivity::class.java)
-                    .putExtra("DirectionsRoute", viewModel.drivingDirectionsRoute.value)
-                requireActivity().startActivity(intent)
+                val route = viewModel.drivingDirectionsRoute.value
+                if (route!=null) {
+                    //switch to nav activity and pass driver directions as extra
+                    val intent = Intent(requireContext(), NavActivity::class.java)
+                        .putExtra("DirectionsRoute", route)
+                    requireActivity().startActivity(intent)
+                }
             } else {
-                //switch to passenger nav activity
-                val intent = Intent(requireContext(), PassengerNavActivity::class.java)
-                    .putExtra("DrivingRoute", viewModel.drivingDirectionsRoute.value)
-                    .putExtra("FirstLeg", viewModel.firstLegDirectionsRoute.value)
-                    .putExtra("LastLeg", viewModel.lastLegDirectionsRoute.value)
-                    .putExtra("Commute", viewModel.commute.value)
-
-                requireActivity().startActivity(intent)
+                val drivingLeg = viewModel.drivingDirectionsRoute.value
+                val firstLeg = viewModel.firstLegDirectionsRoute.value
+                val lastLeg = viewModel.lastLegDirectionsRoute.value
+                if(drivingLeg!=null && firstLeg!=null && lastLeg!=null) {
+                    //switch to passenger nav activity
+                    val intent = Intent(requireContext(), PassengerNavActivity::class.java)
+                        .putExtra("DrivingRoute", viewModel.drivingDirectionsRoute.value)
+                        .putExtra("FirstLeg", viewModel.firstLegDirectionsRoute.value)
+                        .putExtra("LastLeg", viewModel.lastLegDirectionsRoute.value)
+                        .putExtra("Commute", viewModel.commute.value)
+                    requireActivity().startActivity(intent)
+                }
             }
         }
     }
