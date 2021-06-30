@@ -24,13 +24,13 @@ import com.uwi.btmap.R
 import com.uwi.btmap.models.PairableCommute
 import com.uwi.btmap.viewmodels.SelectPairViewModel
 import com.uwi.btmap.views.activities.RegisterCommuteActivity
-import com.uwi.btmap.views.fragments.commuteList.PreviewCommutePairFragment
+import com.uwi.btmap.views.fragments.selectPair.PreviewCommutePairFragment
 import java.security.AccessController.getContext
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-const val TAG = "ListCommutePair"
+private const val TAG = "ListCommutePair"
 class ListCommutePairFragment : Fragment(R.layout.fragment_list_commute_pair_fragement) {
 
     private lateinit var viewModel: SelectPairViewModel

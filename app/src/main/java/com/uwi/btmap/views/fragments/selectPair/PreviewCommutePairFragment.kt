@@ -1,4 +1,4 @@
-package com.uwi.btmap.views.fragments.commuteList
+package com.uwi.btmap.views.fragments.selectPair
 
 import android.os.Bundle
 import android.util.Log
@@ -45,7 +45,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-const val TAG = "RoutePreview"
+private const val TAG = "RoutePreview"
 
 class PreviewCommutePairFragment : Fragment(R.layout.fragment_preview_commute_pair),
     OnMapReadyCallback{

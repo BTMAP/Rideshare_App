@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/register_route_main_fragment"
-        android:name="com.uwi.btmap.views.fragments.RoutePreviewFragment"
+        android:name="com.uwi.btmap.views.fragments.register.RoutePreviewFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/selector_pager_view"

@@ -342,17 +342,11 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
         }
 
         override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
-            Log.d(
-                com.uwi.btmap.views.fragments.commuteList.TAG,
-                "onRoutesRequestCanceled: Route request cancelled."
-            )
+            Log.d(TAG,"onRoutesRequestCanceled: Route request cancelled.")
         }
 
         override fun onRoutesRequestFailure(throwable: Throwable, routeOptions: RouteOptions) {
-            Log.d(
-                com.uwi.btmap.views.fragments.commuteList.TAG,
-                "onRoutesRequestFailure: Route request failed."
-            )
+            Log.d(TAG,"onRoutesRequestFailure: Route request failed.")
         }
     }
 
@@ -370,14 +364,12 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
                     routeSource?.setGeoJson(routeLineString)
                 }
             } else {
-                Log.d(TAG, "onRoutesReady: No routes found.")
+                Log.d(TAG,"onRoutesReady: No routes found.")
             }
         }
 
         override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
-            Log.d(
-                com.uwi.btmap.views.fragments.commuteList.TAG,
-                "onRoutesRequestCanceled: Route request cancelled."
+            Log.d(TAG,"onRoutesRequestCanceled: Route request cancelled."
             )
         }
 

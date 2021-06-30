@@ -1,4 +1,4 @@
-package com.uwi.btmap.views.fragments
+package com.uwi.btmap.views.fragments.register
 
 import android.annotation.SuppressLint
 import android.os.Bundle
