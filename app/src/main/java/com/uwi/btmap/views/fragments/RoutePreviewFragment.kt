@@ -225,7 +225,7 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
                     routes[0].geometry()!!, 6
                 )
                 routeLineString.coordinates()
-                Log.d(TAG, "onRoutesReady: LineString: ${routeLineString}")
+                Log.d(TAG, "onRoutesReady: LineString: $routeLineString")
                 Log.d(TAG, "onRoutesReady: LineStringCoords: ${routeLineString.coordinates()}")
             }else{
                 Log.d(TAG, "onRoutesReady: No routes found.")

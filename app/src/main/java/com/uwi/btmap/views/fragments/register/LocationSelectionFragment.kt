@@ -76,7 +76,7 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
         }
 
         originAddressText.setOnClickListener {
-            var intent = PlaceAutocomplete.IntentBuilder()
+            val intent = PlaceAutocomplete.IntentBuilder()
                 .accessToken(getString(R.string.mapbox_access_token))
                 .placeOptions(
                     PlaceOptions.builder()
@@ -93,7 +93,7 @@ class LocationSelectionFragment : Fragment(R.layout.fragment_location_selection)
         }
 
         destinationAddressText.setOnClickListener {
-            var intent = PlaceAutocomplete.IntentBuilder()
+            val intent = PlaceAutocomplete.IntentBuilder()
                 .accessToken(getString(R.string.mapbox_access_token))
                 .placeOptions(
                     PlaceOptions.builder()

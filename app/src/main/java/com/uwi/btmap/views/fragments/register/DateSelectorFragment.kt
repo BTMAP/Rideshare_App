@@ -18,6 +18,7 @@ import java.util.*
 
 private const val TAG = "DateSelectorFragment"
 
+@Suppress("DEPRECATION")
 class DateSelectorFragment : Fragment() {
     private lateinit var viewModel : RegisterCommuteViewModel
 
@@ -40,7 +41,7 @@ class DateSelectorFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.fragment_date_selector, container, false)
+        val view = inflater.inflate(R.layout.fragment_date_selector, container, false)
 
         initDatePicker()
 
@@ -68,15 +69,15 @@ class DateSelectorFragment : Fragment() {
     }
 
     private fun initDatePicker(){
-        var dateSetListener = DatePickerDialog.OnDateSetListener{ datePicker: DatePicker, year: Int, month: Int, day: Int ->
+        val dateSetListener = DatePickerDialog.OnDateSetListener{ _: DatePicker, year: Int, month: Int, day: Int ->
             viewModel.setDate(year,month,day)
         }
 
-        var year = viewModel.calendar.get(Calendar.YEAR)
-        var month = viewModel.calendar.get(Calendar.MONTH)
-        var day = viewModel.calendar.get(Calendar.DAY_OF_MONTH)
+        val year = viewModel.calendar.get(Calendar.YEAR)
+        val month = viewModel.calendar.get(Calendar.MONTH)
+        val day = viewModel.calendar.get(Calendar.DAY_OF_MONTH)
 
-        var style = AlertDialog.THEME_HOLO_LIGHT
+        val style = AlertDialog.THEME_HOLO_LIGHT
 
         datePickerDialog = DatePickerDialog(requireContext(),style,dateSetListener,year,month,day)
     }

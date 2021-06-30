@@ -19,6 +19,7 @@ import java.util.*
 
 private const val TAG = "TimeSelectorFragment"
 
+@Suppress("DEPRECATION")
 class TimeSelectorFragment : Fragment() {
 
     private lateinit var viewModel: RegisterCommuteViewModel
@@ -33,9 +34,7 @@ class TimeSelectorFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            //init vars from bundle
-        }
+        arguments?.let {}
         viewModel = ViewModelProvider(requireActivity()).get(RegisterCommuteViewModel::class.java)
     }
 
@@ -43,7 +42,7 @@ class TimeSelectorFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.fragment_time_selector, container, false)
+        val view = inflater.inflate(R.layout.fragment_time_selector, container, false)
         typeDisplay = view.findViewById(R.id.commute_time_frag)
 
         initTimePicker()
@@ -74,7 +73,7 @@ class TimeSelectorFragment : Fragment() {
 
     private fun initTimePicker() {
         val timeSetListener =
-            TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hour: Int, minute: Int ->
+            TimePickerDialog.OnTimeSetListener { _: TimePicker, hour: Int, minute: Int ->
                 viewModel.setTime(hour, minute)
             }
 

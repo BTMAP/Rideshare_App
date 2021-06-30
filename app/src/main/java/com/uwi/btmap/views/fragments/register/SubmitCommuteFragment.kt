@@ -1,7 +1,6 @@
 package com.uwi.btmap.views.fragments.register
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -12,7 +11,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.uwi.btmap.MainActivity
 import com.uwi.btmap.R
 import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 import com.uwi.btmap.views.activities.RegisterCommuteActivity
@@ -21,13 +19,14 @@ import kotlinx.android.synthetic.main.fragment_submit_commute.*
 
 private const val TAG = "SubmitCommuteFragment"
 
+@Suppress("DEPRECATION")
+@SuppressLint("ResourceAsColor", "LogNotTimber")
 class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
 
     private lateinit var viewModel: RegisterCommuteViewModel
     private lateinit var submitButton: Button
     private lateinit var prevButton: Button
 
-    @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -65,22 +64,12 @@ class SubmitCommuteFragment : Fragment(R.layout.fragment_submit_commute) {
                 submitButton.setBackgroundColor(Color.GRAY)
                 viewModel.isLoading()
 
-                var handler = Handler()
+                val handler = Handler()
                 handler.postDelayed({
                     viewModel.commuteSaveSuccess.value = true
                 }, 5000)
             }
         })
-
-//        viewModel.findPairSuccess().observe(requireActivity(), Observer {
-//            if ()
-//        })
-
-//        viewModel.commuteSaveSuccess().observe(requireActivity(), Observer {
-//            if (it == true) {
-//                viewModel.commuteSaveSuccess()
-//            }
-//        })
     }
 
     private fun showProgressBar() {
