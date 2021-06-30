@@ -2,6 +2,7 @@ package com.uwi.btmap.views.fragments.previewCommute
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -96,6 +98,7 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
         startButton = view.findViewById(R.id.start_button)
         startButton.setOnClickListener {
 
+            val commuteInfo = viewModel.commute.value
             //switch to appropriate navigation activity
             if (viewModel.commute.value?.commuteType == 0) {
                 //switch to nav activity and pass driver directions as extra
@@ -124,6 +127,7 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
         val commutePairedText = view?.findViewById<TextView>(R.id.commute_pair_text)
         val commuteOrigin = view?.findViewById<TextView>(R.id.commute_origin)
         val commuteDestination = view?.findViewById<TextView>(R.id.commute_destination)
+        val begin = view?.findViewById<Button>(R.id.start_button)
 
         viewModel.commute().observe(requireActivity(), Observer {
             if (it != null) {
@@ -143,8 +147,11 @@ class PreviewCommuteFragment : Fragment(R.layout.fragment_preview_commute),
                     val paired = commuteInfo.getIsPaired()
                     if (paired){
                         commutePaired?.text = "Yes"
+                        begin?.isEnabled = true
                     }else{
                         commutePaired?.text = "No"
+                        begin?.isEnabled = false
+                        begin?.setBackgroundColor(Color.GRAY)
                     }
                 } else {
                     commuteType?.text = "Passenger"

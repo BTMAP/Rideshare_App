@@ -1,13 +1,17 @@
 package com.uwi.btmap.views.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.mapbox.android.core.permissions.PermissionsListener
+import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.api.directions.v5.DirectionsCriteria
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.RouteOptions
@@ -17,7 +21,10 @@ import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
 import com.mapbox.mapboxsdk.location.LocationComponentOptions
+import com.mapbox.mapboxsdk.location.modes.CameraMode
+import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
@@ -40,7 +47,9 @@ import com.uwi.btmap.viewmodels.RegisterCommuteViewModel
 private const val TAG = "MapboxPreviewFragment"
 
 class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
-    OnMapReadyCallback{
+    OnMapReadyCallback, PermissionsListener {
+
+    private var permissionsManager: PermissionsManager = PermissionsManager(this)
 
     private val routeSourceID = "ROUTE_SOURCE_ID"
     private val originSourceID = "ORIGIN_SOURCE_ID"
@@ -79,6 +88,8 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
 
             initLocationIcons(style)
             initMapLayers(style)
+
+            enableLocationComponent(style)
 
             mapboxMap.addOnMapLongClickListener{
                 onMapClick(it)
@@ -135,6 +146,45 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
                 routeSource?.setGeoJson(routeLineString)
             }
         })
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun enableLocationComponent(loadedMapStyle: Style) {
+        mapboxMap.getStyle {
+            if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
+                val customLocationComponentOptions = LocationComponentOptions.builder(requireContext())
+                    .trackingGesturesManagement(true)
+                    .accuracyColor(ContextCompat.getColor(requireContext(), R.color.mapbox_blue))
+                    .build()
+
+                val locationComponentActivationOptions =
+                    LocationComponentActivationOptions.builder(requireContext(), loadedMapStyle)
+                        .locationComponentOptions(customLocationComponentOptions)
+                        .build()
+
+                mapboxMap.locationComponent.apply {
+                    activateLocationComponent(locationComponentActivationOptions)
+                    isLocationComponentEnabled = true
+                    cameraMode = CameraMode.TRACKING
+                    renderMode = RenderMode.COMPASS
+
+                    val lat = mapboxMap.locationComponent.lastKnownLocation?.latitude
+                    val lng = mapboxMap.locationComponent.lastKnownLocation?.longitude
+
+                    val position = CameraPosition.Builder()
+                        .zoom(12.0)
+                        .tilt(0.0)
+                        .target(LatLng(lat!!, lng!!))
+                        .build()
+
+                    mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position))
+                }
+            } else {
+                permissionsManager = PermissionsManager(this)
+                permissionsManager.requestLocationPermissions(requireActivity())
+            }
+        }
+
     }
     
     private fun centerMapCamera(mapboxMap: MapboxMap){
@@ -348,5 +398,17 @@ class RoutePreviewFragment : Fragment(R.layout.fragment_route_preview),
     override fun onDestroy() {
         super.onDestroy()
         mapView.onDestroy()
+    }
+
+    override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
+        Toast.makeText(requireContext(), "This app requires location services in order to provide navigation to requested destination.", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onPermissionResult(granted: Boolean) {
+        if (granted) {
+            enableLocationComponent(mapboxMap.style!!)
+        } else {
+            Toast.makeText(requireContext(), "permissions not granted", Toast.LENGTH_LONG).show()
+        }
     }
 }

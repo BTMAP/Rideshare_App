@@ -2,6 +2,7 @@ package com.uwi.btmap.views.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.uwi.btmap.R
@@ -13,6 +14,8 @@ import com.uwi.btmap.views.fragments.previewCommute.PreviewCommuteFragment
 class PassengerNavActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar!!.setTitle("Passenger Navigation")
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         setContentView(R.layout.activity_passenger_nav)
         val viewModel = ViewModelProvider(this).get(PreviewCommuteViewModel::class.java)
 
@@ -27,5 +30,15 @@ class PassengerNavActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.passenger_nav_frame,fragment)
         transaction.commit()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

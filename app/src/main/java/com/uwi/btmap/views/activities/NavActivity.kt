@@ -195,11 +195,11 @@ class NavActivity :
         }
 
         override fun onNextRouteLegStart(routeLegProgress: RouteLegProgress) {
-            if (routeLegProgress.legIndex == 1){
+            if (routeLegProgress.legIndex == 0){
                 Log.d(TAG, "Pickup Point")
                 pickUpAlertDialog()
             }
-            if (routeLegProgress.legIndex == 2){
+            if (routeLegProgress.legIndex == 1){
                 Log.d(TAG, "Drop-off Point")
                 dropOffAlertDialog()
             }

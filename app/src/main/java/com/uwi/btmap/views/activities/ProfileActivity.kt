@@ -82,12 +82,6 @@ class ProfileActivity : AppCompatActivity() {
             val intent = Intent(this, RegisterVehicleActivity::class.java)
             startActivity(intent)
         }
-
-//        binding.button.setOnClickListener{
-//            database = FirebaseDatabase.getInstance().getReference("Commutes")
-//            val commuteInfo = Commutes("Chloe Sullivan", "Oliver Queen", "10-28-2021", "7:55 AM")
-//            database.push().setValue(commuteInfo)
-//        }
     }
 
 
